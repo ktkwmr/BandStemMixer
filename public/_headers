@@ -1,0 +1,24 @@
+# Security headers for every response (Cloudflare Workers static assets).
+# CSP notes:
+# - 'unsafe-inline': the app's script and styles are written inline in index.html.
+# - 'wasm-unsafe-eval': ONNX Runtime Web runs the AI model with WebAssembly.
+# - cdn.jsdelivr.net: ONNX Runtime Web (pinned version) is imported by separator.js. connect-src too,
+#   because the Service Worker fetches it to keep an offline copy (WEBAPP_BASELINE.md §3-10).
+# - huggingface.co / *.huggingface.co / *.hf.co: the AI model file (htdemucs_6s, ONNX). Hugging Face
+#   redirects the download to its file storage (cdn-lfs*.huggingface.co / cas-bridge.xethub.hf.co).
+# - blob: (script-src, worker-src): ONNX Runtime copies its cross-origin thread script from the CDN into a
+#   blob URL, then imports it and starts its WebAssembly threads with it.
+# - static.cloudflareinsights.com / cloudflareinsights.com: Cloudflare Web Analytics
+#   (the beacon script and where it sends page views).
+# Cross-origin isolation (COOP + COEP require-corp) enables SharedArrayBuffer, which ONNX Runtime needs
+# to use several CPU threads (several times faster) and which lets the player share the separated parts
+# without copying them. Every cross-origin file the page uses is loaded with CORS (module scripts, fetch).
+# The microphone and camera are not used. screen-wake-lock keeps a phone's screen on while separating.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cloudflareinsights.com; worker-src 'self' blob:; media-src 'self' blob:; frame-src 'none'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), screen-wake-lock=(self)
