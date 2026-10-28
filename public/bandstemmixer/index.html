@@ -10,23 +10,23 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
-  <title>Split a Band Song into 6 Stems – Vocals, Guitar, Bass, Drums, Piano – Band Stem Mixer</title>
-  <meta name="description" content="Free AI stem splitter that runs in your browser: separate a band song into 6 parts (vocals, guitar, bass, drums, piano, other), then mute, solo, and mix them to practice your part or make a backing track. Save each part as WAV. No upload, no sign-up." />
+  <title>Split a Band Song into Vocals, Drums, Bass &amp; Other – Free AI Stem Splitter – Band Stem Mixer</title>
+  <meta name="description" content="Free AI stem splitter that runs in your browser: separate a band song into 4 parts (vocals, drums, bass, and other: guitar, keys…), then mute, solo, and mix them to practice your part or make a backing track. Save each part as WAV. No upload, no sign-up." />
   <link rel="canonical" href="https://ktkwmr.com/bandstemmixer/" />
   <link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/" />
   <link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/" />
   <link rel="alternate" hreflang="x-default" href="https://ktkwmr.com/bandstemmixer/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Band Stem Mixer" />
-  <meta property="og:title" content="Split a Band Song into 6 Stems – Vocals, Guitar, Bass, Drums, Piano – Band Stem Mixer" />
-  <meta property="og:description" content="Separate a song into vocals, guitar, bass, drums, piano, and other with AI in your browser, then mute or solo each part to practice along. Free, no upload, no sign-up." />
+  <meta property="og:title" content="Split a Band Song into Vocals, Drums, Bass &amp; Other – Free AI Stem Splitter – Band Stem Mixer" />
+  <meta property="og:description" content="Separate a song into vocals, drums, bass, and other with AI in your browser, then mute or solo each part to practice along. Free, no upload, no sign-up." />
   <meta property="og:locale" content="en_US" />
   <meta property="og:locale:alternate" content="ja_JP" />
   <meta property="og:url" content="https://ktkwmr.com/bandstemmixer/" />
   <meta property="og:image" content="https://ktkwmr.com/bandstemmixer/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Band Stem Mixer: six faders for vocals, guitar, bass, drums, piano, and other, with the guitar muted" />
+  <meta property="og:image:alt" content="Band Stem Mixer: four faders for vocals, bass, drums, and other, with the bass muted" />
   <meta name="twitter:card" content="summary_large_image" />
   <script type="application/ld+json">
   {
@@ -34,7 +34,7 @@
     "@type": "WebApplication",
     "name": "Band Stem Mixer",
     "url": "https://ktkwmr.com/bandstemmixer/",
-    "description": "A browser app that separates a band song into 6 stems (vocals, guitar, bass, drums, piano, other) with AI on your device, and lets you mute, solo, and mix them or save each as WAV.",
+    "description": "A browser app that separates a band song into 4 stems (vocals, drums, bass, and other) with AI on your device, and lets you mute, solo, and mix them or save each as WAV.",
     "applicationCategory": "MultimediaApplication",
     "inLanguage": "en",
     "operatingSystem": "Any",
@@ -247,7 +247,7 @@
             <span class="name" id="songName"></span>
             <span class="meta" id="songMeta"></span>
           </div>
-          <button class="primary big" id="runBtn" type="button" disabled data-i18n="run">Separate into 6 parts</button>
+          <button class="primary big" id="runBtn" type="button" disabled data-i18n="run">Separate into 4 parts</button>
           <div class="progress" id="progress" hidden>
             <span class="stage" id="stage"></span>
             <div class="bar" id="bar"><div></div></div>
@@ -262,7 +262,6 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
             <span id="modelState" data-i18n="model.checking">Checking the AI model…</span>
           </div>
-          <label class="check" id="gpuRow" hidden><input type="checkbox" id="gpuOpt" /><span data-i18n="gpu">Use the GPU (WebGPU, experimental). Can be faster on a computer; turn it off if separation fails.</span></label>
         </div>
       </section>
 
@@ -270,7 +269,7 @@
         <div class="panel-head"><span id="mixTitle" data-i18n="mixer">Mixer</span><span class="sub" id="backend"></span></div>
         <div class="empty" id="empty">
           <div class="slots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-          <span data-i18n="empty">Choose a song and separate it. Vocals, guitar, bass, drums, piano, and other appear here, each with its own fader.</span>
+          <span data-i18n="empty">Choose a song and separate it. Vocals, bass, drums, and other (guitar, keys…) appear here, each with its own fader.</span>
         </div>
         <div id="mixer" hidden>
           <div class="transport">
@@ -291,19 +290,19 @@
               <button class="chip" id="saveMix" type="button" data-i18n="mix.save">Save this mix (WAV)</button>
             </div>
           </div>
-          <p class="keys" data-i18n-html="keys"><kbd>Space</kbd> play / pause · <kbd>1</kbd>–<kbd>6</kbd> mute a part · <kbd>←</kbd> <kbd>→</kbd> 5 seconds back / forward</p>
+          <p class="keys" data-i18n-html="keys"><kbd>Space</kbd> play / pause · <kbd>1</kbd>–<kbd>4</kbd> mute a part · <kbd>←</kbd> <kbd>→</kbd> 5 seconds back / forward</p>
         </div>
       </section>
     </div>
     <footer class="foot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span data-i18n="foot">Your song is separated on this device and never uploaded. No account needed.</span></footer>
 
     <section class="intro" aria-labelledby="introTitle">
-      <h1 id="introTitle" data-i18n="intro.title">Split a band song into vocals, guitar, bass, drums, piano, and other</h1>
+      <h1 id="introTitle" data-i18n="intro.title">Split a band song into vocals, drums, bass, and other</h1>
       <div data-i18n-html="intro.body">
-        <p>Band Stem Mixer separates a song into <b>6 parts</b> with AI: vocals, guitar, bass, drums, piano (keys), and everything else. Choose an audio file such as MP3, WAV, or M4A and press “Separate into 6 parts”. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>
-        <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the guitar to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as a WAV file.</p>
-        <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 140 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>
-        <p>The model is Demucs (htdemucs_6s), an open-source music separation model. Like all such models it is not perfect: sounds can leak between parts, and the piano and guitar parts are less clean than vocals, drums, and bass. Free, with no sign-up and no ads.</p>
+        <p>Band Stem Mixer separates a song into <b>4 parts</b> with AI: vocals, drums, bass, and other (guitar, keys, and everything else). Choose an audio file such as MP3, WAV, or M4A and press “Separate into 4 parts”. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>
+        <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the drums to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as a WAV file.</p>
+        <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 170 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>
+        <p>The model is Demucs (htdemucs), a music separation model by Meta. Like all such models it is not perfect: sounds can leak between parts. Guitar and keys are not split from each other; they come out together in “Other”. Free, with no sign-up and no ads.</p>
       </div>
     </section>
   </main>
@@ -324,7 +323,7 @@
     <div class="help-body">
       <ol class="help-list" data-i18n-html="help.body">
         <li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>
-        <li><b>Separate</b> – Press “Separate into 6 parts”. The first time, the AI model (about 140 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>
+        <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>
         <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>
         <li><b>Save</b> – The ↓ button on each part saves that part as a WAV file. “Save this mix (WAV)” saves what you hear now (faders, mute, and solo).</li>
         <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the WAV files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>
@@ -341,8 +340,8 @@
     <div class="help-body">
       <ul class="help-list" data-i18n-html="privacy.body">
         <li><b>Your song stays on your device</b> – The audio file you choose is read and separated only in your browser. It is never sent to a server. Saving WAV files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>
-        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime library from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>
-        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume, GPU setting), and the app itself (to work offline) are saved in your browser. Delete them with ⚙ → “Delete saved data”, or by clearing this site's data in your browser settings.</li>
+        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>
+        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Delete them with ⚙ → “Delete saved data”, or by clearing this site's data in your browser settings.</li>
         <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>
         <li><b>Contact</b> – Questions and feedback: <a href="https://github.com/ktkwmr/BandStemMixer/issues" target="_blank" rel="noopener">GitHub Issues</a>.</li>
         <li><b>Full policy</b> – See the <a href="/bandstemmixer/privacy/">privacy policy</a> and <a href="/bandstemmixer/about/">about this site</a>.</li>
@@ -365,7 +364,7 @@
 
   <dialog class="msg" id="resetDlg" tabindex="-1" aria-labelledby="resetTitle">
     <h2 id="resetTitle" data-i18n="reset.title">Delete saved data?</h2>
-    <p class="dlg-text" data-i18n="reset.body">This deletes the downloaded AI model (about 140 MB) and the mixer settings from this browser. The model is downloaded again the next time you separate a song.</p>
+    <p class="dlg-text" data-i18n="reset.body">This deletes the downloaded AI model (about 170 MB) and the mixer settings from this browser. The model is downloaded again the next time you separate a song.</p>
     <div class="dlg-actions">
       <button class="chip" id="resetCancel" type="button" data-i18n="cancel">Cancel</button>
       <button class="primary" id="resetOk" type="button" data-i18n="reset.ok">Delete</button>
@@ -395,7 +394,7 @@
           "file.meta": "{time} · {ch}",
           "file.mono": "mono",
           "file.stereo": "stereo",
-          "run": "Separate into 6 parts",
+          "run": "Separate into 4 parts",
           "run.again": "Separate again",
           "cancel": "Cancel",
           "close": "Close",
@@ -404,11 +403,10 @@
           "model.missing": "The AI model (about {mb} MB) is downloaded the first time you separate, and kept on this device.",
           "model.ready": "The AI model is saved on this device. No download needed.",
           "model.nocache": "This browser cannot keep the AI model, so it is downloaded (about {mb} MB) each time.",
-          "gpu": "Use the GPU (WebGPU, experimental). Can be faster on a computer; turn it off if separation fails.",
           "stage.download": "Downloading the AI model…",
           "stage.lib": "Loading the separation engine…",
           "stage.init": "Preparing the AI model…",
-          "stage.separate": "Separating into 6 parts…",
+          "stage.separate": "Separating into 4 parts…",
           "stage.retry": "That did not work. Trying again with settings that use less memory…",
           "where.download": "while downloading the AI model",
           "where.init": "while loading the AI model",
@@ -426,7 +424,7 @@
           "done": "Done in {time}. Press play.",
           "canceled": "Separation canceled.",
           "mixer": "Mixer",
-          "empty": "Choose a song and separate it. Vocals, guitar, bass, drums, piano, and other appear here, each with its own fader.",
+          "empty": "Choose a song and separate it. Vocals, bass, drums, and other (guitar, keys…) appear here, each with its own fader.",
           "play": "Play",
           "pause": "Pause",
           "position": "Position",
@@ -441,13 +439,11 @@
           "saved": "Saved {file}.",
           "save.preview": "Saving WAV files is not available in this preview.",
           "stem.vocals": "Vocals",
-          "stem.guitar": "Guitar",
           "stem.bass": "Bass",
           "stem.drums": "Drums",
-          "stem.piano": "Piano / Keys",
-          "stem.other": "Other",
+          "stem.other": "Other (guitar, keys…)",
           "stem.mix": "Mix",
-          "keys": "<kbd>Space</kbd> play / pause · <kbd>1</kbd>–<kbd>6</kbd> mute a part · <kbd>←</kbd> <kbd>→</kbd> 5 seconds back / forward",
+          "keys": "<kbd>Space</kbd> play / pause · <kbd>1</kbd>–<kbd>4</kbd> mute a part · <kbd>←</kbd> <kbd>→</kbd> 5 seconds back / forward",
           "foot": "Your song is separated on this device and never uploaded. No account needed.",
           "net.title.cellular": "You seem to be on mobile data",
           "net.title.saveData": "Data Saver is on",
@@ -467,16 +463,16 @@
           "err.worker": "This browser cannot run the separation. Use a recent version of Chrome, Edge, Safari, or Firefox.",
           "err.audio": "Sound could not be played in this browser.",
           "err.save": "The file could not be saved.",
-          "intro.title": "Split a band song into vocals, guitar, bass, drums, piano, and other",
-          "intro.body": "<p>Band Stem Mixer separates a song into <b>6 parts</b> with AI: vocals, guitar, bass, drums, piano (keys), and everything else. Choose an audio file such as MP3, WAV, or M4A and press “Separate into 6 parts”. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>\n        <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the guitar to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as a WAV file.</p>\n        <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 140 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>\n        <p>The model is Demucs (htdemucs_6s), an open-source music separation model. Like all such models it is not perfect: sounds can leak between parts, and the piano and guitar parts are less clean than vocals, drums, and bass. Free, with no sign-up and no ads.</p>",
+          "intro.title": "Split a band song into vocals, drums, bass, and other",
+          "intro.body": "<p>Band Stem Mixer separates a song into <b>4 parts</b> with AI: vocals, drums, bass, and other (guitar, keys, and everything else). Choose an audio file such as MP3, WAV, or M4A and press “Separate into 4 parts”. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>\n        <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the drums to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as a WAV file.</p>\n        <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 170 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>\n        <p>The model is Demucs (htdemucs), a music separation model by Meta. Like all such models it is not perfect: sounds can leak between parts. Guitar and keys are not split from each other; they come out together in “Other”. Free, with no sign-up and no ads.</p>",
           "menu.help": "How to use",
           "menu.privacy": "Privacy",
           "menu.about": "About",
           "menu.reset": "Delete saved data",
-          "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Press “Separate into 6 parts”. The first time, the AI model (about 140 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as a WAV file. “Save this mix (WAV)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the WAV files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
-          "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read and separated only in your browser. It is never sent to a server. Saving WAV files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime library from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume, GPU setting), and the app itself (to work offline) are saved in your browser. Delete them with ⚙ → “Delete saved data”, or by clearing this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\">privacy policy</a> and <a href=\"/bandstemmixer/about/\">about this site</a>.</li>",
+          "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as a WAV file. “Save this mix (WAV)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the WAV files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
+          "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read and separated only in your browser. It is never sent to a server. Saving WAV files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Delete them with ⚙ → “Delete saved data”, or by clearing this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\">privacy policy</a> and <a href=\"/bandstemmixer/about/\">about this site</a>.</li>",
           "reset.title": "Delete saved data?",
-          "reset.body": "This deletes the downloaded AI model (about 140 MB) and the mixer settings from this browser. The model is downloaded again the next time you separate a song.",
+          "reset.body": "This deletes the downloaded AI model (about 170 MB) and the mixer settings from this browser. The model is downloaded again the next time you separate a song.",
           "reset.ok": "Delete",
           "reset.done": "Deleted the AI model and settings.",
           "about.license": "© 2026 ktkwmr · Licensed under the <a href=\"https://github.com/ktkwmr/BandStemMixer/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT License</a> · <a href=\"/bandstemmixer/about/\">About this site</a>",
@@ -492,7 +488,7 @@
           "file.meta": "{time} · {ch}",
           "file.mono": "モノラル",
           "file.stereo": "ステレオ",
-          "run": "6 つのパートに分離する",
+          "run": "4 つのパートに分離する",
           "run.again": "もう一度分離する",
           "cancel": "キャンセル",
           "close": "閉じる",
@@ -501,11 +497,10 @@
           "model.missing": "AI モデル（約 {mb} MB）は、最初に分離するときにダウンロードして、この端末に保存します。",
           "model.ready": "AI モデルはこの端末に保存済みです。ダウンロードは不要です。",
           "model.nocache": "このブラウザでは AI モデルを保存できないため、毎回ダウンロードします（約 {mb} MB）。",
-          "gpu": "GPU を使う（WebGPU・試験的）。パソコンでは速くなることがあります。分離に失敗するときはオフにしてください。",
           "stage.download": "AI モデルをダウンロードしています…",
           "stage.lib": "分離のプログラムを読み込んでいます…",
           "stage.init": "AI モデルを準備しています…",
-          "stage.separate": "6 つのパートに分離しています…",
+          "stage.separate": "4 つのパートに分離しています…",
           "stage.retry": "うまくいかなかったので、メモリを節約する設定でやり直しています…",
           "where.download": "AI モデルのダウンロード中",
           "where.init": "AI モデルの読み込み中",
@@ -523,7 +518,7 @@
           "done": "{time} で分離しました。再生してください。",
           "canceled": "分離をキャンセルしました。",
           "mixer": "ミキサー",
-          "empty": "曲を選んで分離すると、ボーカル・ギター・ベース・ドラム・ピアノ・その他がここに並び、それぞれの音量を変えられます。",
+          "empty": "曲を選んで分離すると、ボーカル・ベース・ドラム・その他（ギター・鍵盤など）がここに並び、それぞれの音量を変えられます。",
           "play": "再生",
           "pause": "一時停止",
           "position": "再生位置",
@@ -538,13 +533,11 @@
           "saved": "{file} を保存しました。",
           "save.preview": "このプレビューでは WAV ファイルを保存できません。",
           "stem.vocals": "ボーカル",
-          "stem.guitar": "ギター",
           "stem.bass": "ベース",
           "stem.drums": "ドラム",
-          "stem.piano": "ピアノ・キーボード",
-          "stem.other": "その他",
+          "stem.other": "その他（ギター・鍵盤など）",
           "stem.mix": "ミックス",
-          "keys": "<kbd>Space</kbd> 再生・一時停止 · <kbd>1</kbd>〜<kbd>6</kbd> パートのミュート · <kbd>←</kbd> <kbd>→</kbd> 5 秒戻る・進む",
+          "keys": "<kbd>Space</kbd> 再生・一時停止 · <kbd>1</kbd>〜<kbd>4</kbd> パートのミュート · <kbd>←</kbd> <kbd>→</kbd> 5 秒戻る・進む",
           "foot": "曲はこの端末の中で分離し、どこにもアップロードしません。登録も不要です。",
           "net.title.cellular": "モバイルデータ通信に接続しているようです",
           "net.title.saveData": "データセーバーがオンになっています",
@@ -564,16 +557,16 @@
           "err.worker": "このブラウザでは分離できません。新しいバージョンの Chrome・Edge・Safari・Firefox をお使いください。",
           "err.audio": "このブラウザでは音を再生できませんでした。",
           "err.save": "ファイルを保存できませんでした。",
-          "intro.title": "バンドの曲をボーカル・ギター・ベース・ドラム・ピアノ・その他に分離",
-          "intro.body": "<p>Band Stem Mixer は、AI で曲を <b>6 つのパート</b>（ボーカル・ギター・ベース・ドラム・ピアノ（キーボード）・その他）に分離する無料の Web アプリです。MP3・WAV・M4A などの音声ファイルを選んで「6 つのパートに分離する」を押すだけ。パートごとに音量のフェーダーとミュート（M）・ソロ（S）があり、ぴったりそろって再生されます。</p>\n        <p>バンド練習に使えます。自分のパートだけミュートして残りの演奏に合わせて弾く（マイナスワン音源・カラオケ音源）、ベースやギターだけをソロにしてフレーズを耳コピする、ボーカルを消してカラオケにする、など。各パートと、自分で作ったミックスは WAV ファイルで保存できます。</p>\n        <p>分離は<b>ブラウザの中</b>で行い、曲はどこにもアップロードしません。初回だけ AI モデル（約 140 MB、次回のために端末に保存）をダウンロードするので、Wi-Fi でお使いください。モバイルデータ通信のときは、ダウンロードの前に確認を表示します。分離には時間がかかります。最近のパソコンで曲の長さと同じか数倍、スマホではさらにかかります。</p>\n        <p>AI モデルには、オープンソースの音源分離モデル Demucs（htdemucs_6s）を使っています。ほかの分離ツールと同じく完璧ではなく、パートの間で音が混ざることがあり、ピアノとギターはボーカル・ドラム・ベースより分離の精度が落ちます。無料・登録不要・広告なし。</p>",
+          "intro.title": "バンドの曲をボーカル・ドラム・ベース・その他に分離",
+          "intro.body": "<p>Band Stem Mixer は、AI で曲を <b>4 つのパート</b>（ボーカル・ドラム・ベース・その他（ギター・鍵盤など））に分離する無料の Web アプリです。MP3・WAV・M4A などの音声ファイルを選んで「4 つのパートに分離する」を押すだけ。パートごとに音量のフェーダーとミュート（M）・ソロ（S）があり、ぴったりそろって再生されます。</p>\n        <p>バンド練習に使えます。自分のパートだけミュートして残りの演奏に合わせて弾く（マイナスワン音源・カラオケ音源）、ベースやドラムだけをソロにしてフレーズを耳コピする、ボーカルを消してカラオケにする、など。各パートと、自分で作ったミックスは WAV ファイルで保存できます。</p>\n        <p>分離は<b>ブラウザの中</b>で行い、曲はどこにもアップロードしません。初回だけ AI モデル（約 170 MB、次回のために端末に保存）をダウンロードするので、Wi-Fi でお使いください。モバイルデータ通信のときは、ダウンロードの前に確認を表示します。分離には時間がかかります。最近のパソコンで曲の長さと同じか数倍、スマホではさらにかかります。</p>\n        <p>AI モデルには、Meta の音源分離モデル Demucs（htdemucs）を使っています。ほかの分離ツールと同じく完璧ではなく、パートの間で音が混ざることがあります。ギターと鍵盤は分かれず、「その他」にまとめて入ります。無料・登録不要・広告なし。</p>",
           "menu.help": "使い方",
           "menu.privacy": "プライバシー",
           "menu.about": "このアプリについて",
           "menu.reset": "保存した情報を削除",
-          "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – 「6 つのパートに分離する」を押します。初回は AI モデル（約 140 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを WAV ファイルに保存します。「このミックスを保存（WAV）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した WAV ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
-          "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込みと分離は、ブラウザの中だけで行います。サーバーに送られることはありません。WAV ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime のライブラリをダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量・GPU の設定）、オフラインで使うためのアプリ本体を、ブラウザに保存します。⚙ →「保存した情報を削除」か、ブラウザの設定でこのサイトのデータを削除すると消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\">運営者情報</a>をご覧ください。</li>",
+          "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – 「4 つのパートに分離する」を押します。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを WAV ファイルに保存します。「このミックスを保存（WAV）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した WAV ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
+          "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込みと分離は、ブラウザの中だけで行います。サーバーに送られることはありません。WAV ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリをダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。⚙ →「保存した情報を削除」か、ブラウザの設定でこのサイトのデータを削除すると消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\">運営者情報</a>をご覧ください。</li>",
           "reset.title": "保存した情報を削除しますか？",
-          "reset.body": "このブラウザから、ダウンロードした AI モデル（約 140 MB）とミキサーの設定を削除します。次に分離するときに、AI モデルをもう一度ダウンロードします。",
+          "reset.body": "このブラウザから、ダウンロードした AI モデル（約 170 MB）とミキサーの設定を削除します。次に分離するときに、AI モデルをもう一度ダウンロードします。",
           "reset.ok": "削除する",
           "reset.done": "AI モデルと設定を削除しました。",
           "about.license": "© 2026 ktkwmr · <a href=\"https://github.com/ktkwmr/BandStemMixer/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT ライセンス</a> · <a href=\"/bandstemmixer/ja/about/\">運営者情報</a>",
@@ -628,20 +621,19 @@
 
       // ---------- Model and parts ----------
       // Keep MODEL_URL / MODEL_CACHE in sync with separator.js
-      const MODEL_URL = "https://huggingface.co/StemSplitio/htdemucs-6s-onnx/resolve/main/htdemucs_6s_fp16weights.onnx";
-      const MODEL_CACHE = "bandstemmixer-model-v1";
-      const MODEL_MB = 140;
-      // ONNX Runtime's WebAssembly file: CPU build / WebGPU build
+      const MODEL_URL = "https://huggingface.co/timcsy/demucs-web-onnx/resolve/main/htdemucs_embedded.onnx";
+      const MODEL_CACHE = "bandstemmixer-model-v2";
+      const MODEL_MB = 172;
+      // ONNX Runtime's WebAssembly file: CPU build / WebGPU build (used when the browser has WebGPU)
       const ENGINE_MB = { cpu: 14, gpu: 27 };
+      const HAS_GPU = "gpu" in navigator;
       const SR = 44100;
       const MAX_SEC = 12 * 60;
-      // Display order (a band's usual order). idx = the model's output order: drums, bass, other, vocals, guitar, piano
+      // Display order (a band's usual order). idx = the model's output order: drums, bass, other, vocals
       const PARTS = [
         { key: "vocals", idx: 3 },
-        { key: "guitar", idx: 4 },
         { key: "bass", idx: 1 },
         { key: "drums", idx: 0 },
-        { key: "piano", idx: 5 },
         { key: "other", idx: 2 }
       ];
 
@@ -651,7 +643,7 @@
       function freshState() {
         const parts = {};
         PARTS.forEach(function (p) { parts[p.key] = { vol: 1, mute: false }; });
-        return { v: 1, master: 1, gpu: false, parts: parts };
+        return { v: 1, master: 1, parts: parts };
       }
       const clampVol = (v, max) => (typeof v === "number" && isFinite(v) ? Math.max(0, Math.min(max, v)) : 1);
       let store = (function () {
@@ -660,7 +652,6 @@
           const o = JSON.parse(localStorage.getItem(STATE_KEY) || "null");
           if (o && o.v === 1) {
             s.master = clampVol(o.master, 1.5);
-            s.gpu = o.gpu === true;
             PARTS.forEach(function (p) {
               const x = o.parts && o.parts[p.key];
               if (x) s.parts[p.key] = { vol: clampVol(x.vol, 1.5), mute: x.mute === true };
@@ -729,7 +720,7 @@
         const dlg = $("netDlg");
         $("netTitle").textContent = t("net.title." + risk);
         $("netBody").textContent = t("net.body." + risk);
-        $("netSize").textContent = t("net.size", { mb: MODEL_MB + (store.gpu ? ENGINE_MB.gpu : ENGINE_MB.cpu) });
+        $("netSize").textContent = t("net.size", { mb: MODEL_MB + (HAS_GPU ? ENGINE_MB.gpu : ENGINE_MB.cpu) });
         return new Promise(function (resolve) {
           let ok = false;
           function finish() {
@@ -876,7 +867,7 @@
         setBusy(true);
         startedAt = Date.now();
         setProgress(t(modelCached ? "stage.lib" : "stage.download"), "", null);
-        attempt({ gpu: store.gpu, safe: false });
+        attempt({ gpu: HAS_GPU, safe: false });
       }
 
       // One try in its own worker. If loading or running the model fails, it is tried once more in a
@@ -996,7 +987,7 @@
       }
 
       function gainsOf() {
-        const g = new Array(6).fill(0);
+        const g = new Array(PARTS.length).fill(0);
         PARTS.forEach(function (p) {
           const st = store.parts[p.key];
           const on = solo.size ? solo.has(p.key) : !st.mute;
@@ -1133,9 +1124,7 @@
       });
       $("master").addEventListener("change", saveState);
       $("resetMix").addEventListener("click", function () {
-        const gpu = store.gpu;
         store = freshState();
-        store.gpu = gpu;
         solo.clear();
         saveState(); renderStrips(); sendGains();
         toast(t("mix.reset.done"));
@@ -1162,7 +1151,7 @@
         const out = new Int16Array(buf, 44);
         for (let i = 0, j = 0; i < n; i++, j += 2) {
           let l = 0, r = 0;
-          for (let s = 0; s < 6; s++) {
+          for (let s = 0; s < g.length; s++) {
             if (!g[s]) continue;
             l += stems[s][0][i] * g[s];
             r += stems[s][1][i] * g[s];
@@ -1220,16 +1209,6 @@
       }
       $("saveMix").addEventListener("click", function () { saveWav("mix"); });
 
-      // ---------- GPU option ----------
-      if ("gpu" in navigator) {
-        $("gpuRow").hidden = false;
-        $("gpuOpt").checked = store.gpu;
-        $("gpuOpt").addEventListener("change", function () {
-          store.gpu = $("gpuOpt").checked;
-          saveState();
-        });
-      }
-
       // ---------- Keyboard ----------
       document.addEventListener("keydown", function (e) {
         if (!stems || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -1240,7 +1219,7 @@
         if (e.key === " " && tag !== "BUTTON") {
           e.preventDefault();
           togglePlay();
-        } else if (/^[1-6]$/.test(e.key)) {
+        } else if (/^[1-4]$/.test(e.key)) {
           const p = PARTS[Number(e.key) - 1];
           store.parts[p.key].mute = !store.parts[p.key].mute;
           saveState(); renderStrips(); sendGains();
@@ -1339,7 +1318,6 @@
         try { await caches.delete(MODEL_CACHE); } catch (e) {}
         store = freshState();
         solo.clear();
-        $("gpuOpt").checked = false;
         renderStrips(); sendGains();
         resetDlg.close();
         await checkModel();

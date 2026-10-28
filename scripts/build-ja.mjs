@@ -32,11 +32,11 @@ const BASE_URL = "https://ktkwmr.com/bandstemmixer/";
 const JA_URL = BASE_URL + "ja/";
 
 // Japanese text for search results and social media shares
-const TITLE = "バンドの曲を6パートに分離｜ボーカル・ギター・ベース・ドラム抽出の無料AIツール – Band Stem Mixer";
-const DESCRIPTION = "バンドの曲をAIでボーカル・ギター・ベース・ドラム・ピアノ・その他の6パートに分離する無料ツール。パートごとにミュート・ソロ・音量調整ができ、自分のパートを消したマイナスワン音源やカラオケ音源、耳コピに使えます。各パートはWAVで保存。ブラウザの中で処理するので曲はアップロードしません。登録不要。";
-const OG_DESCRIPTION = "AIで曲をボーカル・ギター・ベース・ドラム・ピアノ・その他に分離し、パートごとにミュート・ソロして練習できます。無料・アップロードなし・登録不要。";
-const OG_IMAGE_ALT = "Band Stem Mixer：ボーカル・ギター・ベース・ドラム・ピアノ・その他の6本のフェーダー（ギターをミュート）";
-const LD_DESCRIPTION = "バンドの曲をAIで6パート（ボーカル・ギター・ベース・ドラム・ピアノ・その他）に端末の中で分離し、ミュート・ソロ・ミックスやWAV保存ができるWebアプリ。";
+const TITLE = "バンドの曲をボーカル・ドラム・ベース・その他に分離｜無料のAIパート分離ツール – Band Stem Mixer";
+const DESCRIPTION = "バンドの曲をAIでボーカル・ドラム・ベース・その他（ギター・鍵盤など）の4パートに分離する無料ツール。パートごとにミュート・ソロ・音量調整ができ、自分のパートを消したマイナスワン音源やカラオケ音源、耳コピに使えます。各パートはWAVで保存。ブラウザの中で処理するので曲はアップロードしません。登録不要。";
+const OG_DESCRIPTION = "AIで曲をボーカル・ドラム・ベース・その他に分離し、パートごとにミュート・ソロして練習できます。無料・アップロードなし・登録不要。";
+const OG_IMAGE_ALT = "Band Stem Mixer：ボーカル・ベース・ドラム・その他の4本のフェーダー（ベースをミュート）";
+const LD_DESCRIPTION = "バンドの曲をAIで4パート（ボーカル・ドラム・ベース・その他）に端末の中で分離し、ミュート・ソロ・ミックスやWAV保存ができるWebアプリ。";
 
 const escapeAttr = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 const escapeText = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");

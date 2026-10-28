@@ -36,7 +36,7 @@ export default {
 <h2 id="storage">2. Data saved in your browser</h2>
 <p>The following data is saved in your browser's storage on your device. It is not sent to us.</p>
 <ul>
-  <li><b>The AI model:</b> the model file (about 140 MB) downloaded the first time you separate a song, so it is not downloaded again.</li>
+  <li><b>The AI model:</b> the model file (about 170 MB) downloaded the first time you separate a song, so it is not downloaded again.</li>
   <li><b>Mixer settings:</b> the level and mute of each part, the master volume, and whether the GPU is used.</li>
   <li><b>App files:</b> the pages and files of this site and the ONNX Runtime library, so the app works offline.</li>
 </ul>
@@ -50,8 +50,8 @@ export default {
     <tbody>
       <tr><th scope="row"><a href="${CLOUDFLARE}" rel="noopener">Cloudflare</a> (Cloudflare, Inc.)</th><td data-label="When:">Every page and file request</td><td data-label="Information sent:">IP address, browser information (user agent), requested URL, date and time</td><td data-label="Purpose:">Hosting this site, security, and access logs for operation</td></tr>
       <tr><th scope="row"><a href="${CLOUDFLARE}" rel="noopener">Cloudflare Web Analytics</a> (Cloudflare, Inc.)</th><td data-label="When:">Every page view</td><td data-label="Information sent:">IP address, browser information (user agent), the URL of the page, referrer, page load time. No cookies are used.</td><td data-label="Purpose:">Counting page views (see "Analytics" below)</td></tr>
-      <tr><th scope="row"><a href="${HUGGINGFACE}" rel="noopener">Hugging Face</a> (Hugging Face, Inc.)</th><td data-label="When:">The first time you separate a song (until the model is saved in your browser)</td><td data-label="Information sent:">IP address, browser information (user agent), the URL of the model file, date and time. Nothing about your song is sent.</td><td data-label="Purpose:">Downloading the AI model (htdemucs_6s)</td></tr>
-      <tr><th scope="row"><a href="${JSDELIVR}" rel="noopener">jsDelivr</a> (a CDN run by Prospect One and its partners)</th><td data-label="When:">When you separate a song (until the library is saved in your browser)</td><td data-label="Information sent:">IP address, browser information (user agent), the URL of the library file, the page that requested it (referrer), date and time</td><td data-label="Purpose:">Downloading ONNX Runtime Web, the library that runs the AI model</td></tr>
+      <tr><th scope="row"><a href="${HUGGINGFACE}" rel="noopener">Hugging Face</a> (Hugging Face, Inc.)</th><td data-label="When:">The first time you separate a song (until the model is saved in your browser)</td><td data-label="Information sent:">IP address, browser information (user agent), the URL of the model file, date and time. Nothing about your song is sent.</td><td data-label="Purpose:">Downloading the AI model (Demucs htdemucs)</td></tr>
+      <tr><th scope="row"><a href="${JSDELIVR}" rel="noopener">jsDelivr</a> (a CDN run by Prospect One and its partners)</th><td data-label="When:">When you separate a song (until the library is saved in your browser)</td><td data-label="Information sent:">IP address, browser information (user agent), the URL of the library file, the page that requested it (referrer), date and time</td><td data-label="Purpose:">Downloading ONNX Runtime Web, the library that runs the AI model, and demucs-web, which prepares the audio for it</td></tr>
     </tbody>
   </table>
 </div>
@@ -99,7 +99,7 @@ export default {
 <h2 id="storage">2. ブラウザに保存するデータ</h2>
 <p>次のデータを、お使いの端末のブラウザ内に保存します。運営者に送られることはありません。</p>
 <ul>
-  <li><b>AI モデル：</b>次から再びダウンロードしなくて済むよう、初めて分離したときにダウンロードしたモデルのファイル（約 140 MB）を保存します。</li>
+  <li><b>AI モデル：</b>次から再びダウンロードしなくて済むよう、初めて分離したときにダウンロードしたモデルのファイル（約 170 MB）を保存します。</li>
   <li><b>ミキサーの設定：</b>各パートの音量とミュート、全体の音量、GPU を使うかどうか。</li>
   <li><b>アプリのファイル：</b>オフラインでも使えるよう、本サイトのページやファイルと ONNX Runtime のライブラリを保存します。</li>
 </ul>
@@ -113,8 +113,8 @@ export default {
     <tbody>
       <tr><th scope="row"><a href="${CLOUDFLARE}" rel="noopener">Cloudflare</a>（Cloudflare, Inc.）</th><td data-label="タイミング：">すべてのページ・ファイルの読み込み時</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、アクセスした URL、日時</td><td data-label="利用目的：">本サイトの配信、セキュリティの確保、運用のためのアクセスログ</td></tr>
       <tr><th scope="row"><a href="${CLOUDFLARE}" rel="noopener">Cloudflare Web Analytics</a>（Cloudflare, Inc.）</th><td data-label="タイミング：">ページを開いたとき</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、閲覧したページの URL、参照元、ページの表示速度。Cookie は使いません。</td><td data-label="利用目的：">ページの閲覧数の集計（「アクセス解析」の項目を参照）</td></tr>
-      <tr><th scope="row"><a href="${HUGGINGFACE}" rel="noopener">Hugging Face</a>（Hugging Face, Inc.）</th><td data-label="タイミング：">初めて曲を分離するとき（モデルがブラウザに保存されるまで）</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、モデルのファイルの URL、日時。曲の情報は送りません。</td><td data-label="利用目的：">AI モデル（htdemucs_6s）のダウンロード</td></tr>
-      <tr><th scope="row"><a href="${JSDELIVR}" rel="noopener">jsDelivr</a>（Prospect One とそのパートナーが運営する CDN）</th><td data-label="タイミング：">曲を分離するとき（ライブラリがブラウザに保存されるまで）</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、ライブラリのファイルの URL、読み込んだページ（参照元）、日時</td><td data-label="利用目的：">AI モデルを動かすライブラリ ONNX Runtime Web のダウンロード</td></tr>
+      <tr><th scope="row"><a href="${HUGGINGFACE}" rel="noopener">Hugging Face</a>（Hugging Face, Inc.）</th><td data-label="タイミング：">初めて曲を分離するとき（モデルがブラウザに保存されるまで）</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、モデルのファイルの URL、日時。曲の情報は送りません。</td><td data-label="利用目的：">AI モデル（Demucs htdemucs）のダウンロード</td></tr>
+      <tr><th scope="row"><a href="${JSDELIVR}" rel="noopener">jsDelivr</a>（Prospect One とそのパートナーが運営する CDN）</th><td data-label="タイミング：">曲を分離するとき（ライブラリがブラウザに保存されるまで）</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、ライブラリのファイルの URL、読み込んだページ（参照元）、日時</td><td data-label="利用目的：">AI モデルを動かすライブラリ ONNX Runtime Web と、音声をモデル用に変換する demucs-web のダウンロード</td></tr>
     </tbody>
   </table>
 </div>

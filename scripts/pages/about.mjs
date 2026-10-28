@@ -18,7 +18,7 @@ export default {
       <tr><th scope="row">Site name</th><td>Band Stem Mixer</td></tr>
       <tr><th scope="row">URL</th><td><a href="/bandstemmixer/">https://ktkwmr.com/bandstemmixer/</a></td></tr>
       <tr><th scope="row">Operator</th><td>ktkwmr (individual developer)</td></tr>
-      <tr><th scope="row">What we offer</th><td>A free web app that separates a band song into 6 parts (vocals, guitar, bass, drums, piano, other) with AI on your device, and mixes them for practice</td></tr>
+      <tr><th scope="row">What we offer</th><td>A free, non-commercial web app that separates a band song into 4 parts (vocals, drums, bass, and other) with AI on your device, and mixes them for practice</td></tr>
       <tr><th scope="row">Contact</th><td><a href="${ISSUES}" rel="noopener">GitHub Issues</a></td></tr>
     </tbody>
   </table>
@@ -40,7 +40,8 @@ export default {
 
 <h2 id="copyright">Copyright</h2>
 <ul>
-  <li>The app's source code is published under the <a href="${REPO}/blob/main/LICENSE" rel="noopener">MIT License</a>. The AI model (Demucs htdemucs_6s, MIT License) and the libraries used by the app are listed under Settings → About in the app.</li>
+  <li>The app's source code is published under the <a href="${REPO}/blob/main/LICENSE" rel="noopener">MIT License</a>. The libraries used by the app are listed under Settings → About in the app.</li>
+  <li>The AI model is Demucs (htdemucs) by Meta. Its code is MIT-licensed, but its trained weights are not: Meta provides them for scientific purposes only. This site therefore runs without ads or paid features. The model file is downloaded from Hugging Face when you separate a song; this site does not redistribute it.</li>
   <li>The text and images on this site are © 2026 ktkwmr.</li>
 </ul>
 
@@ -60,7 +61,7 @@ export default {
       <tr><th scope="row">サイト名</th><td>Band Stem Mixer</td></tr>
       <tr><th scope="row">URL</th><td><a href="/bandstemmixer/ja/">https://ktkwmr.com/bandstemmixer/ja/</a></td></tr>
       <tr><th scope="row">運営者</th><td>ktkwmr（個人開発者）</td></tr>
-      <tr><th scope="row">内容</th><td>バンドの曲を AI で端末の中で 6 つのパート（ボーカル・ギター・ベース・ドラム・ピアノ・その他）に分離し、練習用にミックスできる無料の Web アプリ</td></tr>
+      <tr><th scope="row">内容</th><td>バンドの曲を AI で端末の中で 4 つのパート（ボーカル・ドラム・ベース・その他）に分離し、練習用にミックスできる、無料・非営利の Web アプリ</td></tr>
       <tr><th scope="row">お問い合わせ</th><td><a href="${ISSUES}" rel="noopener">GitHub の Issues</a></td></tr>
     </tbody>
   </table>
@@ -82,7 +83,8 @@ export default {
 
 <h2 id="copyright">著作権</h2>
 <ul>
-  <li>アプリのソースコードは <a href="${REPO}/blob/main/LICENSE" rel="noopener">MIT ライセンス</a>で公開しています。AI モデル（Demucs htdemucs_6s、MIT ライセンス）とアプリが使用しているライブラリは、アプリの「設定 → このアプリについて」に掲載しています。</li>
+  <li>アプリのソースコードは <a href="${REPO}/blob/main/LICENSE" rel="noopener">MIT ライセンス</a>で公開しています。アプリが使用しているライブラリは、アプリの「設定 → このアプリについて」に掲載しています。</li>
+  <li>AI モデルは Meta の Demucs（htdemucs）です。コードは MIT ライセンスですが、学習済みの重みは MIT の対象外で、Meta は科学研究目的に限って提供しています。そのため本サイトは広告や有料機能のない非営利のサイトとして運営しています。モデルのファイルは分離のときに Hugging Face からダウンロードされ、本サイトが再配布することはありません。</li>
   <li>本サイトの文章と画像の著作権は ktkwmr に帰属します（© 2026 ktkwmr）。</li>
 </ul>
 

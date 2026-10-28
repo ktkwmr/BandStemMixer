@@ -1,7 +1,7 @@
 {
   "name": "Band Stem Mixer",
   "short_name": "Stem Mixer",
-  "description": "Split a band song into 6 parts (vocals, guitar, bass, drums, piano, other) and mix them in your browser. バンドの曲を6つのパートに分離してミックスするWebアプリ",
+  "description": "Split a band song into 4 parts (vocals, drums, bass, other) and mix them in your browser. バンドの曲を4つのパートに分離してミックスするWebアプリ",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
