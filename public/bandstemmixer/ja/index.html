@@ -405,6 +405,10 @@
           "stage.lib": "Loading the separation engine…",
           "stage.init": "Preparing the AI model…",
           "stage.separate": "Separating into 6 parts…",
+          "stage.retry": "That did not work. Trying again with settings that use less memory…",
+          "where.download": "while downloading the AI model",
+          "where.init": "while loading the AI model",
+          "where.separate": "while separating",
           "detail.download": "{loaded} / {total} MB",
           "detail.downloadNoTotal": "{loaded} MB",
           "detail.separate": "{done} / {chunks} ({pct}%)",
@@ -413,6 +417,7 @@
           "eta.sec": "{n} s",
           "backend.wasm": "CPU · {n} threads",
           "backend.wasm1": "CPU · 1 thread",
+          "backend.safe": "CPU · memory-saving mode",
           "backend.webgpu": "GPU (WebGPU)",
           "done": "Done in {time}. Press play.",
           "canceled": "Separation canceled.",
@@ -453,8 +458,8 @@
           "err.tooLong": "Songs up to 12 minutes can be separated. This one is {time}. Cut it shorter and try again.",
           "err.offline": "You are offline. The AI model needs to be downloaded the first time; connect to the internet and try again.",
           "err.download": "The AI model could not be downloaded. Check your connection and try again.",
-          "err.memory": "This device ran out of memory. Close other tabs and apps, try a shorter song, or use a computer.",
-          "err.run": "Separation failed ({msg}). Reload the page and try again. If GPU is on, turn it off.",
+          "err.memory": "This device ran out of memory {where}. Close other tabs and apps, try a shorter song, or use a computer.",
+          "err.run": "Separation failed {where} ({msg}). Close other tabs and apps, reload the page, and try again.",
           "err.worker": "This browser cannot run the separation. Use a recent version of Chrome, Edge, Safari, or Firefox.",
           "err.audio": "Sound could not be played in this browser.",
           "err.save": "The file could not be saved.",
@@ -497,6 +502,10 @@
           "stage.lib": "分離のプログラムを読み込んでいます…",
           "stage.init": "AI モデルを準備しています…",
           "stage.separate": "6 つのパートに分離しています…",
+          "stage.retry": "うまくいかなかったので、メモリを節約する設定でやり直しています…",
+          "where.download": "AI モデルのダウンロード中",
+          "where.init": "AI モデルの読み込み中",
+          "where.separate": "分離の途中",
           "detail.download": "{loaded} / {total} MB",
           "detail.downloadNoTotal": "{loaded} MB",
           "detail.separate": "{done} / {chunks}（{pct}%）",
@@ -505,6 +514,7 @@
           "eta.sec": "{n} 秒",
           "backend.wasm": "CPU · {n} スレッド",
           "backend.wasm1": "CPU · 1 スレッド",
+          "backend.safe": "CPU · メモリ節約モード",
           "backend.webgpu": "GPU（WebGPU）",
           "done": "{time} で分離しました。再生してください。",
           "canceled": "分離をキャンセルしました。",
@@ -545,8 +555,8 @@
           "err.tooLong": "分離できるのは 12 分までの曲です。この曲は {time} あります。短く切ってからお試しください。",
           "err.offline": "オフラインです。初回は AI モデルのダウンロードが必要です。インターネットに接続してからもう一度お試しください。",
           "err.download": "AI モデルをダウンロードできませんでした。接続を確認して、もう一度お試しください。",
-          "err.memory": "端末のメモリが足りなくなりました。ほかのタブやアプリを閉じるか、短い曲にするか、パソコンでお試しください。",
-          "err.run": "分離に失敗しました（{msg}）。ページを再読み込みして、もう一度お試しください。GPU がオンならオフにしてください。",
+          "err.memory": "{where}に端末のメモリが足りなくなりました。ほかのタブやアプリを閉じるか、短い曲にするか、パソコンでお試しください。",
+          "err.run": "{where}に分離に失敗しました（{msg}）。ほかのタブやアプリを閉じ、ページを再読み込みして、もう一度お試しください。",
           "err.worker": "このブラウザでは分離できません。新しいバージョンの Chrome・Edge・Safari・Firefox をお使いください。",
           "err.audio": "このブラウザでは音を再生できませんでした。",
           "err.save": "ファイルを保存できませんでした。",
@@ -858,21 +868,29 @@
         await checkModel();
         if (!modelCached && navigator.onLine === false) { showError(t("err.offline")); return; }
         if (!(await askNetwork())) return;
-        try {
-          worker = new Worker("separator.js", { type: "module" });
-        } catch (e) {
-          showError(t("err.worker"));
-          return;
-        }
         stopPlayback();
         setBusy(true);
         startedAt = Date.now();
         setProgress(t(modelCached ? "stage.lib" : "stage.download"), "", null);
+        attempt({ gpu: store.gpu, safe: false });
+      }
+
+      // One try in its own worker. If loading or running the model fails, it is tried once more in a
+      // fresh worker on the CPU with settings that need less memory (a failed ONNX Runtime backend
+      // cannot be restarted in the same worker).
+      function attempt(opts) {
+        try {
+          worker = new Worker("separator.js", { type: "module" });
+        } catch (e) {
+          setBusy(false);
+          showError(t("err.worker"));
+          return;
+        }
         worker.onmessage = function (e) {
           const m = e.data;
           if (m.type === "progress") onProgress(m);
           else if (m.type === "backend") {
-            $("backend").textContent = m.name === "webgpu" ? t("backend.webgpu") : m.threads > 1 ? t("backend.wasm", { n: m.threads }) : t("backend.wasm1");
+            $("backend").textContent = m.name === "webgpu" ? t("backend.webgpu") : m.safe ? t("backend.safe") : m.threads > 1 ? t("backend.wasm", { n: m.threads }) : t("backend.wasm1");
             checkModel();
           } else if (m.type === "done") {
             stopWorker();
@@ -882,9 +900,16 @@
             loadStems(m.stems);
           } else if (m.type === "error") {
             stopWorker();
+            console.error("Separation failed", opts, m);
+            if (!opts.safe && (m.code === "run" || m.code === "memory")) {
+              setProgress(t("stage.retry"), "", null);
+              attempt({ gpu: false, safe: true });
+              return;
+            }
             setBusy(false);
+            const where = t("where." + (m.stage || "separate"));
             const key = "err." + m.code;
-            showError(I18N.en[key] ? t(key, { msg: m.message }) : t("err.run", { msg: m.message }));
+            showError(I18N.en[key] ? t(key, { msg: m.message, where: where }) : t("err.run", { msg: m.message, where: where }));
             checkModel();
           }
         };
@@ -892,12 +917,13 @@
           stopWorker();
           setBusy(false);
           showError(t("err.worker"));
+          console.error("Separation worker error", e);
           if (e && e.preventDefault) e.preventDefault();
         };
-        // Copies, so the decoded song stays here for "Separate again" (left and right may be the same mono array)
+        // Copies, so the decoded song stays here for a retry or "Separate again" (left and right may be the same mono array)
         const left = new Float32Array(mix.left);
         const right = mix.right === mix.left ? left.slice() : new Float32Array(mix.right);
-        worker.postMessage({ type: "run", left: left, right: right, gpu: store.gpu }, [left.buffer, right.buffer]);
+        worker.postMessage({ type: "run", left: left, right: right, gpu: opts.gpu, safe: opts.safe }, [left.buffer, right.buffer]);
       }
       $("runBtn").addEventListener("click", run);
       $("cancelBtn").addEventListener("click", function () {

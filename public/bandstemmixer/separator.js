@@ -9,12 +9,12 @@
 // (the same overlap-add as demucs-onnx's inference.py).
 //
 // Messages from the page:
-//   { type: "run", left: Float32Array, right: Float32Array, gpu: boolean }  (44.1 kHz)
+//   { type: "run", left: Float32Array, right: Float32Array, gpu: boolean, safe: boolean }  (44.1 kHz)
 // Messages to the page:
 //   { type: "progress", stage: "lib" | "download" | "init" | "separate", loaded?, total?, done?, chunks?, elapsed? }
-//   { type: "backend", name: "webgpu" | "wasm", threads }
+//   { type: "backend", name: "webgpu" | "wasm", threads, safe }
 //   { type: "done", stems: [[Int16Array L, Int16Array R] x 6] }  (model order; shared memory when isolated)
-//   { type: "error", code: "offline" | "download" | "memory" | "run", message }
+//   { type: "error", code: "offline" | "download" | "memory" | "run", stage: "download" | "init" | "separate", message }
 
 // Keep these in sync with MODEL_URL / MODEL_CACHE in index.html and CDN in sw.js
 const ORT_BASE = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/";
@@ -87,27 +87,25 @@ async function downloadModel() {
   return bytes;
 }
 
-async function createSession(modelBytes, gpu) {
+// gpu: try WebGPU. safe: settings that need less memory (one thread, no memory arena or pre-planned
+// memory pattern, basic graph optimization), used when the normal settings failed.
+// A backend that failed to start cannot be retried in the same worker (ONNX Runtime keeps the failed
+// state), so the page starts a fresh worker for the safe attempt instead of falling back here.
+async function createSession(modelBytes, gpu, safe) {
   post({ type: "progress", stage: "lib" });
   // The WebGPU build includes the CPU (WebAssembly) backend too, but its .wasm file is about twice as large
   const ort = await import(ORT_BASE + (gpu ? "ort.webgpu.min.mjs" : "ort.wasm.min.mjs"));
   ort.env.wasm.wasmPaths = ORT_BASE;
   // Several threads only work on a cross-origin isolated page (COOP / COEP in public/_headers)
-  const threads = self.crossOriginIsolated ? Math.max(1, Math.min(8, (navigator.hardwareConcurrency || 4) - 1)) : 1;
+  const threads = safe || !self.crossOriginIsolated ? 1 : Math.max(1, Math.min(4, (navigator.hardwareConcurrency || 4) - 1));
   ort.env.wasm.numThreads = threads;
   post({ type: "progress", stage: "init" });
-  const opts = { graphOptimizationLevel: "all" };
-  if (gpu && "gpu" in navigator) {
-    try {
-      const session = await ort.InferenceSession.create(modelBytes, { ...opts, executionProviders: ["webgpu"] });
-      post({ type: "backend", name: "webgpu", threads });
-      return { ort, session };
-    } catch (e) {
-      // Falls back to the CPU below
-    }
-  }
-  const session = await ort.InferenceSession.create(modelBytes, { ...opts, executionProviders: ["wasm"] });
-  post({ type: "backend", name: "wasm", threads });
+  const opts = safe
+    ? { graphOptimizationLevel: "basic", enableCpuMemArena: false, enableMemPattern: false }
+    : { graphOptimizationLevel: "all" };
+  const ep = gpu && "gpu" in navigator ? "webgpu" : "wasm";
+  const session = await ort.InferenceSession.create(modelBytes, { ...opts, executionProviders: [ep] });
+  post({ type: "backend", name: ep, threads, safe: !!safe });
   return { ort, session };
 }
 
@@ -177,26 +175,30 @@ async function separate(ort, session, left, right) {
 self.onmessage = async (e) => {
   const msg = e.data;
   if (!msg || msg.type !== "run") return;
+  // Which step failed, for the error message: download / init (loading the model) / separate (running it)
+  let stage = "download";
   try {
     let model = await cachedModel();
     if (!model) {
       post({ type: "progress", stage: "download", loaded: 0, total: 0 });
       model = await downloadModel();
     }
+    stage = "init";
     let ort, session;
     try {
-      ({ ort, session } = await createSession(model, !!msg.gpu));
+      ({ ort, session } = await createSession(model, !!msg.gpu, !!msg.safe));
     } catch (err) {
       const text = String(err && err.message || err);
       throw Object.assign(new Error(text), { code: /memory|alloc|RangeError/i.test(text) ? "memory" : navigator.onLine === false ? "offline" : "run" });
     }
     model = null;
+    stage = "separate";
     const stems = await separate(ort, session, msg.left, msg.right);
     try { await session.release(); } catch (err) {}
     const transfer = stems.flatMap((s) => [s[0].buffer, s[1].buffer]).filter((b) => b instanceof ArrayBuffer);
     post({ type: "done", stems }, transfer);
   } catch (err) {
     const text = String(err && err.message || err);
-    post({ type: "error", code: err.code || (/memory|alloc/i.test(text) ? "memory" : "run"), message: text });
+    post({ type: "error", code: err.code || (/memory|alloc/i.test(text) ? "memory" : "run"), stage, message: text });
   }
 };
