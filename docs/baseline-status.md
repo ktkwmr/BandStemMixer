@@ -60,6 +60,7 @@
 | 11-4 | beacon の本番確認 | 👤 | COEP require-corp でも beacon（CORS のモジュールスクリプト）が 200 か確認 |
 | 12-1・12-2 | Actions | ✅ | |
 | 12-12 | Artifact で見せる | ✅ | 上の URL |
+| 12-13 | 人間がやる動作確認の方法 | ✅ | PC（`npx.cmd wrangler dev`）とスマホ（プレビュー URL）の手順と確認項目の表を、セッションで提示（ktkwmr/webapp-baseline#12 で追加した項目） |
 | 13・14 | 公開時・公開後 | 👤 | |
 
 ## 未確認（この環境から届かないもの）
