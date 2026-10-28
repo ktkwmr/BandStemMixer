@@ -36,7 +36,7 @@
 | 3-7 | インストールの案内 | ❌ | 任意 |
 | 3-8 | アイコンの生成 | ✅ | `scripts/render-icons.mjs` |
 | 3-9 | COEP とワーカーのスクリプト | ✅ | SW はネットワークの応答（元のヘッダー付き）をそのままキャッシュするので、2 回目以降も `separator.js`・`mixer.js` に COEP が付く。E2E で SW が制御する 2 回目の分離を確認 |
-| 3-10 | CDN のオフライン対応 | ✅ | `sw.js` の `CDN` に ONNX Runtime Web 1.22.0 の 6 ファイル。AI モデルは `separator.js` が `bandstemmixer-model-v1` に保存（`KEEP` で activate 時に消さない） |
+| 3-10 | CDN のオフライン対応 | ✅ | `sw.js` の `CDN` に ONNX Runtime Web 1.30.0 の 6 ファイル。AI モデルは `separator.js` が `bandstemmixer-model-v1` に保存（`KEEP` で activate 時に消さない） |
 | 4-1〜4-3 | I18N・言語の決め方・日本語ページの生成 | ✅ | |
 | 4-4 | 日本語の検索用タイトル・説明 | 👤 | `scripts/build-ja.mjs` 冒頭の案を確認 |
 | 4-7 | `<base>` と URL | ✅ | Worker・AudioWorklet・ライセンスはすべて相対 URL（`<base>` で解決）。E2E で `/ja/` の分離を確認 |
@@ -47,7 +47,7 @@
 | 7-1〜7-3 | プライバシー（アプリ内・ポリシー）・運営者情報 | ✅ | 外部送信に Hugging Face・jsDelivr を記載 |
 | 7-7 | ポリシーの外部リンクの確認 | 👤 | |
 | 8-1〜8-3 | THIRD_PARTY_LICENSES・Actions・About | ✅ | Demucs と demucs-onnx は手書き |
-| 8-4 | CDN のバージョン固定・遅延読み込み | ✅ | `onnxruntime-web@1.22.0`、分離を押したときだけ読む |
+| 8-4 | CDN のバージョン固定・遅延読み込み | ✅ | `onnxruntime-web@1.30.0`、分離を押したときだけ読む |
 | 9-1〜9-2 | 設定メニュー・使い方 | ⚠️ | ガイド記事がまだないので、メニューに記事へのリンクはない |
 | 9-3 | 状態の保存 | ✅ | ソロは保存しない（危ない状態） |
 | 9-4・9-5 | スマホ対応・`accept` | ✅ | |

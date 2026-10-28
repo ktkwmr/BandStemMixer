@@ -17,7 +17,7 @@
 //   { type: "error", code: "offline" | "download" | "memory" | "run", stage: "download" | "init" | "separate", message }
 
 // Keep these in sync with MODEL_URL / MODEL_CACHE in index.html and CDN in sw.js
-const ORT_BASE = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/";
+const ORT_BASE = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/";
 const MODEL_URL = "https://huggingface.co/StemSplitio/htdemucs-6s-onnx/resolve/main/htdemucs_6s_fp16weights.onnx";
 const MODEL_CACHE = "bandstemmixer-model-v1";
 

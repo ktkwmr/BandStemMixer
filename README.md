@@ -14,8 +14,8 @@ Split a band song into 6 parts with AI — vocals, guitar, bass, drums, piano, a
   パートごとのフェーダー・ミュート・ソロ、全体の音量、レベルメーター、シーク、キーボード操作。AudioWorklet でぴったりそろえて再生
 - **Save**: each part, or the current mix, as a 16-bit 44.1 kHz WAV
   各パートと現在のミックスを WAV（16 bit・44.1 kHz）で保存
-- **Large-download warning**: the first separation downloads the model (about 140 MB) plus the engine (about 11 MB). If the browser reports mobile data or Data Saver (`navigator.connection`, Chrome on Android), or cannot tell the connection type on a phone or tablet (iPhone, iPad, Firefox), the app asks before downloading. Once the model is saved, it does not ask again
-  初回は AI モデル（約 140 MB）と分離のプログラム（約 11 MB）をダウンロード。モバイルデータ通信・データセーバーのとき、またはスマホ・タブレットで接続の種類が分からないとき（iPhone・iPad・Firefox）は、ダウンロード前にダイアログで確認。モデルを保存したあとは確認しない
+- **Large-download warning**: the first separation downloads the model (about 140 MB) plus the engine (about 14 MB). If the browser reports mobile data or Data Saver (`navigator.connection`, Chrome on Android), or cannot tell the connection type on a phone or tablet (iPhone, iPad, Firefox), the app asks before downloading. Once the model is saved, it does not ask again
+  初回は AI モデル（約 140 MB）と分離のプログラム（約 14 MB）をダウンロード。モバイルデータ通信・データセーバーのとき、またはスマホ・タブレットで接続の種類が分からないとき（iPhone・iPad・Firefox）は、ダウンロード前にダイアログで確認。モデルを保存したあとは確認しない
 - The model is kept in Cache Storage (`bandstemmixer-model-v1`), so it is downloaded once. ⚙ → “Delete saved data” removes it
   モデルは Cache Storage に保存し、ダウンロードは 1 回だけ。⚙ →「保存した情報を削除」で消せる
 - Optional **GPU (WebGPU, experimental)**; on CPU it uses several threads when the page is cross-origin isolated

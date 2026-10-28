@@ -8,12 +8,12 @@ const KEEP = ["bandstemmixer-model-v1"];
 // Libraries loaded from a CDN with a pinned version (WEBAPP_BASELINE.md §3-10): the content of such a URL
 // never changes, so it is cached on first use and served from the cache, which makes it work offline.
 // Also add the host to connect-src in public/_headers. Leave empty when no CDN library is used.
-const ORT = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/";
+const ORT = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/";
 const CDN = [
   // CPU (WebAssembly) build
   ORT + "ort.wasm.min.mjs", ORT + "ort-wasm-simd-threaded.mjs", ORT + "ort-wasm-simd-threaded.wasm",
   // WebGPU build (only when "Use the GPU" is on)
-  ORT + "ort.webgpu.min.mjs", ORT + "ort-wasm-simd-threaded.jsep.mjs", ORT + "ort-wasm-simd-threaded.jsep.wasm",
+  ORT + "ort.webgpu.min.mjs", ORT + "ort-wasm-simd-threaded.asyncify.mjs", ORT + "ort-wasm-simd-threaded.asyncify.wasm",
 ];
 
 self.addEventListener("install", (event) => {
