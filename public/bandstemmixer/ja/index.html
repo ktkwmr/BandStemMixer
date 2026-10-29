@@ -69,7 +69,10 @@
     :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
     /* Toolbar */
-    .topbar { background: var(--paper); border-bottom: 1px solid var(--line); padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gr) 10px var(--gl); }
+    /* Sticky with an opaque background: iOS 26 Safari (and home-screen apps) blurs whatever is under the status
+       bar, unless a full-width fixed / sticky element with a background sits at the top edge; then it uses that
+       element's colour instead of the blur */
+    .topbar { position: sticky; top: 0; z-index: 900; background: var(--paper); border-bottom: 1px solid var(--line); padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gr) 10px var(--gl); }
     .toolbar { display: flex; align-items: center; gap: 12px 20px; }
     .brand { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; font-weight: 700; letter-spacing: .01em; white-space: nowrap; }
     .brand svg { width: 28px; height: 28px; flex: 0 0 auto; }
