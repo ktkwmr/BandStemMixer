@@ -95,8 +95,6 @@
     @media (max-width: 900px) { .layout { grid-template-columns: 1fr; min-height: 0; } }
     .panel { min-width: 0; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
     .panel.out { border-color: transparent; box-shadow: var(--paper-shadow); }
-    .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px 12px; min-height: 40px; padding: 0 6px 0 16px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 700; flex-wrap: wrap; }
-    .panel-head .sub { color: var(--subtle); font-weight: 600; font-size: 12px; padding-right: 10px; }
     .panel-body { padding: 14px 16px 18px; display: flex; flex-direction: column; gap: 16px; }
     .foot { color: var(--subtle); font-size: 12px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .foot svg { flex: 0 0 auto; }
@@ -239,8 +237,7 @@
 
   <main class="canvas">
     <div class="layout">
-      <section class="panel" aria-labelledby="songTitle">
-        <div class="panel-head"><span id="songTitle" data-i18n="song">Song</span></div>
+      <section class="panel" aria-label="Song" data-i18n-attr="aria-label:song">
         <div class="panel-body">
           <label class="drop" id="drop">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
@@ -268,11 +265,11 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
             <span id="modelState" data-i18n="model.checking">Checking the AI model…</span>
           </div>
+          <p class="hint" id="backend" hidden></p>
         </div>
       </section>
 
-      <section class="panel out" aria-labelledby="mixTitle">
-        <div class="panel-head"><span id="mixTitle" data-i18n="mixer">Mixer</span><span class="sub" id="backend"></span></div>
+      <section class="panel out" aria-label="Mixer" data-i18n-attr="aria-label:mixer">
         <div class="empty" id="empty">
           <div class="slots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
           <span data-i18n="empty">Choose a song and separate it. Vocals, bass, drums, and other (guitar, keys…) appear here, each with its own fader.</span>
@@ -443,6 +440,7 @@
           "backend.wasm1": "CPU · 1 thread",
           "backend.safe": "CPU · memory-saving mode · {n} threads",
           "backend.webgpu": "GPU (WebGPU)",
+          "backend.used": "Separating with: {name}",
           "done": "Done in {time}. Press play.",
           "canceled": "Separation canceled.",
           "mixer": "Mixer",
@@ -549,6 +547,7 @@
           "backend.wasm1": "CPU · 1 スレッド",
           "backend.safe": "CPU · メモリ節約モード · {n} スレッド",
           "backend.webgpu": "GPU（WebGPU）",
+          "backend.used": "分離に使っている設定：{name}",
           "done": "{time} で分離しました。再生してください。",
           "canceled": "分離をキャンセルしました。",
           "mixer": "ミキサー",
@@ -1008,7 +1007,8 @@
           const m = e.data;
           if (m.type === "progress") onProgress(m);
           else if (m.type === "backend") {
-            $("backend").textContent = m.name === "webgpu" ? t("backend.webgpu") : m.safe ? t("backend.safe", { n: m.threads }) : m.threads > 1 ? t("backend.wasm", { n: m.threads }) : t("backend.wasm1");
+            $("backend").textContent = t("backend.used", { name: m.name === "webgpu" ? t("backend.webgpu") : m.safe ? t("backend.safe", { n: m.threads }) : m.threads > 1 ? t("backend.wasm", { n: m.threads }) : t("backend.wasm1") });
+            $("backend").hidden = false;
             checkModel();
           } else if (m.type === "done") {
             stopWorker();
