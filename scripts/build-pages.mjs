@@ -24,8 +24,8 @@ import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { renderPage, ORIGIN, APP_PATH, PUBLISHED, pagePath } from "./pages/layout.mjs";
 
-// Articles, in footer order (none yet: add them when guides are written, WEBAPP_BASELINE.md §10)
-const PAGES = [];
+// Articles, in footer order (also listed in index.html: intro.body, and the top page ktkwmr/ktkwmr.com)
+const PAGES = ["guide", "minus-one", "learn-by-ear", "how-it-works", "better-results", "faq"];
 // Site information (operator and privacy policy)
 const INFO_PAGES = ["about", "privacy"];
 
