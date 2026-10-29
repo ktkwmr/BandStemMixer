@@ -105,6 +105,11 @@
     .intro h1 { margin: 0 0 10px; color: var(--ink); font-size: 20px; line-height: 1.4; }
     .intro p { margin: 0 0 10px; }
     .intro b { color: var(--ink); }
+    .intro h2 { margin: 18px 0 6px; color: var(--ink); font-size: 15px; }
+    .intro ul { margin: 0 0 10px; padding-left: 1.3em; }
+    .intro a { color: var(--ink); }
+    .help-more { margin: 14px 0 0; font-size: 14px; }
+    .help-more a { color: var(--ink); font-weight: 600; }
 
     /* Shared controls */
     .hint { font-size: 12px; color: var(--subtle); margin: 0; }
@@ -306,6 +311,15 @@
         <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the drums to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as an MP3 file.</p>
         <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 170 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>
         <p>The model is Demucs (htdemucs), a music separation model by Meta. Like all such models it is not perfect: sounds can leak between parts. Guitar and keys are not split from each other; they come out together in “Other”. Free, with no sign-up and no ads.</p>
+        <h2>Guides</h2>
+        <ul>
+          <li><a href="/bandstemmixer/guide/">How to use Band Stem Mixer</a></li>
+          <li><a href="/bandstemmixer/minus-one/">Practicing with your part removed: making a minus-one track</a></li>
+          <li><a href="/bandstemmixer/learn-by-ear/">Hearing the bass and drums clearly: learning parts by ear with solo</a></li>
+          <li><a href="/bandstemmixer/how-it-works/">How AI music separation works, and why it is not perfect</a></li>
+          <li><a href="/bandstemmixer/better-results/">How to get better separation</a></li>
+          <li><a href="/bandstemmixer/faq/">Frequently asked questions</a></li>
+        </ul>
       </div>
     </section>
   </main>
@@ -332,6 +346,7 @@
         <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>
         <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>
       </ol>
+      <p class="help-more"><a href="/bandstemmixer/guide/" data-i18n="help.more" data-i18n-attr="href:guide.url">Read the full guide →</a></p>
     </div>
     <div class="dlg-actions">
       <button class="primary" id="helpClose" type="button" data-i18n="close">Close</button>
@@ -359,6 +374,7 @@
 
   <div class="menu" id="settingsMenu" role="menu" aria-label="Settings" data-i18n-attr="aria-label:settings" hidden>
     <button type="button" role="menuitem" id="menuHelp" data-i18n="menu.help">How to use</button>
+    <a role="menuitem" id="menuGuide" href="/bandstemmixer/guide/" data-i18n="menu.guide" data-i18n-attr="href:guide.url">Guides &amp; articles</a>
     <button type="button" role="menuitem" id="menuPrivacy" data-i18n="menu.privacy">Privacy</button>
     <button type="button" role="menuitem" id="menuAbout" data-i18n="menu.about">About</button>
     <div class="menu-sep" role="separator"></div>
@@ -475,8 +491,11 @@
           "err.audio": "Sound could not be played in this browser.",
           "err.save": "The file could not be saved.",
           "intro.title": "Split a band song into vocals, drums, bass, and other",
-          "intro.body": "<p>Band Stem Mixer separates a song into <b>4 parts</b> with AI: vocals, drums, bass, and other (guitar, keys, and everything else). Choose an audio file such as MP3, WAV, or M4A and press “Separate into 4 parts”. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>\n        <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the drums to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as an MP3 file.</p>\n        <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 170 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>\n        <p>The model is Demucs (htdemucs), a music separation model by Meta. Like all such models it is not perfect: sounds can leak between parts. Guitar and keys are not split from each other; they come out together in “Other”. Free, with no sign-up and no ads.</p>",
+          "intro.body": "<p>Band Stem Mixer separates a song into <b>4 parts</b> with AI: vocals, drums, bass, and other (guitar, keys, and everything else). Choose an audio file such as MP3, WAV, or M4A and press “Separate into 4 parts”. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>\n        <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the drums to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as an MP3 file.</p>\n        <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 170 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>\n        <p>The model is Demucs (htdemucs), a music separation model by Meta. Like all such models it is not perfect: sounds can leak between parts. Guitar and keys are not split from each other; they come out together in “Other”. Free, with no sign-up and no ads.</p>\n        <h2>Guides</h2>\n        <ul>\n          <li><a href=\"/bandstemmixer/guide/\">How to use Band Stem Mixer</a></li>\n          <li><a href=\"/bandstemmixer/minus-one/\">Practicing with your part removed: making a minus-one track</a></li>\n          <li><a href=\"/bandstemmixer/learn-by-ear/\">Hearing the bass and drums clearly: learning parts by ear with solo</a></li>\n          <li><a href=\"/bandstemmixer/how-it-works/\">How AI music separation works, and why it is not perfect</a></li>\n          <li><a href=\"/bandstemmixer/better-results/\">How to get better separation</a></li>\n          <li><a href=\"/bandstemmixer/faq/\">Frequently asked questions</a></li>\n        </ul>",
           "menu.help": "How to use",
+          "menu.guide": "Guides & articles",
+          "guide.url": "/bandstemmixer/guide/",
+          "help.more": "Read the full guide →",
           "menu.privacy": "Privacy",
           "menu.about": "About",
           "menu.model": "Delete the AI model",
@@ -577,8 +596,11 @@
           "err.audio": "このブラウザでは音を再生できませんでした。",
           "err.save": "ファイルを保存できませんでした。",
           "intro.title": "バンドの曲をボーカル・ドラム・ベース・その他に分離",
-          "intro.body": "<p>Band Stem Mixer は、AI で曲を <b>4 つのパート</b>（ボーカル・ドラム・ベース・その他（ギター・鍵盤など））に分離する無料の Web アプリです。MP3・WAV・M4A などの音声ファイルを選んで「4 つのパートに分離する」を押すだけ。パートごとに音量のフェーダーとミュート（M）・ソロ（S）があり、ぴったりそろって再生されます。</p>\n        <p>バンド練習に使えます。自分のパートだけミュートして残りの演奏に合わせて弾く（マイナスワン音源・カラオケ音源）、ベースやドラムだけをソロにしてフレーズを耳コピする、ボーカルを消してカラオケにする、など。各パートと、自分で作ったミックスは MP3 ファイルで保存できます。</p>\n        <p>分離は<b>ブラウザの中</b>で行い、曲はどこにもアップロードしません。初回だけ AI モデル（約 170 MB、次回のために端末に保存）をダウンロードするので、Wi-Fi でお使いください。モバイルデータ通信のときは、ダウンロードの前に確認を表示します。分離には時間がかかります。最近のパソコンで曲の長さと同じか数倍、スマホではさらにかかります。</p>\n        <p>AI モデルには、Meta の音源分離モデル Demucs（htdemucs）を使っています。ほかの分離ツールと同じく完璧ではなく、パートの間で音が混ざることがあります。ギターと鍵盤は分かれず、「その他」にまとめて入ります。無料・登録不要・広告なし。</p>",
+          "intro.body": "<p>Band Stem Mixer は、AI で曲を <b>4 つのパート</b>（ボーカル・ドラム・ベース・その他（ギター・鍵盤など））に分離する無料の Web アプリです。MP3・WAV・M4A などの音声ファイルを選んで「4 つのパートに分離する」を押すだけ。パートごとに音量のフェーダーとミュート（M）・ソロ（S）があり、ぴったりそろって再生されます。</p>\n        <p>バンド練習に使えます。自分のパートだけミュートして残りの演奏に合わせて弾く（マイナスワン音源・カラオケ音源）、ベースやドラムだけをソロにしてフレーズを耳コピする、ボーカルを消してカラオケにする、など。各パートと、自分で作ったミックスは MP3 ファイルで保存できます。</p>\n        <p>分離は<b>ブラウザの中</b>で行い、曲はどこにもアップロードしません。初回だけ AI モデル（約 170 MB、次回のために端末に保存）をダウンロードするので、Wi-Fi でお使いください。モバイルデータ通信のときは、ダウンロードの前に確認を表示します。分離には時間がかかります。最近のパソコンで曲の長さと同じか数倍、スマホではさらにかかります。</p>\n        <p>AI モデルには、Meta の音源分離モデル Demucs（htdemucs）を使っています。ほかの分離ツールと同じく完璧ではなく、パートの間で音が混ざることがあります。ギターと鍵盤は分かれず、「その他」にまとめて入ります。無料・登録不要・広告なし。</p>\n        <h2>ガイド</h2>\n        <ul>\n          <li><a href=\"/bandstemmixer/ja/guide/\">Band Stem Mixer の使い方</a></li>\n          <li><a href=\"/bandstemmixer/ja/minus-one/\">自分のパートを消して練習する（マイナスワン音源の作り方）</a></li>\n          <li><a href=\"/bandstemmixer/ja/learn-by-ear/\">ベースとドラムを聞き取る：ソロにして耳コピする</a></li>\n          <li><a href=\"/bandstemmixer/ja/how-it-works/\">AI 音源分離の仕組みと、完璧に分かれない理由</a></li>\n          <li><a href=\"/bandstemmixer/ja/better-results/\">うまく分離するコツ</a></li>\n          <li><a href=\"/bandstemmixer/ja/faq/\">よくある質問</a></li>\n        </ul>",
           "menu.help": "使い方",
+          "menu.guide": "ガイド・記事",
+          "guide.url": "/bandstemmixer/ja/guide/",
+          "help.more": "詳しい使い方ガイドを読む →",
           "menu.privacy": "プライバシー",
           "menu.about": "このアプリについて",
           "menu.model": "AI モデルを削除",

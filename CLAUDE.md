@@ -29,7 +29,8 @@
 - ページはクロスオリジン分離（`public/_headers` の COOP / COEP require-corp）。ONNX Runtime の複数スレッドと、分離結果を `SharedArrayBuffer` でプレーヤーと共有するのに必要。外部から読むファイルは CORS で読む（`<script type="module">`・`fetch`・`import()`）。CORS でない読み込み（`<img>` の外部画像など）を足すと COEP でブロックされる。
 - 外部ホストを足したら `public/_headers` の CSP と、プライバシーの説明（`scripts/pages/privacy.mjs`、アプリ内の `privacy.body`、README）を同じ PR で直す。
 - ミキサーの設定は `localStorage` の `bandstemmixer-state`（各パートの音量・ミュート、全体の音量）。分離の設定は端末ごとに順に試す（`index.html` の `MODES`・`LADDER`）。PC は full（WebGPU があれば GPU、CPU は多スレッド）→ cpu。スマホとメモリ 4 GB 以下の端末は gpu（GPU・メモリ節約）→ cpu（2 スレッド）→ cpu1（1 スレッド）。iPhone の Safari では GPU の作業メモリはタブではなく GPU プロセスが持つので、タブの上限（htdemucs は 1 区間で約 1 GB 使う）に触れにくい。エラーなら同じ分離の中で次の設定に移り、タブごと落ちたら（`bandstemmixer-running` の記録が残る）次に開いたときに `bandstemmixer-crashed` に覚えて、その設定を 30 日飛ばす。ソロは保存しない。分離したパートは保存しない。
+- 記事は `scripts/pages/<slug>.mjs`（`guide`・`minus-one`・`learn-by-ear`・`how-it-works`・`better-results`・`faq`）。アプリと共通の値（モデルの大きさ・曲の長さの上限・フェーダーの上限・MP3 のビットレート・区間の長さ）は書き写さず、`scripts/pages/app.mjs` がアプリのファイルから読む（見つからなければビルドが止まる）。記事を足したら `build-pages.mjs` の `PAGES` と、`index.html` の `intro.body` のガイド一覧（英日）にも足す。見た目を変えたら `node scripts/render-guide-images.mjs` で画面写真を撮り直す（架空の曲 `scripts/guide-song.mjs` を使い、`separator.js` を仮の処理に差し替えるので AI モデルは不要。日本語のファイル名はパスではなく buffer で渡す）。
 - トップページ（https://ktkwmr.com/）のアプリ一覧に載せたら、アプリ名・説明・アイコン・記事を変えたときに `ktkwmr/ktkwmr.com` の `scripts/pages/home.mjs` を直す PR を別に出す（ベースライン §2-16）。
-- 記事を追加・変更したら、PR のプレビューで人間が内容を確認してからマージする（ベースライン §10-7）。
+- 記事を追加・変更したら、PR のプレビューで人間が内容を確認してからマージする（ベースライン §10-7）。確認してほしい点を `docs/article-review.md` に書き、PR 本文にも載せる。記事は広告なし（重みのライセンスのため。記事だけに広告を付けるのも不可）。
 - 作業はブランチ → PR → Cloudflare のプレビュービルド確認 → squash マージ。
 - 本番サイト・Cloudflare 管理画面・外部 CDN・Hugging Face にはこの環境から届かないことが多い。確かめられなかったことは「未確認」と書き、ユーザーに確認手順を伝える。動作確認は、同じ入出力（波形 [1,2,343980] とスペクトログラム [1,4,2048,336] → 時間側 [1,4,2,343980] と周波数側 [1,4,4,2048,336]）の小さな偽モデルと、npm の onnxruntime-web・demucs-web を Playwright の `context.route` で返して行う（ベースライン §12-11）。
