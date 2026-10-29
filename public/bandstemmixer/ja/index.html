@@ -464,7 +464,7 @@
           "net.later": "Not now",
           "net.ok": "Download and separate",
           "err.decode": "This file could not be read. Try another format such as MP3, WAV, or M4A.",
-          "err.tooLong": "Songs up to 12 minutes can be separated. This one is {time}. Cut it shorter and try again.",
+          "err.tooLong": "Songs up to {max} minutes can be separated on this device. This one is {time}. Cut it shorter and try again.",
           "err.offline": "You are offline. The AI model needs to be downloaded the first time; connect to the internet and try again.",
           "err.download": "The AI model could not be downloaded. Check your connection and try again.",
           "err.memory": "This device ran out of memory {where} ({msg}). Close other tabs and apps, try a shorter song, or use a computer.",
@@ -564,7 +564,7 @@
           "net.later": "やめておく",
           "net.ok": "ダウンロードして分離する",
           "err.decode": "このファイルは読み込めませんでした。MP3・WAV・M4A など、ほかの形式でお試しください。",
-          "err.tooLong": "分離できるのは 12 分までの曲です。この曲は {time} あります。短く切ってからお試しください。",
+          "err.tooLong": "この端末で分離できるのは {max} 分までの曲です。この曲は {time} あります。短く切ってからお試しください。",
           "err.offline": "オフラインです。初回は AI モデルのダウンロードが必要です。インターネットに接続してからもう一度お試しください。",
           "err.download": "AI モデルをダウンロードできませんでした。接続を確認して、もう一度お試しください。",
           "err.memory": "{where}に端末のメモリが足りなくなりました（{msg}）。ほかのタブやアプリを閉じるか、短い曲にするか、パソコンでお試しください。",
@@ -647,8 +647,15 @@
       // ONNX Runtime's WebAssembly file: CPU build / WebGPU build (used when the browser has WebGPU)
       const ENGINE_MB = { cpu: 14, gpu: 27 };
       const HAS_GPU = "gpu" in navigator;
+      const LOW_MEM = /iP(hone|ad|od)|Android|Mobile/i.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) ||
+        (typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 4);
       const SR = 44100;
       const MAX_SEC = 12 * 60;
+      // Phones and devices with little memory: an iPhone's Safari closes the whole tab, with no error the page
+      // could catch, when it uses too much memory. These devices run the model on the CPU with settings that
+      // use less memory, and take songs up to 8 minutes.
+      const MAX_SEC_LOW_MEM = 8 * 60;
       // Display order (a band's usual order). idx = the model's output order: drums, bass, other, vocals
       const PARTS = [
         { key: "vocals", idx: 3 },
@@ -741,7 +748,7 @@
         const dlg = $("netDlg");
         $("netTitle").textContent = t("net.title." + risk);
         $("netBody").textContent = t("net.body." + risk);
-        $("netSize").textContent = t("net.size", { mb: MODEL_MB + (HAS_GPU ? ENGINE_MB.gpu : ENGINE_MB.cpu) });
+        $("netSize").textContent = t("net.size", { mb: MODEL_MB + (HAS_GPU && !LOW_MEM ? ENGINE_MB.gpu : ENGINE_MB.cpu) });
         return new Promise(function (resolve) {
           let ok = false;
           function finish() {
@@ -757,7 +764,8 @@
 
       // ---------- Reading the file ----------
       let file = null;
-      let mix = null; // { left, right, duration } at 44.1 kHz
+      let mix = null; // { left, right, duration } at 44.1 kHz; handed to the worker (and cleared) on separation
+      let fileOk = false; // the chosen file was read and can be separated
       async function decode(f) {
         const data = await f.arrayBuffer();
         // An OfflineAudioContext at 44.1 kHz decodes and resamples to the rate the model needs
@@ -767,8 +775,9 @@
           const p = ctx.decodeAudioData(data, resolve, reject);
           if (p && p.catch) p.catch(reject);
         });
-        const left = buf.getChannelData(0);
-        const right = buf.numberOfChannels > 1 ? buf.getChannelData(1) : left;
+        // Own copies (not views of the AudioBuffer), so they can be moved to the worker without another copy
+        const left = new Float32Array(buf.getChannelData(0));
+        const right = buf.numberOfChannels > 1 ? new Float32Array(buf.getChannelData(1)) : left;
         return { left: left, right: right, duration: buf.duration, channels: buf.numberOfChannels, rate: buf.sampleRate };
       }
 
@@ -777,6 +786,7 @@
         if (busy) return;
         file = f;
         mix = null;
+        fileOk = false;
         showError("");
         $("songInfo").hidden = false;
         $("songName").textContent = f.name;
@@ -787,11 +797,12 @@
           const d = await decode(f);
           if (file !== f) return;
           $("songMeta").textContent = t("file.meta", { time: fmtTime(d.duration), ch: t(d.channels > 1 ? "file.stereo" : "file.mono") });
-          if (d.duration > MAX_SEC) {
-            showError(t("err.tooLong", { time: fmtTime(d.duration) }));
+          if (d.duration > (LOW_MEM ? MAX_SEC_LOW_MEM : MAX_SEC)) {
+            showError(t("err.tooLong", { time: fmtTime(d.duration), max: (LOW_MEM ? MAX_SEC_LOW_MEM : MAX_SEC) / 60 }));
             return;
           }
           mix = d;
+          fileOk = true;
           $("runBtn").disabled = false;
         } catch (e) {
           if (file !== f) return;
@@ -835,7 +846,7 @@
       }
       function setBusy(on) {
         busy = on;
-        $("runBtn").disabled = on || !mix;
+        $("runBtn").disabled = on || !fileOk;
         $("drop").style.pointerEvents = on ? "none" : "";
         $("drop").style.opacity = on ? ".5" : "";
         if (!on) $("progress").hidden = true;
@@ -879,16 +890,18 @@
       }
 
       async function run() {
-        if (!mix || busy) return;
+        if (!fileOk || busy) return;
         showError("");
         await checkModel();
         if (!modelCached && navigator.onLine === false) { showError(t("err.offline")); return; }
         if (!(await askNetwork())) return;
         stopPlayback();
+        releaseStems();
         setBusy(true);
         startedAt = Date.now();
         setProgress(t(modelCached ? "stage.lib" : "stage.download"), "", null);
-        attempt({ gpu: HAS_GPU, safe: false });
+        // On a phone or a device with little memory, start with the settings that use less memory
+        attempt(LOW_MEM ? { gpu: false, safe: true } : { gpu: HAS_GPU, safe: false });
       }
 
       // One try in its own worker. If loading or running the model fails, it is tried once more in a
@@ -936,10 +949,25 @@
           console.error("Separation worker error", e);
           if (e && e.preventDefault) e.preventDefault();
         };
-        // Copies, so the decoded song stays here for a retry or "Separate again" (left and right may be the same mono array)
-        const left = new Float32Array(mix.left);
-        const right = mix.right === mix.left ? left.slice() : new Float32Array(mix.right);
-        worker.postMessage({ type: "run", left: left, right: right, gpu: opts.gpu, safe: opts.safe }, [left.buffer, right.buffer]);
+        // The decoded song is moved to the worker, not copied, so it is not held twice. A retry or
+        // "Separate again" decodes the file again.
+        takePcm().then(function (pcm) {
+          if (!worker) return; // canceled while decoding
+          const right = pcm.right === pcm.left ? pcm.left.slice() : pcm.right;
+          worker.postMessage({ type: "run", left: pcm.left, right: right, gpu: opts.gpu, safe: opts.safe }, [pcm.left.buffer, right.buffer]);
+        }).catch(function () {
+          stopWorker();
+          setBusy(false);
+          showError(t("err.decode"));
+        });
+      }
+      function takePcm() {
+        if (mix) {
+          const pcm = mix;
+          mix = null;
+          return Promise.resolve(pcm);
+        }
+        return decode(file);
       }
       $("runBtn").addEventListener("click", run);
       $("cancelBtn").addEventListener("click", function () {
@@ -949,7 +977,7 @@
       });
 
       // ---------- Player and mixer ----------
-      let stems = null; // [[Int16Array L, Int16Array R] x 6] in the model's order
+      let stems = null; // [[Int16Array L, Int16Array R] x 4] in the model's order
       let length = 0;   // samples at 44.1 kHz
       let ctx = null, node = null, audioReady = null;
       let playing = false;
@@ -1005,6 +1033,18 @@
         } catch (e) {
           showError(t("err.audio"));
         }
+      }
+
+      // Before a new separation: drop the previous parts (here and in the player) so they do not take memory
+      // while the model runs
+      function releaseStems() {
+        if (!stems) return;
+        stems = null;
+        length = 0;
+        if (node) node.port.postMessage({ type: "load", stems: null });
+        setPlaying(false);
+        $("mixer").hidden = true;
+        $("empty").hidden = false;
       }
 
       function gainsOf() {
