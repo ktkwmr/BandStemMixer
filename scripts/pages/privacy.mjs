@@ -40,7 +40,7 @@ export default {
   <li><b>Mixer settings:</b> the level and mute of each part, the master volume, and whether the GPU is used.</li>
   <li><b>App files:</b> the pages and files of this site and the ONNX Runtime library, so the app works offline.</li>
 </ul>
-<p>Your songs and the separated parts are not saved in the browser; they are gone when you close or reload the page. To delete the data above, use ⚙ → “Delete saved data” in the app, or clear this site's data (site data, cookies, and storage for ktkwmr.com) in your browser settings.</p>
+<p>Your songs and the separated parts are not saved in the browser; they are gone when you close or reload the page. To delete the data above, use ⚙ → “Clear settings” and ⚙ → “Delete the AI model” in the app, or clear this site's data (site data, cookies, and storage for ktkwmr.com) in your browser settings.</p>
 
 <h2 id="external">3. Information sent to external services</h2>
 <p>When you use this site, your browser sends information to the following services. This list also serves as the notice of external transmission required under Japan's Telecommunications Business Act.</p>
@@ -103,7 +103,7 @@ export default {
   <li><b>ミキサーの設定：</b>各パートの音量とミュート、全体の音量、GPU を使うかどうか。</li>
   <li><b>アプリのファイル：</b>オフラインでも使えるよう、本サイトのページやファイルと ONNX Runtime のライブラリを保存します。</li>
 </ul>
-<p>曲と分離したパートはブラウザに保存しません。ページを閉じたり再読み込みしたりすると消えます。上のデータを消したいときは、アプリの ⚙ →「保存した情報を削除」を使うか、ブラウザの設定でこのサイト（ktkwmr.com）のデータ（サイトデータ・Cookie・ストレージ）を削除してください。</p>
+<p>曲と分離したパートはブラウザに保存しません。ページを閉じたり再読み込みしたりすると消えます。上のデータを消したいときは、アプリの ⚙ →「設定値をクリア」と ⚙ →「AI モデルを削除」を使うか、ブラウザの設定でこのサイト（ktkwmr.com）のデータ（サイトデータ・Cookie・ストレージ）を削除してください。</p>
 
 <h2 id="external">3. 外部への情報の送信</h2>
 <p>本サイトを利用すると、お使いのブラウザから次のサービスに情報が送信されます。この一覧は、電気通信事業法の外部送信規律に基づく公表を兼ねています。</p>
