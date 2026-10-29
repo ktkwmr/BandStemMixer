@@ -16,8 +16,8 @@ Split a band song into 4 parts with AI — vocals, drums, bass, and other (guita
   各パートと現在のミックスを MP3（192 kbps・44.1 kHz ステレオ）で保存。変換はワーカー（`encoder.js`）で lamejs（LAME、LGPL-3.0）を使う
 - **Large-download warning**: the first separation downloads the model (about 172 MB) plus the engine (about 14 MB, or 27 MB with WebGPU). If the browser reports mobile data or Data Saver (`navigator.connection`, Chrome on Android), or cannot tell the connection type on a phone or tablet (iPhone, iPad, Firefox), the app asks before downloading. Once the model is saved, it does not ask again
   初回は AI モデル（約 172 MB）と分離のプログラム（約 14 MB、WebGPU 版は約 27 MB）をダウンロード。モバイルデータ通信・データセーバーのとき、またはスマホ・タブレットで接続の種類が分からないとき（iPhone・iPad・Firefox）は、ダウンロード前にダイアログで確認。モデルを保存したあとは確認しない
-- The model is kept in Cache Storage (`bandstemmixer-model-v2`), so it is downloaded once. ⚙ → “Delete the AI model” removes it; ⚙ → “Clear settings” resets the mixer settings
-  モデルは Cache Storage に保存し、ダウンロードは 1 回だけ。⚙ →「AI モデルを削除」で消せる。⚙ →「設定値をクリア」でミキサーの設定を初期状態に戻す
+- The model is kept in Cache Storage (`bandstemmixer-model-v2`), so it is downloaded once. ⚙ → “Delete the AI model” removes it; “Reset mixer” resets the mixer settings
+  モデルは Cache Storage に保存し、ダウンロードは 1 回だけ。⚙ →「AI モデルを削除」で消せる。「ミキサーを元に戻す」でミキサーの設定を初期状態に戻す
 - Uses the **GPU (WebGPU)** when the browser has it; on the CPU it uses several threads when the page is cross-origin isolated
   WebGPU があれば GPU で処理。CPU ではクロスオリジン分離により複数スレッドで処理
 - Songs up to 12 minutes; most formats the browser can decode (MP3, WAV, M4A/AAC, FLAC, Ogg…)
