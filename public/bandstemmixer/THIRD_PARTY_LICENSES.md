@@ -104,4 +104,28 @@ SOFTWARE.
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 
+### @breezystack/lamejs
+- Package: @breezystack/lamejs
+- Purpose: Pure JavaScript MP3 Encoder
+- License: LGPL-3.0
+- Source: https://github.com/shijinyu/lamejs
+- Use: makes the MP3 files when a part or the mix is saved. This app uses
+  LAME (https://lame.sourceforge.io/) through lamejs, a JavaScript port of
+  LAME. It is loaded unmodified as a separate file from the CDN.
+- Full LGPL-3.0 text: https://www.gnu.org/licenses/lgpl-3.0.html
+- License text:
+
+    Can I use LAME in my commercial program?  
+
+    Yes, you can, under the restrictions of the LGPL.  The easiest
+    way to do this is to:
+
+    1. Link to LAME as separate jar (lame.min.js or lame.all.js)
+
+    2. Fully acknowledge that you are using LAME, and give a link
+       to our web site, lame.sourceforge.net
+
+    3. If you make modifications to LAME, you *must* release these
+       these modifications back to the LAME project, under the LGPL.
+
 <!-- New libraries are added above this line by scripts/update-third-party-licenses.mjs -->

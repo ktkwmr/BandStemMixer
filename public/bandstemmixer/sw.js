@@ -2,7 +2,7 @@
 // Older caches of this app (e.g. "bandstemmixer-<build>") are removed on activate.
 const PREFIX = "bandstemmixer-";
 const CACHE = PREFIX + "cache";
-const CORE = ["./", "index.html", "separator.js", "mixer.js", "ja/", "manifest.json", "THIRD_PARTY_LICENSES.md", "icons/icon.svg"];
+const CORE = ["./", "index.html", "separator.js", "mixer.js", "encoder.js", "ja/", "manifest.json", "THIRD_PARTY_LICENSES.md", "icons/icon.svg"];
 // The AI model is kept by separator.js in its own cache (bandstemmixer-model-v2), which activate below leaves alone.
 // Older model caches (-v1: the 6-part model used at first) are removed on activate.
 const KEEP = ["bandstemmixer-model-v2"];
@@ -18,6 +18,8 @@ const CDN = [
   ORT + "ort.webgpu.min.mjs", ORT + "ort-wasm-simd-threaded.asyncify.mjs", ORT + "ort-wasm-simd-threaded.asyncify.wasm",
   // demucs-web: the STFT and the model's tensor layout (separator.js imports processor.js)
   DEMUCS_WEB + "processor.js", DEMUCS_WEB + "constants.js", DEMUCS_WEB + "fft.js",
+  // lamejs: the MP3 encoder (encoder.js)
+  "https://cdn.jsdelivr.net/npm/@breezystack/lamejs@1.2.7/dist/lamejs.js",
 ];
 
 self.addEventListener("install", (event) => {

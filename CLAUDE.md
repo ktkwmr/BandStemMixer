@@ -1,6 +1,6 @@
 # Band Stem Mixer
 
-バンドの曲を AI（Demucs htdemucs、ONNX Runtime Web、STFT は demucs-web）でブラウザの中で 4 パート（ボーカル・ドラム・ベース・その他）に分離し、ミュート・ソロ・フェーダーでミックスして練習できる Web アプリ。各パートとミックスは WAV で保存できる。公開 URL: https://ktkwmr.com/bandstemmixer/ （日本語: /bandstemmixer/ja/）
+バンドの曲を AI（Demucs htdemucs、ONNX Runtime Web、STFT は demucs-web）でブラウザの中で 4 パート（ボーカル・ドラム・ベース・その他）に分離し、ミュート・ソロ・フェーダーでミックスして練習できる Web アプリ。各パートとミックスは MP3 で保存できる。公開 URL: https://ktkwmr.com/bandstemmixer/ （日本語: /bandstemmixer/ja/）
 構成・開発・デプロイの詳細は README.md を参照。
 
 ## 共通ベースライン
@@ -9,7 +9,7 @@
 - 各項目の状態は docs/baseline-status.md に記録する。
 - どのアプリにも当てはまる新しい作業・設定・落とし穴が出てきたら、作業の最後に
   ベースラインへの追記案を出す（ユーザーが了承したらベースラインのリポジトリに PR）。
-- 独自機能（分離・ミキサー・WAV 保存）の変更だけなら追記は不要。
+- 独自機能（分離・ミキサー・MP3 保存）の変更だけなら追記は不要。
 
 ## このアプリの値
 - スラッグ: `bandstemmixer` / ドメイン: `ktkwmr.com` / 言語: en（既定）+ ja（`/ja/`）
@@ -19,11 +19,12 @@
   ドメイン直下（トップページ、`robots.txt`、ルートの `sitemap.xml`、ルートの 404）は `ktkwmr/ktkwmr.com`（Worker `ktkwmr-home`）にある。このアプリの sitemap は `/bandstemmixer/sitemap.xml`。
 
 ## ルール
-- 手で編集するのはアプリ本体 `public/bandstemmixer/index.html`・`separator.js`・`mixer.js`・`sw.js` と `scripts/`。生成ファイル（`public/bandstemmixer/ja/index.html`、情報ページ `<slug>/` とその `ja/`、`public/bandstemmixer/sitemap.xml`）は編集せず、`node scripts/build-ja.mjs` と `node scripts/build-pages.mjs` で作り直す（`--check` で確認）。
+- 手で編集するのはアプリ本体 `public/bandstemmixer/index.html`・`separator.js`・`mixer.js`・`encoder.js`・`sw.js` と `scripts/`。生成ファイル（`public/bandstemmixer/ja/index.html`、情報ページ `<slug>/` とその `ja/`、`public/bandstemmixer/sitemap.xml`）は編集せず、`node scripts/build-ja.mjs` と `node scripts/build-pages.mjs` で作り直す（`--check` で確認）。
 - 画面の文言は `index.html` の `I18N`（en / ja）に書き、要素には `data-i18n` / `data-i18n-html` / `data-i18n-attr` を付ける。JS で作る文言は `t()` を使う。子要素を持つ要素に `data-i18n` は付けない（`build-ja.mjs` が止まる）。
 - **非営利のまま運営する（広告・有料機能を付けない）。** Demucs のコードは MIT だが、学習済みの重みは MIT の対象外で、Meta は科学研究目的に限って提供している（facebookresearch/demucs#327）。収益化するなら、商用利用できる重みの分離モデルに替えるのが先。重みはリポジトリに入れない（ブラウザが Hugging Face から取得する）。
 - モデルは 4 分割の `htdemucs`（timcsy/demucs-web-onnx の `htdemucs_embedded.onnx`、約 172 MB）。6 分割（htdemucs_6s、StemSplit 版）は、ユーザーの PC で読み込み中にメモリ不足になったのでやめた。入力は波形とスペクトログラムの 2 つ、出力は時間側と周波数側の 2 つで、STFT・逆 STFT は demucs-web（jsDelivr）の関数を使う。
 - モデルの URL・キャッシュ名（`MODEL_URL`・`MODEL_CACHE`）は `index.html` と `separator.js` の両方に、ONNX Runtime と demucs-web のバージョンは `separator.js` の `ORT_BASE`・`DEMUCS_WEB` と `sw.js` の `CDN` にある。変えるときは全部を同じ PR で直す。モデルのファイルを変えたら `MODEL_CACHE` の `-v2` を上げ、`sw.js` の `KEEP` も直す。
+- 保存は MP3 だけ（192 kbps）。`encoder.js`（ワーカー）が lamejs（`@breezystack/lamejs`、LGPL-3.0）で作る。lamejs は改変せず CDN から別ファイルとして読む（LGPL の条件。改変するなら変更を公開する必要がある）。バージョンは `encoder.js` の `LAME_URL` と `sw.js` の `CDN`。
 - 大きなダウンロードの前の確認（Wi-Fi でないときのダイアログ）は `index.html` の `connectionRisk()`・`askNetwork()`。モデルがキャッシュ済みなら出さない。ダウンロード量の表示は `MODEL_MB`・`ENGINE_MB`。
 - ページはクロスオリジン分離（`public/_headers` の COOP / COEP require-corp）。ONNX Runtime の複数スレッドと、分離結果を `SharedArrayBuffer` でプレーヤーと共有するのに必要。外部から読むファイルは CORS で読む（`<script type="module">`・`fetch`・`import()`）。CORS でない読み込み（`<img>` の外部画像など）を足すと COEP でブロックされる。
 - 外部ホストを足したら `public/_headers` の CSP と、プライバシーの説明（`scripts/pages/privacy.mjs`、アプリ内の `privacy.body`、README）を同じ PR で直す。

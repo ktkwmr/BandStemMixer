@@ -31,7 +31,7 @@ export default {
 </ol></nav>
 
 <h2 id="app">1. What you do in the app</h2>
-<p>The audio file you choose is read, separated into parts by the AI model, and played only in your browser. The file, the separated parts, and their names are never sent to our server or to anyone else. Saving a part or a mix as a WAV file only saves it on your device. The app does not use the microphone. This site has no accounts, and we do not ask for your name, email address, or other personal information.</p>
+<p>The audio file you choose is read, separated into parts by the AI model, and played only in your browser. The file, the separated parts, and their names are never sent to our server or to anyone else. Saving a part or a mix as an MP3 file only saves it on your device. The app does not use the microphone. This site has no accounts, and we do not ask for your name, email address, or other personal information.</p>
 
 <h2 id="storage">2. Data saved in your browser</h2>
 <p>The following data is saved in your browser's storage on your device. It is not sent to us.</p>
@@ -51,7 +51,7 @@ export default {
       <tr><th scope="row"><a href="${CLOUDFLARE}" rel="noopener">Cloudflare</a> (Cloudflare, Inc.)</th><td data-label="When:">Every page and file request</td><td data-label="Information sent:">IP address, browser information (user agent), requested URL, date and time</td><td data-label="Purpose:">Hosting this site, security, and access logs for operation</td></tr>
       <tr><th scope="row"><a href="${CLOUDFLARE}" rel="noopener">Cloudflare Web Analytics</a> (Cloudflare, Inc.)</th><td data-label="When:">Every page view</td><td data-label="Information sent:">IP address, browser information (user agent), the URL of the page, referrer, page load time. No cookies are used.</td><td data-label="Purpose:">Counting page views (see "Analytics" below)</td></tr>
       <tr><th scope="row"><a href="${HUGGINGFACE}" rel="noopener">Hugging Face</a> (Hugging Face, Inc.)</th><td data-label="When:">The first time you separate a song (until the model is saved in your browser)</td><td data-label="Information sent:">IP address, browser information (user agent), the URL of the model file, date and time. Nothing about your song is sent.</td><td data-label="Purpose:">Downloading the AI model (Demucs htdemucs)</td></tr>
-      <tr><th scope="row"><a href="${JSDELIVR}" rel="noopener">jsDelivr</a> (a CDN run by Prospect One and its partners)</th><td data-label="When:">When you separate a song (until the library is saved in your browser)</td><td data-label="Information sent:">IP address, browser information (user agent), the URL of the library file, the page that requested it (referrer), date and time</td><td data-label="Purpose:">Downloading ONNX Runtime Web, the library that runs the AI model, and demucs-web, which prepares the audio for it</td></tr>
+      <tr><th scope="row"><a href="${JSDELIVR}" rel="noopener">jsDelivr</a> (a CDN run by Prospect One and its partners)</th><td data-label="When:">When you separate a song (until the library is saved in your browser)</td><td data-label="Information sent:">IP address, browser information (user agent), the URL of the library file, the page that requested it (referrer), date and time</td><td data-label="Purpose:">Downloading ONNX Runtime Web, the library that runs the AI model, demucs-web, which prepares the audio for it, and (when you save a file) lamejs, which makes the MP3</td></tr>
     </tbody>
   </table>
 </div>
@@ -94,7 +94,7 @@ export default {
 </ol></nav>
 
 <h2 id="app">1. アプリで行うこと</h2>
-<p>選んだ音声ファイルの読み込み、AI モデルによるパートへの分離、再生は、ブラウザの中だけで行います。ファイル、分離したパート、ファイル名が、運営者のサーバーやほかの誰かに送られることはありません。パートやミックスを WAV ファイルで保存しても、端末に保存するだけです。マイクは使いません。本サイトにはアカウント登録はなく、氏名やメールアドレスなどの個人情報をお聞きすることもありません。</p>
+<p>選んだ音声ファイルの読み込み、AI モデルによるパートへの分離、再生は、ブラウザの中だけで行います。ファイル、分離したパート、ファイル名が、運営者のサーバーやほかの誰かに送られることはありません。パートやミックスを MP3 ファイルで保存しても、端末に保存するだけです。マイクは使いません。本サイトにはアカウント登録はなく、氏名やメールアドレスなどの個人情報をお聞きすることもありません。</p>
 
 <h2 id="storage">2. ブラウザに保存するデータ</h2>
 <p>次のデータを、お使いの端末のブラウザ内に保存します。運営者に送られることはありません。</p>
@@ -114,7 +114,7 @@ export default {
       <tr><th scope="row"><a href="${CLOUDFLARE}" rel="noopener">Cloudflare</a>（Cloudflare, Inc.）</th><td data-label="タイミング：">すべてのページ・ファイルの読み込み時</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、アクセスした URL、日時</td><td data-label="利用目的：">本サイトの配信、セキュリティの確保、運用のためのアクセスログ</td></tr>
       <tr><th scope="row"><a href="${CLOUDFLARE}" rel="noopener">Cloudflare Web Analytics</a>（Cloudflare, Inc.）</th><td data-label="タイミング：">ページを開いたとき</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、閲覧したページの URL、参照元、ページの表示速度。Cookie は使いません。</td><td data-label="利用目的：">ページの閲覧数の集計（「アクセス解析」の項目を参照）</td></tr>
       <tr><th scope="row"><a href="${HUGGINGFACE}" rel="noopener">Hugging Face</a>（Hugging Face, Inc.）</th><td data-label="タイミング：">初めて曲を分離するとき（モデルがブラウザに保存されるまで）</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、モデルのファイルの URL、日時。曲の情報は送りません。</td><td data-label="利用目的：">AI モデル（Demucs htdemucs）のダウンロード</td></tr>
-      <tr><th scope="row"><a href="${JSDELIVR}" rel="noopener">jsDelivr</a>（Prospect One とそのパートナーが運営する CDN）</th><td data-label="タイミング：">曲を分離するとき（ライブラリがブラウザに保存されるまで）</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、ライブラリのファイルの URL、読み込んだページ（参照元）、日時</td><td data-label="利用目的：">AI モデルを動かすライブラリ ONNX Runtime Web と、音声をモデル用に変換する demucs-web のダウンロード</td></tr>
+      <tr><th scope="row"><a href="${JSDELIVR}" rel="noopener">jsDelivr</a>（Prospect One とそのパートナーが運営する CDN）</th><td data-label="タイミング：">曲を分離するとき（ライブラリがブラウザに保存されるまで）</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、ライブラリのファイルの URL、読み込んだページ（参照元）、日時</td><td data-label="利用目的：">AI モデルを動かすライブラリ ONNX Runtime Web、音声をモデル用に変換する demucs-web、（ファイルを保存するときは）MP3 を作る lamejs のダウンロード</td></tr>
     </tbody>
   </table>
 </div>
