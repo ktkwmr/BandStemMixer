@@ -140,6 +140,7 @@
     .song { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
     .song .name { font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
     .song .meta { font-family: var(--mono); font-size: 12px; color: var(--subtle); }
+    .note { margin: 0; padding: 10px 12px; border-radius: var(--radius); background: var(--hover-fill); border: 1px solid var(--line-strong); color: var(--ink); font-size: 12px; line-height: 1.6; }
     .model { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: flex-start; }
     .model svg { flex: none; margin-top: 2px; }
     .progress { display: flex; flex-direction: column; gap: 6px; }
@@ -250,6 +251,7 @@
             <span class="name" id="songName"></span>
             <span class="meta" id="songMeta"></span>
           </div>
+          <p class="note" id="iosNote" hidden data-i18n="ios.note">iPhone・iPad では、メモリが足りずに分離できない（ページが読み込み直される）可能性があります。分離はパソコンでのご利用をおすすめします。保存した MP3 は、どの端末でも再生できます。</p>
           <button class="primary big" id="runBtn" type="button" disabled data-i18n="run">4 つのパートに分離する</button>
           <div class="progress" id="progress" hidden>
             <span class="stage" id="stage"></span>
@@ -418,7 +420,8 @@
           "crash": "The last separation stopped partway ({where}{progress}) and the page was reloaded. The device most likely ran out of memory. Close other apps and tabs and try again, try a shorter song, or use a computer.",
           "crash.progress": ", {done} of {chunks} sections done",
           "crash.song": " · song: {time}",
-          "crash.next": " Next time, this device separates with different settings: press “Separate into 4 parts” again.",
+          "crash.next": " Next time, this device separates with different settings: choose the song again and press “Separate into 4 parts”.",
+          "ios.note": "On iPhone and iPad, separating may not work: the device can run out of memory and the page reloads. We recommend separating on a computer. Saved MP3 files can be played on any device.",
           "crash.none": " Every setting has stopped on this device, so it probably cannot separate songs. Separate the song on a computer and use the saved MP3 files here.",
           "where.download": "while downloading the AI model",
           "where.init": "while loading the AI model",
@@ -523,7 +526,8 @@
           "crash": "前回の分離は途中で止まり、ページが読み込み直されました（{where}{progress}）。端末のメモリが足りなくなった可能性が高いです。ほかのアプリやタブを閉じてもう一度試すか、短い曲にするか、パソコンでお試しください。",
           "crash.progress": "、{chunks} 区間のうち {done} 区間まで完了",
           "crash.song": " · 曲の長さ {time}",
-          "crash.next": "次からは、この端末では別の設定で分離します。もう一度「4 つのパートに分離する」を押してください。",
+          "crash.next": "次からは、この端末では別の設定で分離します。曲を選び直して、もう一度「4 つのパートに分離する」を押してください。",
+          "ios.note": "iPhone・iPad では、メモリが足りずに分離できない（ページが読み込み直される）可能性があります。分離はパソコンでのご利用をおすすめします。保存した MP3 は、どの端末でも再生できます。",
           "crash.none": "この端末では、どの設定でも途中で止まりました。分離できない可能性が高いので、パソコンで分離して、保存した MP3 をこの端末で使ってください。",
           "where.download": "AI モデルのダウンロード中",
           "where.init": "AI モデルの読み込み中",
@@ -1502,6 +1506,9 @@
       renderStrips();
       checkModel();
       reportCrash();
+      // iPhone / iPad: the model can need more memory than Safari gives a tab (an iPhone 17e could not
+      // separate with any setting), so say so before the person tries
+      if (isIOS()) $("iosNote").hidden = false;
     })();
   </script>
 <script>
