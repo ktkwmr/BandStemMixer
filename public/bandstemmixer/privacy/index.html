@@ -61,7 +61,7 @@
     a:focus-visible, .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
     .site-head { position: sticky; top: 0; z-index: 1; background: var(--paper); border-bottom: 1px solid var(--line); }
-    .site-head .inner { display: flex; align-items: center; gap: 16px; max-width: 960px; margin: 0 auto; padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); }
+    .site-head .inner { display: flex; align-items: center; gap: 16px; max-width: 960px; margin: 0 auto; padding: calc(10px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); }
     .brand { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; text-decoration: none; white-space: nowrap; }
     .mark { width: 28px; height: 28px; flex: none; }
     .head-links { display: flex; align-items: center; gap: 16px; margin-left: auto; font-size: 14px; }
@@ -193,7 +193,7 @@
   <li><b>Mixer settings:</b> the level and mute of each part, the master volume, and whether the GPU is used.</li>
   <li><b>App files:</b> the pages and files of this site and the ONNX Runtime library, so the app works offline.</li>
 </ul>
-<p>Your songs and the separated parts are not saved in the browser; they are gone when you close or reload the page. To delete the data above, use ⚙ → “Clear settings” and ⚙ → “Delete the AI model” in the app, or clear this site's data (site data, cookies, and storage for ktkwmr.com) in your browser settings.</p>
+<p>Your songs and the separated parts are not saved in the browser; they are gone when you close or reload the page. To delete the data above, use “Reset mixer” and ⚙ → “Delete the AI model” in the app, or clear this site's data (site data, cookies, and storage for ktkwmr.com) in your browser settings.</p>
 
 <h2 id="external">3. Information sent to external services</h2>
 <p>When you use this site, your browser sends information to the following services. This list also serves as the notice of external transmission required under Japan's Telecommunications Business Act.</p>

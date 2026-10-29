@@ -69,7 +69,10 @@
     :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
     /* Toolbar */
-    .topbar { background: var(--paper); border-bottom: 1px solid var(--line); padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gr) 10px var(--gl); }
+    /* Sticky with an opaque background: iOS 26 Safari (and home-screen apps) blurs whatever is under the status
+       bar, unless a full-width fixed / sticky element with a background sits at the top edge; then it uses that
+       element's colour instead of the blur */
+    .topbar { position: sticky; top: 0; z-index: 900; background: var(--paper); border-bottom: 1px solid var(--line); padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gr) 10px var(--gl); }
     .toolbar { display: flex; align-items: center; gap: 12px 20px; }
     .brand { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; font-weight: 700; letter-spacing: .01em; white-space: nowrap; }
     .brand svg { width: 28px; height: 28px; flex: 0 0 auto; }
@@ -94,8 +97,6 @@
     @media (max-width: 900px) { .layout { grid-template-columns: 1fr; min-height: 0; } }
     .panel { min-width: 0; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
     .panel.out { border-color: transparent; box-shadow: var(--paper-shadow); }
-    .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px 12px; min-height: 40px; padding: 0 6px 0 16px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 700; flex-wrap: wrap; }
-    .panel-head .sub { color: var(--subtle); font-weight: 600; font-size: 12px; padding-right: 10px; }
     .panel-body { padding: 14px 16px 18px; display: flex; flex-direction: column; gap: 16px; }
     .foot { color: var(--subtle); font-size: 12px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .foot svg { flex: 0 0 auto; }
@@ -140,6 +141,7 @@
     .song { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
     .song .name { font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
     .song .meta { font-family: var(--mono); font-size: 12px; color: var(--subtle); }
+    .note { margin: 0; padding: 10px 12px; border-radius: var(--radius); background: var(--hover-fill); border: 1px solid var(--line-strong); color: var(--ink); font-size: 12px; line-height: 1.6; }
     .model { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: flex-start; }
     .model svg { flex: none; margin-top: 2px; }
     .progress { display: flex; flex-direction: column; gap: 6px; }
@@ -237,8 +239,7 @@
 
   <main class="canvas">
     <div class="layout">
-      <section class="panel" aria-labelledby="songTitle">
-        <div class="panel-head"><span id="songTitle" data-i18n="song">曲</span></div>
+      <section class="panel" aria-label="曲" data-i18n-attr="aria-label:song">
         <div class="panel-body">
           <label class="drop" id="drop">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
@@ -250,6 +251,7 @@
             <span class="name" id="songName"></span>
             <span class="meta" id="songMeta"></span>
           </div>
+          <p class="note" id="iosNote" hidden data-i18n="ios.note">iPhone・iPad では、メモリが足りずに分離できない（ページが読み込み直される）可能性があります。分離はパソコンでのご利用をおすすめします。保存した MP3 は、どの端末でも再生できます。</p>
           <button class="primary big" id="runBtn" type="button" disabled data-i18n="run">4 つのパートに分離する</button>
           <div class="progress" id="progress" hidden>
             <span class="stage" id="stage"></span>
@@ -265,11 +267,11 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
             <span id="modelState" data-i18n="model.checking">AI モデルを確認しています…</span>
           </div>
+          <p class="hint" id="backend" hidden></p>
         </div>
       </section>
 
-      <section class="panel out" aria-labelledby="mixTitle">
-        <div class="panel-head"><span id="mixTitle" data-i18n="mixer">ミキサー</span><span class="sub" id="backend"></span></div>
+      <section class="panel out" aria-label="ミキサー" data-i18n-attr="aria-label:mixer">
         <div class="empty" id="empty">
           <div class="slots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
           <span data-i18n="empty">曲を選んで分離すると、ボーカル・ベース・ドラム・その他（ギター・鍵盤など）がここに並び、それぞれの音量を変えられます。</span>
@@ -278,7 +280,7 @@
           <div class="transport">
             <button class="play" id="playBtn" type="button" aria-label="再生" data-i18n-attr="aria-label:play">
               <svg id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"></path></svg>
-              <svg id="pauseIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><rect x="6" y="4.5" width="4.2" height="15" rx="1"></rect><rect x="13.8" y="4.5" width="4.2" height="15" rx="1"></rect></svg>
+              <svg id="pauseIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><rect x="6" y="6" width="12" height="12" rx="1.5"></rect></svg>
             </button>
             <div class="seek">
               <input type="range" id="seek" min="0" max="1" step="0.1" value="0" aria-label="再生位置" data-i18n-attr="aria-label:position" />
@@ -339,7 +341,7 @@
     <div class="help-body">
       <ul class="help-list" data-i18n-html="privacy.body"><li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込みと分離は、ブラウザの中だけで行います。サーバーに送られることはありません。MP3 ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>
         <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>
-        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。設定は ⚙ →「設定値をクリア」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>
+        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。ミキサーの設定は「ミキサーを元に戻す」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>
         <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>
         <li><b>お問い合わせ</b> – ご質問・ご意見は <a href="https://github.com/ktkwmr/BandStemMixer/issues" target="_blank" rel="noopener">GitHub の Issues</a> へ。</li>
         <li><b>詳しくは</b> – <a href="/bandstemmixer/ja/privacy/">プライバシーポリシー</a>と<a href="/bandstemmixer/ja/about/">運営者情報</a>をご覧ください。</li></ul>
@@ -356,18 +358,8 @@
     <button type="button" role="menuitem" id="menuPrivacy" data-i18n="menu.privacy">プライバシー</button>
     <button type="button" role="menuitem" id="menuAbout" data-i18n="menu.about">このアプリについて</button>
     <div class="menu-sep" role="separator"></div>
-    <button type="button" role="menuitem" id="menuReset" data-i18n="menu.reset">設定値をクリア</button>
     <button type="button" role="menuitem" id="menuModel" data-i18n="menu.model">AI モデルを削除</button>
   </div>
-
-  <dialog class="msg" id="resetDlg" tabindex="-1" aria-labelledby="resetTitle">
-    <h2 id="resetTitle" data-i18n="reset.title">設定値をクリアしますか？</h2>
-    <p class="dlg-text" data-i18n="reset.body">ミキサーの設定（各パートの音量とミュート、全体の音量）を、初めて開いたときの状態に戻します。分離したパートとダウンロードした AI モデルはそのまま残ります。</p>
-    <div class="dlg-actions">
-      <button class="chip" id="resetCancel" type="button" data-i18n="cancel">キャンセル</button>
-      <button class="primary" id="resetOk" type="button" data-i18n="reset.ok">クリアする</button>
-    </div>
-  </dialog>
 
   <dialog class="msg" id="modelDlg" tabindex="-1" aria-labelledby="modelTitle">
     <h2 id="modelTitle" data-i18n="model.del.title">AI モデルを削除しますか？</h2>
@@ -418,7 +410,8 @@
           "crash": "The last separation stopped partway ({where}{progress}) and the page was reloaded. The device most likely ran out of memory. Close other apps and tabs and try again, try a shorter song, or use a computer.",
           "crash.progress": ", {done} of {chunks} sections done",
           "crash.song": " · song: {time}",
-          "crash.next": " Next time, this device separates with different settings: press “Separate into 4 parts” again.",
+          "crash.next": " Next time, this device separates with different settings: choose the song again and press “Separate into 4 parts”.",
+          "ios.note": "On iPhone and iPad, separating may not work: the device can run out of memory and the page reloads. We recommend separating on a computer. Saved MP3 files can be played on any device.",
           "crash.none": " Every setting has stopped on this device, so it probably cannot separate songs. Separate the song on a computer and use the saved MP3 files here.",
           "where.download": "while downloading the AI model",
           "where.init": "while loading the AI model",
@@ -433,12 +426,13 @@
           "backend.wasm1": "CPU · 1 thread",
           "backend.safe": "CPU · memory-saving mode · {n} threads",
           "backend.webgpu": "GPU (WebGPU)",
+          "backend.used": "Separating with: {name}",
           "done": "Done in {time}. Press play.",
           "canceled": "Separation canceled.",
           "mixer": "Mixer",
           "empty": "Choose a song and separate it. Vocals, bass, drums, and other (guitar, keys…) appear here, each with its own fader.",
           "play": "Play",
-          "pause": "Pause",
+          "pause": "Stop",
           "position": "Position",
           "master": "Master",
           "mix.reset": "Reset mixer",
@@ -481,14 +475,9 @@
           "menu.help": "How to use",
           "menu.privacy": "Privacy",
           "menu.about": "About",
-          "menu.reset": "Clear settings",
           "menu.model": "Delete the AI model",
           "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
-          "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read and separated only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Clear the settings with ⚙ → “Clear settings” and delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\">privacy policy</a> and <a href=\"/bandstemmixer/about/\">about this site</a>.</li>",
-          "reset.title": "Clear settings?",
-          "reset.body": "This returns the mixer settings (each part's level and mute, and the master volume) to how they are when the app is first opened. The separated parts and the downloaded AI model stay.",
-          "reset.ok": "Clear",
-          "reset.done": "Settings cleared.",
+          "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read and separated only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Reset the mixer with “Reset mixer”, delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\">privacy policy</a> and <a href=\"/bandstemmixer/about/\">about this site</a>.</li>",
           "model.del.title": "Delete the AI model?",
           "model.del.body": "This deletes the AI model (about 170 MB) saved in this browser, to free up space. It is downloaded again the next time you separate a song.",
           "model.del.ok": "Delete",
@@ -523,7 +512,8 @@
           "crash": "前回の分離は途中で止まり、ページが読み込み直されました（{where}{progress}）。端末のメモリが足りなくなった可能性が高いです。ほかのアプリやタブを閉じてもう一度試すか、短い曲にするか、パソコンでお試しください。",
           "crash.progress": "、{chunks} 区間のうち {done} 区間まで完了",
           "crash.song": " · 曲の長さ {time}",
-          "crash.next": "次からは、この端末では別の設定で分離します。もう一度「4 つのパートに分離する」を押してください。",
+          "crash.next": "次からは、この端末では別の設定で分離します。曲を選び直して、もう一度「4 つのパートに分離する」を押してください。",
+          "ios.note": "iPhone・iPad では、メモリが足りずに分離できない（ページが読み込み直される）可能性があります。分離はパソコンでのご利用をおすすめします。保存した MP3 は、どの端末でも再生できます。",
           "crash.none": "この端末では、どの設定でも途中で止まりました。分離できない可能性が高いので、パソコンで分離して、保存した MP3 をこの端末で使ってください。",
           "where.download": "AI モデルのダウンロード中",
           "where.init": "AI モデルの読み込み中",
@@ -538,12 +528,13 @@
           "backend.wasm1": "CPU · 1 スレッド",
           "backend.safe": "CPU · メモリ節約モード · {n} スレッド",
           "backend.webgpu": "GPU（WebGPU）",
+          "backend.used": "分離に使っている設定：{name}",
           "done": "{time} で分離しました。再生してください。",
           "canceled": "分離をキャンセルしました。",
           "mixer": "ミキサー",
           "empty": "曲を選んで分離すると、ボーカル・ベース・ドラム・その他（ギター・鍵盤など）がここに並び、それぞれの音量を変えられます。",
           "play": "再生",
-          "pause": "一時停止",
+          "pause": "停止",
           "position": "再生位置",
           "master": "全体",
           "mix.reset": "ミキサーを元に戻す",
@@ -586,14 +577,9 @@
           "menu.help": "使い方",
           "menu.privacy": "プライバシー",
           "menu.about": "このアプリについて",
-          "menu.reset": "設定値をクリア",
           "menu.model": "AI モデルを削除",
           "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – 「4 つのパートに分離する」を押します。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した MP3 ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
-          "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込みと分離は、ブラウザの中だけで行います。サーバーに送られることはありません。MP3 ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。設定は ⚙ →「設定値をクリア」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\">運営者情報</a>をご覧ください。</li>",
-          "reset.title": "設定値をクリアしますか？",
-          "reset.body": "ミキサーの設定（各パートの音量とミュート、全体の音量）を、初めて開いたときの状態に戻します。分離したパートとダウンロードした AI モデルはそのまま残ります。",
-          "reset.ok": "クリアする",
-          "reset.done": "設定値をクリアしました。",
+          "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込みと分離は、ブラウザの中だけで行います。サーバーに送られることはありません。MP3 ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。ミキサーの設定は「ミキサーを元に戻す」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\">運営者情報</a>をご覧ください。</li>",
           "model.del.title": "AI モデルを削除しますか？",
           "model.del.body": "このブラウザに保存した AI モデル（約 170 MB）を削除して、容量を空けます。次に分離するときに、もう一度ダウンロードします。",
           "model.del.ok": "削除する",
@@ -997,7 +983,8 @@
           const m = e.data;
           if (m.type === "progress") onProgress(m);
           else if (m.type === "backend") {
-            $("backend").textContent = m.name === "webgpu" ? t("backend.webgpu") : m.safe ? t("backend.safe", { n: m.threads }) : m.threads > 1 ? t("backend.wasm", { n: m.threads }) : t("backend.wasm1");
+            $("backend").textContent = t("backend.used", { name: m.name === "webgpu" ? t("backend.webgpu") : m.safe ? t("backend.safe", { n: m.threads }) : m.threads > 1 ? t("backend.wasm", { n: m.threads }) : t("backend.wasm1") });
+            $("backend").hidden = false;
             checkModel();
           } else if (m.type === "done") {
             stopWorker();
@@ -1142,8 +1129,9 @@
 
       function setPlaying(on) {
         playing = on;
-        $("playIcon").hidden = on;
-        $("pauseIcon").hidden = !on;
+        // toggleAttribute: SVG elements have no .hidden property (setting it does nothing)
+        $("playIcon").toggleAttribute("hidden", on);
+        $("pauseIcon").toggleAttribute("hidden", !on);
         $("playBtn").setAttribute("aria-label", t(on ? "pause" : "play"));
         if (!on) meters.forEach(function (m) { m.style.width = "0"; });
       }
@@ -1403,7 +1391,6 @@
       const helpDlg = $("helpDlg");
       const privacyDlg = $("privacyDlg");
       const aboutDlg = $("aboutDlg");
-      const resetDlg = $("resetDlg");
       const modelDlg = $("modelDlg");
 
       function closeMenu(returnFocus) {
@@ -1464,17 +1451,7 @@
       $("menuHelp").addEventListener("click", function () { closeMenu(false); openDlg(helpDlg); });
       $("menuPrivacy").addEventListener("click", function () { closeMenu(false); openDlg(privacyDlg); });
       $("menuAbout").addEventListener("click", function () { closeMenu(false); loadLicenses(); openDlg(aboutDlg); });
-      $("menuReset").addEventListener("click", function () { closeMenu(false); openDlg(resetDlg); });
       $("menuModel").addEventListener("click", function () { closeMenu(false); openDlg(modelDlg); });
-      // Clear settings: the mixer settings only. The separated parts and the model stay.
-      $("resetOk").addEventListener("click", function () {
-        try { localStorage.removeItem(STATE_KEY); } catch (e) {}
-        store = freshState();
-        solo.clear();
-        renderStrips(); sendGains();
-        resetDlg.close();
-        toast(t("reset.done"));
-      });
       // Delete the AI model: frees the space the model cache takes. The offline copy of the app stays.
       $("modelOk").addEventListener("click", async function () {
         try { await caches.delete(MODEL_CACHE); } catch (e) {}
@@ -1484,12 +1461,12 @@
       });
 
       // Dialogs: close with the Close button or a click outside; focus returns to the settings button
-      [[helpDlg, "helpClose"], [privacyDlg, "privacyClose"], [aboutDlg, "aboutClose"], [resetDlg, "resetCancel"], [modelDlg, "modelCancel"]].forEach(function (pair) {
+      [[helpDlg, "helpClose"], [privacyDlg, "privacyClose"], [aboutDlg, "aboutClose"], [modelDlg, "modelCancel"]].forEach(function (pair) {
         const dlg = pair[0];
         $(pair[1]).addEventListener("click", function () { dlg.close(); });
         dlg.addEventListener("close", function () { settingsBtn.focus(); });
       });
-      [helpDlg, privacyDlg, aboutDlg, resetDlg, modelDlg, $("netDlg")].forEach(function (dlg) {
+      [helpDlg, privacyDlg, aboutDlg, modelDlg, $("netDlg")].forEach(function (dlg) {
         dlg.addEventListener("click", function (e) {
           const r = dlg.getBoundingClientRect();
           if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
@@ -1502,6 +1479,9 @@
       renderStrips();
       checkModel();
       reportCrash();
+      // iPhone / iPad: the model can need more memory than Safari gives a tab (an iPhone 17e could not
+      // separate with any setting), so say so before the person tries
+      if (isIOS()) $("iosNote").hidden = false;
     })();
   </script>
 <script>

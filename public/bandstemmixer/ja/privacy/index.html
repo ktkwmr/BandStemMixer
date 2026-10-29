@@ -61,7 +61,7 @@
     a:focus-visible, .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
     .site-head { position: sticky; top: 0; z-index: 1; background: var(--paper); border-bottom: 1px solid var(--line); }
-    .site-head .inner { display: flex; align-items: center; gap: 16px; max-width: 960px; margin: 0 auto; padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); }
+    .site-head .inner { display: flex; align-items: center; gap: 16px; max-width: 960px; margin: 0 auto; padding: calc(10px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); }
     .brand { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; text-decoration: none; white-space: nowrap; }
     .mark { width: 28px; height: 28px; flex: none; }
     .head-links { display: flex; align-items: center; gap: 16px; margin-left: auto; font-size: 14px; }
@@ -193,7 +193,7 @@
   <li><b>ミキサーの設定：</b>各パートの音量とミュート、全体の音量、GPU を使うかどうか。</li>
   <li><b>アプリのファイル：</b>オフラインでも使えるよう、本サイトのページやファイルと ONNX Runtime のライブラリを保存します。</li>
 </ul>
-<p>曲と分離したパートはブラウザに保存しません。ページを閉じたり再読み込みしたりすると消えます。上のデータを消したいときは、アプリの ⚙ →「設定値をクリア」と ⚙ →「AI モデルを削除」を使うか、ブラウザの設定でこのサイト（ktkwmr.com）のデータ（サイトデータ・Cookie・ストレージ）を削除してください。</p>
+<p>曲と分離したパートはブラウザに保存しません。ページを閉じたり再読み込みしたりすると消えます。上のデータを消したいときは、アプリの「ミキサーを元に戻す」と ⚙ →「AI モデルを削除」を使うか、ブラウザの設定でこのサイト（ktkwmr.com）のデータ（サイトデータ・Cookie・ストレージ）を削除してください。</p>
 
 <h2 id="external">3. 外部への情報の送信</h2>
 <p>本サイトを利用すると、お使いのブラウザから次のサービスに情報が送信されます。この一覧は、電気通信事業法の外部送信規律に基づく公表を兼ねています。</p>
