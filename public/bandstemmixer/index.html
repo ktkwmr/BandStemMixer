@@ -420,6 +420,9 @@
           "stage.init": "Preparing the AI model…",
           "stage.separate": "Separating into 4 parts…",
           "stage.retry": "That did not work. Trying again with settings that use less memory…",
+          "crash": "The last separation stopped partway ({where}{progress}) and the page was reloaded. The device most likely ran out of memory. Close other apps and tabs and try again, try a shorter song, or use a computer.",
+          "crash.progress": ", {done} of {chunks} sections done",
+          "crash.song": " · song: {time}",
           "where.download": "while downloading the AI model",
           "where.init": "while loading the AI model",
           "where.separate": "while separating",
@@ -520,6 +523,9 @@
           "stage.init": "AI モデルを準備しています…",
           "stage.separate": "4 つのパートに分離しています…",
           "stage.retry": "うまくいかなかったので、メモリを節約する設定でやり直しています…",
+          "crash": "前回の分離は途中で止まり、ページが読み込み直されました（{where}{progress}）。端末のメモリが足りなくなった可能性が高いです。ほかのアプリやタブを閉じてもう一度試すか、短い曲にするか、パソコンでお試しください。",
+          "crash.progress": "、{chunks} 区間のうち {done} 区間まで完了",
+          "crash.song": " · 曲の長さ {time}",
           "where.download": "AI モデルのダウンロード中",
           "where.init": "AI モデルの読み込み中",
           "where.separate": "分離の途中",
@@ -770,6 +776,7 @@
       let file = null;
       let mix = null; // { left, right, duration } at 44.1 kHz; handed to the worker (and cleared) on separation
       let fileOk = false; // the chosen file was read and can be separated
+      let songSec = 0;
       async function decode(f) {
         const data = await f.arrayBuffer();
         // An OfflineAudioContext at 44.1 kHz decodes and resamples to the rate the model needs
@@ -807,6 +814,7 @@
           }
           mix = d;
           fileOk = true;
+          songSec = d.duration;
           $("runBtn").disabled = false;
         } catch (e) {
           if (file !== f) return;
@@ -848,8 +856,31 @@
         bar.classList.toggle("indet", frac == null);
         bar.firstElementChild.style.width = frac == null ? "" : Math.round(frac * 1000) / 10 + "%";
       }
+      // Progress of a running separation, kept in localStorage. If the page is closed by the system
+      // (an iPhone closes the tab when it runs out of memory, with no error the page can catch), the next
+      // load finds it and tells the person where it stopped.
+      const RUN_KEY = "bandstemmixer-running";
+      function recordRun(info) {
+        try {
+          if (info) localStorage.setItem(RUN_KEY, JSON.stringify(Object.assign({ at: Date.now(), sec: songSec }, info)));
+          else localStorage.removeItem(RUN_KEY);
+        } catch (e) {}
+      }
+      function reportCrash() {
+        let r = null;
+        try { r = JSON.parse(localStorage.getItem(RUN_KEY) || "null"); localStorage.removeItem(RUN_KEY); } catch (e) {}
+        // Only a recent run (a reload right after the crash), not one from days ago
+        if (!r || typeof r.at !== "number" || Date.now() - r.at > 60 * 60 * 1000) return;
+        const stage = r.stage === "download" || r.stage === "separate" ? r.stage : "init";
+        const progress = stage === "separate" && r.chunks ? t("crash.progress", { done: r.done || 0, chunks: r.chunks }) : "";
+        const song = r.sec ? t("crash.song", { time: fmtTime(r.sec) }) : "";
+        showError(t("crash", { where: t("where." + stage), progress: progress + song }));
+        console.warn("Previous separation stopped", r);
+      }
+
       function setBusy(on) {
         busy = on;
+        recordRun(on ? { stage: "download" } : null);
         $("runBtn").disabled = on || !fileOk;
         $("drop").style.pointerEvents = on ? "none" : "";
         $("drop").style.opacity = on ? ".5" : "";
@@ -870,8 +901,11 @@
       window.addEventListener("beforeunload", function (e) {
         if (busy) { e.preventDefault(); e.returnValue = ""; }
       });
+      // Leaving or reloading the page on purpose is not a crash (a tab the system kills gets no pagehide)
+      window.addEventListener("pagehide", function () { if (busy) recordRun(null); });
 
       function onProgress(m) {
+        recordRun({ stage: m.stage === "lib" ? "init" : m.stage, done: m.done, chunks: m.chunks });
         if (m.stage === "download") {
           const detail = m.total ? t("detail.download", { loaded: mb(m.loaded), total: mb(m.total) }) : t("detail.downloadNoTotal", { loaded: mb(m.loaded) });
           setProgress(t("stage.download"), detail, m.total ? m.loaded / m.total : null);
@@ -1427,6 +1461,7 @@
       buildStrips();
       renderStrips();
       checkModel();
+      reportCrash();
     })();
   </script>
 <script>

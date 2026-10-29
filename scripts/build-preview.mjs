@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 const SLUG = "bandstemmixer";
 const NAME = "Band Stem Mixer";
 // Files the page fetches or starts with a relative URL
-const FILES = ["separator.js", "mixer.js", "encoder.js", "THIRD_PARTY_LICENSES.md", "icons/icon.svg"];
+const FILES = ["separator.js", "dsp.js", "mixer.js", "encoder.js", "THIRD_PARTY_LICENSES.md", "icons/icon.svg"];
 
 const src = new URL(`../public/${SLUG}/`, import.meta.url);
 const out = new URL("../.preview/", import.meta.url);
