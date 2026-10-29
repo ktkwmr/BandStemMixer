@@ -95,7 +95,8 @@ async function downloadModel() {
 }
 
 // gpu: WebGPU first, then the CPU within the same session (the setup the prototype ran with).
-// safe: CPU only, one thread, no memory arena or pre-planned memory pattern, used when the first try failed.
+// safe: CPU only, at most 2 threads, no memory arena or pre-planned memory pattern. Used from the start on
+// phones and devices with little memory (index.html's LOW_MEM), and as the retry when the first try failed.
 // A backend that failed to start cannot be retried in the same worker (ONNX Runtime keeps the failed
 // state), so the page starts a fresh worker for the safe attempt instead of falling back here.
 async function createSession(modelBytes, gpu, safe) {
@@ -108,7 +109,9 @@ async function createSession(modelBytes, gpu, safe) {
   ]);
   ort.env.wasm.wasmPaths = ORT_BASE;
   // Several threads only work on a cross-origin isolated page (COOP / COEP in public/_headers)
-  const threads = safe || !self.crossOriginIsolated ? 1 : Math.max(1, Math.min(8, navigator.hardwareConcurrency || 4));
+  // safe (phones, or a retry): at most 2 threads; threads add little memory but a lot of speed on a phone
+  const cores = navigator.hardwareConcurrency || 4;
+  const threads = !self.crossOriginIsolated ? 1 : safe ? Math.min(2, cores) : Math.max(1, Math.min(8, cores));
   ort.env.wasm.numThreads = threads;
   post({ type: "progress", stage: "init" });
   const opts = safe
