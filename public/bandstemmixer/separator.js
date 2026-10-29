@@ -16,7 +16,7 @@
 // cross-faded.
 //
 // Messages from the page:
-//   { type: "run", left: Float32Array, right: Float32Array, gpu: boolean, safe: boolean }  (44.1 kHz)
+//   { type: "run", left: Float32Array, right: Float32Array, gpu: boolean, safe: boolean, threads?: number }  (44.1 kHz)
 // Messages to the page:
 //   { type: "progress", stage: "lib" | "download" | "init" | "separate", loaded?, total?, done?, chunks?, elapsed? }
 //   { type: "backend", name: "webgpu" | "wasm", threads, safe }
@@ -97,14 +97,16 @@ async function downloadModel() {
   return bytes;
 }
 
-// gpu: WebGPU first, then the CPU within the same session (the setup the prototype ran with).
-// safe: CPU only, at most 2 threads, no memory arena or pre-planned memory pattern. Used from the start on
-// phones and devices with little memory (index.html's LOW_MEM), and as the retry when the first try failed.
+// gpu: WebGPU first, then the CPU within the same session (the setup the prototype ran with). On an iPhone
+// the GPU's working memory is held by Safari's GPU process, not by the tab, which has a much lower limit.
+// safe: at most 2 threads, no memory arena or pre-planned memory pattern (with or without the GPU).
+// threads: a fixed number of CPU threads (index.html's last resort on phones: 1).
+// index.html picks these per device and moves on to the next setting when one fails or crashes the tab.
 // A backend that failed to start cannot be retried in the same worker (ONNX Runtime keeps the failed
 // state), so the page starts a fresh worker for the safe attempt instead of falling back here.
-async function createSession(modelBytes, gpu, safe) {
+async function createSession(modelBytes, gpu, safe, fixedThreads) {
   post({ type: "progress", stage: "lib" });
-  const useGpu = gpu && !safe && "gpu" in navigator;
+  const useGpu = gpu && "gpu" in navigator;
   // The WebGPU build includes the CPU (WebAssembly) backend too, but its .wasm file is about twice as large
   const [ort, fftModule] = await Promise.all([
     import(ORT_BASE + (useGpu ? "ort.webgpu.min.mjs" : "ort.wasm.min.mjs")),
@@ -114,7 +116,7 @@ async function createSession(modelBytes, gpu, safe) {
   // Several threads only work on a cross-origin isolated page (COOP / COEP in public/_headers)
   // safe (phones, or a retry): at most 2 threads; threads add little memory but a lot of speed on a phone
   const cores = navigator.hardwareConcurrency || 4;
-  const threads = !self.crossOriginIsolated ? 1 : safe ? Math.min(2, cores) : Math.max(1, Math.min(8, cores));
+  const threads = !self.crossOriginIsolated ? 1 : fixedThreads > 0 ? fixedThreads : safe ? Math.min(2, cores) : Math.max(1, Math.min(8, cores));
   ort.env.wasm.numThreads = threads;
   post({ type: "progress", stage: "init" });
   const opts = safe
@@ -227,7 +229,7 @@ self.onmessage = async (e) => {
     stage = "init";
     let ort, dsp, session;
     try {
-      ({ ort, dsp, session } = await createSession(model, !!msg.gpu, !!msg.safe));
+      ({ ort, dsp, session } = await createSession(model, !!msg.gpu, !!msg.safe, msg.threads | 0));
     } catch (err) {
       const text = String(err && err.message || err);
       throw Object.assign(new Error(text), { code: /memory|alloc|RangeError/i.test(text) ? "memory" : navigator.onLine === false ? "offline" : "run" });
