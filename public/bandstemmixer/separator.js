@@ -10,9 +10,10 @@
 //   outputs time branch float32 [1, 4, 2, 343980] and frequency branch float32 [1, 4, 4, 2048, 336]
 //           (sources in the order drums, bass, other, vocals; the frequency branch is turned back into
 //           sound with an inverse STFT in JavaScript and added to the time branch)
-// The STFT / inverse STFT and the tensor layout come from demucs-web (timcsy, MIT), the library the
-// first prototype of this app used. Longer songs are cut into 7.8 s chunks that overlap by a quarter
-// and are cross-faded.
+// The STFT / inverse STFT are in dsp.js: the same numbers as demucs-web (timcsy, MIT; the library the
+// first prototype of this app used, whose FFT it imports), with buffers reused for every chunk so memory
+// does not pile up on a phone. Longer songs are cut into 7.8 s chunks that overlap by a quarter and are
+// cross-faded.
 //
 // Messages from the page:
 //   { type: "run", left: Float32Array, right: Float32Array, gpu: boolean, safe: boolean }  (44.1 kHz)
@@ -22,9 +23,11 @@
 //   { type: "done", stems: [[Int16Array L, Int16Array R] x 4] }  (model order; shared memory when isolated)
 //   { type: "error", code: "offline" | "download" | "memory" | "run", stage: "download" | "init" | "separate", message }
 
+import { createDsp } from "./dsp.js";
+
 // Keep these in sync with MODEL_URL / MODEL_CACHE in index.html and CDN / KEEP in sw.js
 const ORT_BASE = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/";
-const DEMUCS_WEB = "https://cdn.jsdelivr.net/npm/demucs-web@1.0.2/src/processor.js";
+const DEMUCS_FFT = "https://cdn.jsdelivr.net/npm/demucs-web@1.0.2/src/fft.js";
 const MODEL_URL = "https://huggingface.co/timcsy/demucs-web-onnx/resolve/main/htdemucs_embedded.onnx";
 const MODEL_CACHE = "bandstemmixer-model-v2";
 
@@ -103,9 +106,9 @@ async function createSession(modelBytes, gpu, safe) {
   post({ type: "progress", stage: "lib" });
   const useGpu = gpu && !safe && "gpu" in navigator;
   // The WebGPU build includes the CPU (WebAssembly) backend too, but its .wasm file is about twice as large
-  const [ort, demucs] = await Promise.all([
+  const [ort, fftModule] = await Promise.all([
     import(ORT_BASE + (useGpu ? "ort.webgpu.min.mjs" : "ort.wasm.min.mjs")),
-    import(DEMUCS_WEB),
+    import(DEMUCS_FFT),
   ]);
   ort.env.wasm.wasmPaths = ORT_BASE;
   // Several threads only work on a cross-origin isolated page (COOP / COEP in public/_headers)
@@ -119,7 +122,7 @@ async function createSession(modelBytes, gpu, safe) {
     : { graphOptimizationLevel: "basic" };
   const session = await ort.InferenceSession.create(modelBytes, { ...opts, executionProviders: useGpu ? ["webgpu", "wasm"] : ["wasm"] });
   post({ type: "backend", name: useGpu ? "webgpu" : "wasm", threads, safe: !!safe });
-  return { ort, demucs, session };
+  return { ort, dsp: createDsp(fftModule), session };
 }
 
 const toInt16 = (x) => {
@@ -127,12 +130,13 @@ const toInt16 = (x) => {
   return v < 0 ? Math.round(v * 32768) : Math.round(v * 32767);
 };
 
-// One 7.8 s chunk through the model: returns [stem][channel] Float32Array(N) (time + frequency branch)
-async function runChunk(ort, demucs, session, segLeft, segRight) {
-  const input = demucs.prepareModelInput(segLeft, segRight);
+// One 7.8 s chunk through the model, into out[stem][channel] (Float32Array(N) each, reused):
+// time branch + frequency branch turned back into sound
+async function runChunk(ort, dsp, session, segLeft, segRight, out) {
+  const input = dsp.prepare(segLeft, segRight);
   const feeds = { [session.inputNames[0]]: new ort.Tensor("float32", input.waveform, [1, 2, N]) };
   if (session.inputNames.length > 1) {
-    feeds[session.inputNames[1]] = new ort.Tensor("float32", input.magSpec, [1, 4, input.numBins, input.numFrames]);
+    feeds[session.inputNames[1]] = new ort.Tensor("float32", input.spec, [1, 4, 2048, 336]);
   }
   const results = await session.run(feeds);
   let time = null, freq = null;
@@ -143,21 +147,15 @@ async function runChunk(ort, demucs, session, segLeft, segRight) {
     else if (tensor.dims.length === 5 && tensor.dims[2] === 4) freq = data;
   }
   if (!time) throw new Error("time-domain output not found");
-  const specs = freq ? demucs.standaloneMask(freq) : null;
-  const out = [];
   for (let s = 0; s < STEMS; s++) {
-    const l = time.slice(s * 2 * N, s * 2 * N + N);
-    const r = time.slice(s * 2 * N + N, s * 2 * N + 2 * N);
-    if (specs) {
-      const f = demucs.standaloneIspec(specs[s], N);
-      for (let i = 0; i < N; i++) { l[i] += f.left[i]; r[i] += f.right[i]; }
-    }
-    out.push([l, r]);
+    out[s][0].set(time.subarray(s * 2 * N, s * 2 * N + N));
+    out[s][1].set(time.subarray(s * 2 * N + N, s * 2 * N + 2 * N));
+    if (freq) dsp.addFreq(freq, s, out[s][0], out[s][1]);
   }
-  return out;
+  for (const name of session.outputNames) { try { results[name].dispose(); } catch (e) {} }
 }
 
-async function separate(ort, demucs, session, left, right) {
+async function separate(ort, dsp, session, left, right) {
   const total = left.length;
   const chunks = Math.max(1, Math.ceil(total / STRIDE));
   // On a cross-origin isolated page the stems are shared memory, so the page and the player
@@ -176,6 +174,7 @@ async function separate(ort, demucs, session, left, right) {
   let tailLen = 0;
   const segLeft = new Float32Array(N);
   const segRight = new Float32Array(N);
+  const res = Array.from({ length: STEMS }, () => [new Float32Array(N), new Float32Array(N)]);
   const t0 = Date.now();
   post({ type: "progress", stage: "separate", done: 0, chunks, elapsed: 0 });
 
@@ -187,7 +186,7 @@ async function separate(ort, demucs, session, left, right) {
     segRight.fill(0);
     segLeft.set(left.subarray(start, start + len));
     segRight.set(right.subarray(start, start + len));
-    const res = await runChunk(ort, demucs, session, segLeft, segRight);
+    await runChunk(ort, dsp, session, segLeft, segRight, res);
 
     // Samples before `fin` are complete after this chunk; the rest overlap the next chunk
     const fin = last ? len : Math.min(STRIDE, len);
@@ -208,6 +207,8 @@ async function separate(ort, demucs, session, left, right) {
       tailLen = len - fin;
     }
     post({ type: "progress", stage: "separate", done: i + 1, chunks, elapsed: Date.now() - t0 });
+    // A short pause between chunks gives the browser a chance to free memory (matters on a phone)
+    await new Promise((r) => setTimeout(r, 0));
   }
   return out;
 }
@@ -224,16 +225,16 @@ self.onmessage = async (e) => {
       model = await downloadModel();
     }
     stage = "init";
-    let ort, demucs, session;
+    let ort, dsp, session;
     try {
-      ({ ort, demucs, session } = await createSession(model, !!msg.gpu, !!msg.safe));
+      ({ ort, dsp, session } = await createSession(model, !!msg.gpu, !!msg.safe));
     } catch (err) {
       const text = String(err && err.message || err);
       throw Object.assign(new Error(text), { code: /memory|alloc|RangeError/i.test(text) ? "memory" : navigator.onLine === false ? "offline" : "run" });
     }
     model = null;
     stage = "separate";
-    const stems = await separate(ort, demucs, session, msg.left, msg.right);
+    const stems = await separate(ort, dsp, session, msg.left, msg.right);
     try { await session.release(); } catch (err) {}
     const transfer = stems.flatMap((s) => [s[0].buffer, s[1].buffer]).filter((b) => b instanceof ArrayBuffer);
     post({ type: "done", stems }, transfer);
