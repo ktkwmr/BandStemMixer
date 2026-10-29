@@ -99,11 +99,10 @@
     .foot svg { flex: 0 0 auto; }
 
     /* Explanation below the app (for people arriving from search) */
-    .intro { max-width: 760px; margin: 20px 0 8px; color: var(--muted); font-size: 14px; line-height: 1.8; }
-    .intro h1 { margin: 0 0 10px; color: var(--ink); font-size: 20px; line-height: 1.4; text-wrap: balance; }
-    .intro p { margin: 0 0 10px; text-wrap: pretty; }
-    /* Japanese: break lines between phrases, not in the middle of a word (Chrome / Edge 119+; others ignore it) */
-    :lang(ja) { word-break: auto-phrase; }
+    /* Same width as the panels above; plain line wrapping */
+    .intro { margin: 20px 0 8px; color: var(--muted); font-size: 14px; line-height: 1.8; }
+    .intro h1 { margin: 0 0 10px; color: var(--ink); font-size: 20px; line-height: 1.4; }
+    .intro p { margin: 0 0 10px; }
     .intro b { color: var(--ink); }
 
     /* Shared controls */
