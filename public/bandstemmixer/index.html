@@ -281,7 +281,7 @@
           <div class="transport">
             <button class="play" id="playBtn" type="button" aria-label="Play" data-i18n-attr="aria-label:play">
               <svg id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"></path></svg>
-              <svg id="pauseIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><rect x="6" y="4.5" width="4.2" height="15" rx="1"></rect><rect x="13.8" y="4.5" width="4.2" height="15" rx="1"></rect></svg>
+              <svg id="pauseIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><rect x="6" y="6" width="12" height="12" rx="1.5"></rect></svg>
             </button>
             <div class="seek">
               <input type="range" id="seek" min="0" max="1" step="0.1" value="0" aria-label="Position" data-i18n-attr="aria-label:position" />
@@ -448,7 +448,7 @@
           "mixer": "Mixer",
           "empty": "Choose a song and separate it. Vocals, bass, drums, and other (guitar, keys…) appear here, each with its own fader.",
           "play": "Play",
-          "pause": "Pause",
+          "pause": "Stop",
           "position": "Position",
           "master": "Master",
           "mix.reset": "Reset mixer",
@@ -554,7 +554,7 @@
           "mixer": "ミキサー",
           "empty": "曲を選んで分離すると、ボーカル・ベース・ドラム・その他（ギター・鍵盤など）がここに並び、それぞれの音量を変えられます。",
           "play": "再生",
-          "pause": "一時停止",
+          "pause": "停止",
           "position": "再生位置",
           "master": "全体",
           "mix.reset": "ミキサーを元に戻す",
@@ -1153,8 +1153,9 @@
 
       function setPlaying(on) {
         playing = on;
-        $("playIcon").hidden = on;
-        $("pauseIcon").hidden = !on;
+        // toggleAttribute: SVG elements have no .hidden property (setting it does nothing)
+        $("playIcon").toggleAttribute("hidden", on);
+        $("pauseIcon").toggleAttribute("hidden", !on);
         $("playBtn").setAttribute("aria-label", t(on ? "pause" : "play"));
         if (!on) meters.forEach(function (m) { m.style.width = "0"; });
       }
