@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Band Stem Mixer" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+  <title>Split a Band Song into Vocals, Drums, Bass &amp; Other – Free AI Stem Splitter – Band Stem Mixer</title>
+  <meta name="description" content="Free AI stem splitter that runs in your browser: separate a band song into 4 parts (vocals, drums, bass, and other: guitar, keys…), then mute, solo, and mix them to practice your part or make a backing track. Save each part as MP3. No upload, no sign-up." />
+  <link rel="canonical" href="https://ktkwmr.com/bandstemmixer/" />
+  <link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/" />
+  <link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/" />
+  <link rel="alternate" hreflang="x-default" href="https://ktkwmr.com/bandstemmixer/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Band Stem Mixer" />
+  <meta property="og:title" content="Split a Band Song into Vocals, Drums, Bass &amp; Other – Free AI Stem Splitter – Band Stem Mixer" />
+  <meta property="og:description" content="Separate a song into vocals, drums, bass, and other with AI in your browser, then mute or solo each part to practice along. Free, no upload, no sign-up." />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="ja_JP" />
+  <meta property="og:url" content="https://ktkwmr.com/bandstemmixer/" />
+  <meta property="og:image" content="https://ktkwmr.com/bandstemmixer/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Band Stem Mixer: four faders for vocals, bass, drums, and other, with the bass muted" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Band Stem Mixer",
+    "url": "https://ktkwmr.com/bandstemmixer/",
+    "description": "A browser app that separates a band song into 4 stems (vocals, drums, bass, and other) with AI on your device, and lets you mute, solo, and mix them or save each as MP3.",
+    "applicationCategory": "MultimediaApplication",
+    "inLanguage": "en",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires a modern web browser with WebAssembly",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Person", "name": "ktkwmr" }
+  }
+  </script>
+  <style>
+    /* Layout: same as the other apps on ktkwmr.com. White toolbar, grey canvas with white panels (left: song / right: mixer) */
+    :root {
+      color-scheme: light;
+      --ink: #000; --paper: #fff; --muted: #525252; --subtle: #737373; --line: #e5e5e5; --line-strong: #d4d4d4;
+      --hover-fill: #f5f5f5; --canvas: #f5f5f5; --press: #404040; --press-hover: #262626;
+      --paper-shadow: 0 1px 3px rgba(0,0,0,.08), 0 6px 20px rgba(0,0,0,.08);
+      --shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+      --radius: 8px; --ctl-h: 34px;
+      --mono: "Cascadia Mono", "Consolas", "SF Mono", Menlo, "MS Gothic", monospace;
+      --sans: "Segoe UI Variable Text", "Segoe UI", "Yu Gothic UI", "Meiryo UI", "Meiryo", system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      --pad-x: 20px;
+      /* Notch / home bar in landscape (0 where unsupported) */
+      --gl: max(var(--pad-x), env(safe-area-inset-left, 0px)); --gr: max(var(--pad-x), env(safe-area-inset-right, 0px));
+    }
+    @media (max-width: 900px) { :root { --pad-x: 16px; } }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body { margin: 0; min-height: 100dvh; color: var(--ink); background: var(--canvas); font-family: var(--sans); font-size: 13px; line-height: 1.6; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+    button, select, input { font-family: inherit; }
+    :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+    /* Toolbar */
+    .topbar { background: var(--paper); border-bottom: 1px solid var(--line); padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gr) 10px var(--gl); }
+    .toolbar { display: flex; align-items: center; gap: 12px 20px; }
+    .brand { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; font-weight: 700; letter-spacing: .01em; white-space: nowrap; }
+    .brand svg { width: 28px; height: 28px; flex: 0 0 auto; }
+    .toolbar .end { margin-left: auto; display: flex; align-items: center; }
+    #settingsBtn { appearance: none; width: var(--ctl-h); height: var(--ctl-h); padding: 0; border: 1px solid transparent; border-radius: 50%; background: var(--paper); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+    #settingsBtn svg { flex: none; width: 28px; height: 28px; }
+    #settingsBtn:active { background: var(--line); }
+    @media (hover: hover) { #settingsBtn:hover { background: var(--hover-fill); } }
+
+    /* Settings menu (below the gear button) */
+    .menu { position: fixed; z-index: 1000; min-width: 168px; padding: 4px; border: 1px solid var(--ink); border-radius: var(--radius); background: var(--paper); box-shadow: var(--shadow); }
+    .menu button, .menu a { display: block; width: 100%; height: 40px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; color: var(--ink); font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; white-space: nowrap; }
+    .menu a { line-height: 40px; text-decoration: none; }
+    .menu button:active, .menu a:active { background: var(--line); }
+    .menu button:focus-visible, .menu a:focus-visible { outline-offset: -2px; }
+    .menu .menu-sep { height: 1px; margin: 4px 6px; background: var(--line); }
+    @media (hover: hover) { .menu button:hover, .menu a:hover { background: var(--hover-fill); } }
+
+    /* Canvas and panels */
+    .canvas { padding: 16px var(--gr) calc(16px + env(safe-area-inset-bottom, 0px)) var(--gl); display: flex; flex-direction: column; gap: 12px; }
+    .layout { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 16px; align-items: start; min-height: calc(var(--app-h, 100dvh) - 120px); }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; min-height: 0; } }
+    .panel { min-width: 0; background: var(--paper); border: 1px solid var(--line-strong); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+    .panel.out { border-color: transparent; box-shadow: var(--paper-shadow); }
+    .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px 12px; min-height: 40px; padding: 0 6px 0 16px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 700; flex-wrap: wrap; }
+    .panel-head .sub { color: var(--subtle); font-weight: 600; font-size: 12px; padding-right: 10px; }
+    .panel-body { padding: 14px 16px 18px; display: flex; flex-direction: column; gap: 16px; }
+    .foot { color: var(--subtle); font-size: 12px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .foot svg { flex: 0 0 auto; }
+
+    /* Explanation below the app (for people arriving from search) */
+    .intro { max-width: 760px; margin: 20px 0 8px; color: var(--muted); font-size: 14px; line-height: 1.8; }
+    .intro h1 { margin: 0 0 10px; color: var(--ink); font-size: 20px; line-height: 1.4; text-wrap: balance; }
+    .intro p { margin: 0 0 10px; text-wrap: pretty; }
+    /* Japanese: break lines between phrases, not in the middle of a word (Chrome / Edge 119+; others ignore it) */
+    :lang(ja) { word-break: auto-phrase; }
+    .intro b { color: var(--ink); }
+
+    /* Shared controls */
+    .hint { font-size: 12px; color: var(--subtle); margin: 0; }
+    .err { font-size: 12px; color: #b91c1c; margin: 0; font-weight: 600; }
+    .chip { appearance: none; height: var(--ctl-h); padding: 0 12px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--paper); color: var(--ink); font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; touch-action: manipulation; }
+    .chip.sq { width: var(--ctl-h); padding: 0; }
+    .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+    .chip:active:not(:disabled) { background: var(--line); }
+    .chip[aria-pressed="true"]:active:not(:disabled) { background: var(--press); }
+    .chip:disabled { opacity: .4; cursor: default; }
+    @media (hover: hover) {
+      .chip:hover:not(:disabled) { border-color: var(--ink); background: var(--hover-fill); }
+      .chip[aria-pressed="true"]:hover:not(:disabled) { background: var(--press-hover); }
+    }
+    .primary { appearance: none; height: var(--ctl-h); padding: 0 16px; border: 1px solid transparent; border-radius: var(--radius); color: var(--paper); background: var(--ink); font-weight: 600; cursor: pointer; touch-action: manipulation; }
+    .primary:active:not(:disabled) { background: var(--press); }
+    .primary:disabled { opacity: .35; cursor: default; }
+    @media (hover: hover) { .primary:hover:not(:disabled) { background: var(--press-hover); } }
+    .primary.big { height: 48px; font-size: 15px; width: 100%; }
+    input[type=range] { width: 100%; accent-color: var(--ink); margin: 0; height: 28px; touch-action: manipulation; }
+    .check { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--muted); cursor: pointer; }
+    .check input { margin: 2px 0 0; accent-color: var(--ink); width: 16px; height: 16px; flex: none; }
+
+    /* Song panel */
+    .drop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 120px; padding: 16px; border: 1.5px dashed var(--line-strong); border-radius: 10px; text-align: center; cursor: pointer; color: var(--muted); }
+    .drop svg { color: var(--ink); }
+    .drop b { color: var(--ink); font-size: 14px; }
+    .drop:focus-within { border-color: var(--ink); }
+    .drop.over { border-color: var(--ink); background: var(--hover-fill); }
+    @media (hover: hover) { .drop:hover { border-color: var(--ink); background: var(--hover-fill); } }
+    .drop input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    .song { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .song .name { font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
+    .song .meta { font-family: var(--mono); font-size: 12px; color: var(--subtle); }
+    .model { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: flex-start; }
+    .model svg { flex: none; margin-top: 2px; }
+    .progress { display: flex; flex-direction: column; gap: 6px; }
+    .progress .stage { font-size: 13px; font-weight: 700; }
+    .progress .detail { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+    .bar { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+    .bar > div { height: 100%; width: 0; background: var(--ink); transition: width .2s; }
+    .bar.indet > div { width: 30%; animation: indet 1.2s ease-in-out infinite; }
+    @keyframes indet { 0% { transform: translateX(-100%); } 100% { transform: translateX(340%); } }
+    .progress .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+
+    /* Mixer panel */
+    .empty { padding: 40px 24px; text-align: center; color: var(--subtle); font-size: 13px; }
+    .empty .slots { display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; }
+    .empty .slots span { width: 10px; height: 44px; border-radius: 5px; background: var(--line); }
+    .transport { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+    .play { appearance: none; width: 52px; height: 52px; flex: none; border: 0; border-radius: 50%; background: var(--ink); color: var(--paper); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; touch-action: manipulation; }
+    .play:active:not(:disabled) { background: var(--press); }
+    @media (hover: hover) { .play:hover:not(:disabled) { background: var(--press-hover); } }
+    .seek { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .time { font-family: var(--mono); font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; }
+    .strips { display: flex; flex-direction: column; }
+    .strip { display: grid; grid-template-columns: minmax(96px, 150px) auto minmax(0, 1fr) auto; align-items: center; gap: 4px 12px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+    .strip.off .sname, .strip.off .vol { opacity: .45; }
+    .sname { display: flex; flex-direction: column; min-width: 0; }
+    .sname b { font-size: 14px; }
+    .meter { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; margin-top: 4px; }
+    .meter > div { height: 100%; width: 0; background: var(--ink); }
+    .ms { display: flex; gap: 6px; }
+    .ms .chip { width: 40px; padding: 0; font-family: var(--mono); }
+    .vol { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .vol .val { font-family: var(--mono); font-size: 12px; color: var(--muted); min-width: 4ch; text-align: right; }
+    @media (max-width: 560px) {
+      .strip { grid-template-columns: minmax(0, 1fr) auto auto; }
+      .strip .vol { grid-column: 1 / -1; grid-row: 2; }
+    }
+    .mix-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px 16px; }
+    .mix-foot .vol { flex: 1 1 220px; }
+    .mix-foot .vol span:first-child { font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .mix-foot .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .keys { font-size: 12px; color: var(--subtle); padding: 0 16px 16px; margin: 0; }
+    kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; color: var(--muted); background: var(--paper); }
+    @media (pointer: coarse) { .keys { display: none; } }
+
+    /* Tap feedback for one-shot buttons: shrink and darken briefly, like a mobile app.
+       .is-pressed is held for a moment by JS so even a quick tap shows it. */
+    .chip, .play, .primary, #settingsBtn { transition: background-color .12s, border-color .12s, color .12s, transform .1s ease-out; }
+    .chip.is-pressed:not(:disabled), #settingsBtn.is-pressed { background: var(--line); transform: scale(.94); }
+    .play.is-pressed:not(:disabled), .primary.is-pressed:not(:disabled) { background: var(--press); transform: scale(.97); }
+    @media (prefers-reduced-motion: reduce) { .is-pressed { transform: none !important; } }
+
+    /* Dialogs */
+    dialog.msg { width: min(420px, calc(100vw - 32px)); border: 1px solid var(--ink); border-radius: 12px; padding: 24px 24px 20px; box-shadow: var(--shadow); background: var(--paper); color: var(--ink); font-family: var(--sans); }
+    dialog.msg:focus { outline: none; }
+    dialog.msg::backdrop { background: rgba(0, 0, 0, 0.55); }
+    dialog.msg h2 { margin: 0 0 8px; font-size: 16px; font-weight: 700; }
+    dialog.msg .dlg-actions { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+    dialog.msg p.dlg-text { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+    dialog.msg p.dlg-size { margin: 0 0 18px; padding: 10px 12px; border-radius: var(--radius); background: var(--hover-fill); font-size: 13px; font-weight: 600; }
+    dialog.msg .dlg-icon { display: block; margin-bottom: 10px; }
+    dialog.help { width: min(480px, calc(100vw - 32px)); max-height: calc(100% - 32px); }
+    dialog.help[open] { display: flex; flex-direction: column; }
+    .help-body { flex: 0 1 auto; min-height: 0; overflow-y: auto; margin-bottom: 16px; -webkit-overflow-scrolling: touch; }
+    .help-list { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.7; color: var(--muted); }
+    .help-list li { margin-bottom: 10px; }
+    .help-list li:last-child { margin-bottom: 0; }
+    .help-list b { color: var(--ink); }
+    .help-list a { color: inherit; }
+    ul.help-list { list-style: disc; }
+    dialog.about { width: min(560px, calc(100vw - 32px)); height: min(640px, calc(100% - 32px)); }
+    dialog.about[open] { display: flex; flex-direction: column; }
+    dialog.msg p.about-license { margin: 0 0 12px; color: var(--subtle); font-size: 12px; }
+    .about-license a { color: inherit; }
+    .about-body { flex: 1 1 auto; min-height: 0; overflow: auto; margin-bottom: 16px; border: 1px solid var(--line); border-radius: var(--radius); -webkit-overflow-scrolling: touch; }
+    .about-body pre { margin: 0; padding: 12px; color: var(--muted); font-family: var(--mono); font-size: 11px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; }
+    /* Short message at the bottom of the screen */
+    .toast { position: fixed; z-index: 1100; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); width: max-content; max-width: calc(100vw - 32px); padding: 10px 16px; border-radius: var(--radius); background: var(--ink); color: var(--paper); font-size: 13px; font-weight: 600; line-height: 1.5; box-shadow: var(--shadow); }
+    @media (prefers-reduced-motion: reduce) { *, ::before, ::after { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="toolbar">
+      <div class="brand">
+        <svg viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#000"></rect><g stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".45"><path d="M5.5 6v16M9 6v16M12.5 6v16M16 6v16M19.5 6v16M23 6v16"></path></g><g fill="#fff"><rect x="4" y="15" width="3" height="2.6" rx=".8"></rect><rect x="7.5" y="9" width="3" height="2.6" rx=".8"></rect><rect x="11" y="17.5" width="3" height="2.6" rx=".8"></rect><rect x="14.5" y="11.5" width="3" height="2.6" rx=".8"></rect><rect x="18" y="7" width="3" height="2.6" rx=".8"></rect><rect x="21.5" y="13" width="3" height="2.6" rx=".8"></rect></g></svg>
+        <span>Band Stem Mixer</span>
+      </div>
+      <div class="end">
+        <button id="settingsBtn" type="button" aria-label="Settings" data-i18n-attr="aria-label:settings" aria-haspopup="menu" aria-expanded="false" aria-controls="settingsMenu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.89 5.11 L10.33 2.55 L13.67 2.55 L14.11 5.11 A7.2 7.2 0 0 1 15.38 5.64 L17.51 4.14 L19.86 6.49 L18.36 8.62 A7.2 7.2 0 0 1 18.89 9.89 L21.45 10.33 L21.45 13.67 L18.89 14.11 A7.2 7.2 0 0 1 18.36 15.38 L19.86 17.51 L17.51 19.86 L15.38 18.36 A7.2 7.2 0 0 1 14.11 18.89 L13.67 21.45 L10.33 21.45 L9.89 18.89 A7.2 7.2 0 0 1 8.62 18.36 L6.49 19.86 L4.14 17.51 L5.64 15.38 A7.2 7.2 0 0 1 5.11 14.11 L2.55 13.67 L2.55 10.33 L5.11 9.89 A7.2 7.2 0 0 1 5.64 8.62 L4.14 6.49 L6.49 4.14 L8.62 5.64 A7.2 7.2 0 0 1 9.89 5.11 Z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="canvas">
+    <div class="layout">
+      <section class="panel" aria-labelledby="songTitle">
+        <div class="panel-head"><span id="songTitle" data-i18n="song">Song</span></div>
+        <div class="panel-body">
+          <label class="drop" id="drop">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+            <b data-i18n="file.choose">Choose an audio file</b>
+            <span data-i18n="file.hint">or drop it here · MP3, WAV, M4A, FLAC… up to 12 min</span>
+            <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg,.opus,.webm" />
+          </label>
+          <div class="song" id="songInfo" hidden>
+            <span class="name" id="songName"></span>
+            <span class="meta" id="songMeta"></span>
+          </div>
+          <button class="primary big" id="runBtn" type="button" disabled data-i18n="run">Separate into 4 parts</button>
+          <div class="progress" id="progress" hidden>
+            <span class="stage" id="stage"></span>
+            <div class="bar" id="bar"><div></div></div>
+            <div class="row">
+              <span class="detail" id="detail"></span>
+              <button class="chip" id="cancelBtn" type="button" data-i18n="cancel">Cancel</button>
+            </div>
+            <p class="hint" id="keepOpen" data-i18n="keepOpen">Keep this screen open until it finishes. On a phone, separation stops while the screen is off or another app is open.</p>
+          </div>
+          <p class="err" id="err" role="alert" hidden></p>
+          <div class="model">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
+            <span id="modelState" data-i18n="model.checking">Checking the AI model…</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel out" aria-labelledby="mixTitle">
+        <div class="panel-head"><span id="mixTitle" data-i18n="mixer">Mixer</span><span class="sub" id="backend"></span></div>
+        <div class="empty" id="empty">
+          <div class="slots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <span data-i18n="empty">Choose a song and separate it. Vocals, bass, drums, and other (guitar, keys…) appear here, each with its own fader.</span>
+        </div>
+        <div id="mixer" hidden>
+          <div class="transport">
+            <button class="play" id="playBtn" type="button" aria-label="Play" data-i18n-attr="aria-label:play">
+              <svg id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"></path></svg>
+              <svg id="pauseIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><rect x="6" y="4.5" width="4.2" height="15" rx="1"></rect><rect x="13.8" y="4.5" width="4.2" height="15" rx="1"></rect></svg>
+            </button>
+            <div class="seek">
+              <input type="range" id="seek" min="0" max="1" step="0.1" value="0" aria-label="Position" data-i18n-attr="aria-label:position" />
+              <div class="time"><span id="timeNow">0:00</span><span id="timeEnd">0:00</span></div>
+            </div>
+          </div>
+          <div class="strips" id="strips"></div>
+          <div class="mix-foot">
+            <label class="vol"><span data-i18n="master">Master</span><input type="range" id="master" min="0" max="1.5" step="0.01" value="1" /><span class="val" id="masterVal">100%</span></label>
+            <div class="btns">
+              <button class="chip" id="resetMix" type="button" data-i18n="mix.reset">Reset mixer</button>
+              <button class="chip save-btn" id="saveMix" type="button" data-i18n="mix.save">Save this mix (MP3)</button>
+            </div>
+          </div>
+          <p class="keys" data-i18n-html="keys"><kbd>Space</kbd> play / pause · <kbd>1</kbd>–<kbd>4</kbd> mute a part · <kbd>←</kbd> <kbd>→</kbd> 5 seconds back / forward</p>
+        </div>
+      </section>
+    </div>
+    <footer class="foot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span data-i18n="foot">Your song is separated on this device and never uploaded. No account needed.</span></footer>
+
+    <section class="intro" aria-labelledby="introTitle">
+      <h1 id="introTitle" data-i18n="intro.title">Split a band song into vocals, drums, bass, and other</h1>
+      <div data-i18n-html="intro.body">
+        <p>Band Stem Mixer separates a song into <b>4 parts</b> with AI: vocals, drums, bass, and other (guitar, keys, and everything else). Choose an audio file such as MP3, WAV, or M4A and press “Separate into 4 parts”. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>
+        <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the drums to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as an MP3 file.</p>
+        <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 170 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>
+        <p>The model is Demucs (htdemucs), a music separation model by Meta. Like all such models it is not perfect: sounds can leak between parts. Guitar and keys are not split from each other; they come out together in “Other”. Free, with no sign-up and no ads.</p>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="msg" id="netDlg" tabindex="-1" aria-labelledby="netTitle">
+    <svg class="dlg-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+    <h2 id="netTitle"></h2>
+    <p class="dlg-text" id="netBody"></p>
+    <p class="dlg-size" id="netSize"></p>
+    <div class="dlg-actions">
+      <button class="chip" id="netCancel" type="button" data-i18n="net.later">Not now</button>
+      <button class="primary" id="netOk" type="button" data-i18n="net.ok">Download and separate</button>
+    </div>
+  </dialog>
+
+  <dialog class="msg help" id="helpDlg" tabindex="-1" aria-labelledby="helpTitle">
+    <h2 id="helpTitle" data-i18n="menu.help">How to use</h2>
+    <div class="help-body">
+      <ol class="help-list" data-i18n-html="help.body">
+        <li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>
+        <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>
+        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>
+        <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>
+        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>
+        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>
+      </ol>
+    </div>
+    <div class="dlg-actions">
+      <button class="primary" id="helpClose" type="button" data-i18n="close">Close</button>
+    </div>
+  </dialog>
+
+  <dialog class="msg help" id="privacyDlg" tabindex="-1" aria-labelledby="privacyTitle">
+    <h2 id="privacyTitle" data-i18n="menu.privacy">Privacy</h2>
+    <div class="help-body">
+      <ul class="help-list" data-i18n-html="privacy.body">
+        <li><b>Your song stays on your device</b> – The audio file you choose is read and separated only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>
+        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>
+        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Clear the settings with ⚙ → “Clear settings” and delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>
+        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>
+        <li><b>Contact</b> – Questions and feedback: <a href="https://github.com/ktkwmr/BandStemMixer/issues" target="_blank" rel="noopener">GitHub Issues</a>.</li>
+        <li><b>Full policy</b> – See the <a href="/bandstemmixer/privacy/">privacy policy</a> and <a href="/bandstemmixer/about/">about this site</a>.</li>
+      </ul>
+    </div>
+    <div class="dlg-actions">
+      <button class="primary" id="privacyClose" type="button" data-i18n="close">Close</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <div class="menu" id="settingsMenu" role="menu" aria-label="Settings" data-i18n-attr="aria-label:settings" hidden>
+    <button type="button" role="menuitem" id="menuHelp" data-i18n="menu.help">How to use</button>
+    <button type="button" role="menuitem" id="menuPrivacy" data-i18n="menu.privacy">Privacy</button>
+    <button type="button" role="menuitem" id="menuAbout" data-i18n="menu.about">About</button>
+    <div class="menu-sep" role="separator"></div>
+    <button type="button" role="menuitem" id="menuReset" data-i18n="menu.reset">Clear settings</button>
+    <button type="button" role="menuitem" id="menuModel" data-i18n="menu.model">Delete the AI model</button>
+  </div>
+
+  <dialog class="msg" id="resetDlg" tabindex="-1" aria-labelledby="resetTitle">
+    <h2 id="resetTitle" data-i18n="reset.title">Clear settings?</h2>
+    <p class="dlg-text" data-i18n="reset.body">This returns the mixer settings (each part's level and mute, and the master volume) to how they are when the app is first opened. The separated parts and the downloaded AI model stay.</p>
+    <div class="dlg-actions">
+      <button class="chip" id="resetCancel" type="button" data-i18n="cancel">Cancel</button>
+      <button class="primary" id="resetOk" type="button" data-i18n="reset.ok">Clear</button>
+    </div>
+  </dialog>
+
+  <dialog class="msg" id="modelDlg" tabindex="-1" aria-labelledby="modelTitle">
+    <h2 id="modelTitle" data-i18n="model.del.title">Delete the AI model?</h2>
+    <p class="dlg-text" data-i18n="model.del.body">This deletes the AI model (about 170 MB) saved in this browser, to free up space. It is downloaded again the next time you separate a song.</p>
+    <div class="dlg-actions">
+      <button class="chip" id="modelCancel" type="button" data-i18n="cancel">Cancel</button>
+      <button class="primary" id="modelOk" type="button" data-i18n="model.del.ok">Delete</button>
+    </div>
+  </dialog>
+
+  <dialog class="msg about" id="aboutDlg" tabindex="-1" aria-labelledby="aboutTitle">
+    <h2 id="aboutTitle" data-i18n="menu.about">About</h2>
+    <p class="about-license" data-i18n-html="about.license">© 2026 ktkwmr · Licensed under the <a href="https://github.com/ktkwmr/BandStemMixer/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a> · <a href="/bandstemmixer/about/">About this site</a></p>
+    <div class="about-body"><pre id="licenseText">Loading…</pre></div>
+    <div class="dlg-actions">
+      <button class="primary" id="aboutClose" type="button" data-i18n="close">Close</button>
+    </div>
+  </dialog>
+
+  <script>
+    (function () {
+      // ---------- English / Japanese ----------
+      // Text is set with data-i18n (textContent) / data-i18n-html (innerHTML, fixed strings below only) / data-i18n-attr (attributes)
+      const I18N = {
+        en: {
+          "settings": "Settings",
+          "song": "Song",
+          "file.choose": "Choose an audio file",
+          "file.hint": "or drop it here · MP3, WAV, M4A, FLAC… up to 12 min",
+          "file.reading": "Reading the file…",
+          "file.meta": "{time} · {ch}",
+          "file.mono": "mono",
+          "file.stereo": "stereo",
+          "run": "Separate into 4 parts",
+          "run.again": "Separate again",
+          "cancel": "Cancel",
+          "close": "Close",
+          "keepOpen": "Keep this screen open until it finishes. On a phone, separation stops while the screen is off or another app is open.",
+          "model.checking": "Checking the AI model…",
+          "model.missing": "The AI model (about {mb} MB) is downloaded the first time you separate, and kept on this device.",
+          "model.ready": "The AI model is saved on this device. No download needed.",
+          "model.nocache": "This browser cannot keep the AI model, so it is downloaded (about {mb} MB) each time.",
+          "stage.download": "Downloading the AI model…",
+          "stage.lib": "Loading the separation engine…",
+          "stage.init": "Preparing the AI model…",
+          "stage.separate": "Separating into 4 parts…",
+          "stage.retry": "That did not work. Trying again with settings that use less memory…",
+          "where.download": "while downloading the AI model",
+          "where.init": "while loading the AI model",
+          "where.separate": "while separating",
+          "detail.download": "{loaded} / {total} MB",
+          "detail.downloadNoTotal": "{loaded} MB",
+          "detail.separate": "{done} / {chunks} ({pct}%)",
+          "detail.eta": "{done} / {chunks} ({pct}%) · about {eta} left",
+          "eta.min": "{n} min",
+          "eta.sec": "{n} s",
+          "backend.wasm": "CPU · {n} threads",
+          "backend.wasm1": "CPU · 1 thread",
+          "backend.safe": "CPU · memory-saving mode",
+          "backend.webgpu": "GPU (WebGPU)",
+          "done": "Done in {time}. Press play.",
+          "canceled": "Separation canceled.",
+          "mixer": "Mixer",
+          "empty": "Choose a song and separate it. Vocals, bass, drums, and other (guitar, keys…) appear here, each with its own fader.",
+          "play": "Play",
+          "pause": "Pause",
+          "position": "Position",
+          "master": "Master",
+          "mix.reset": "Reset mixer",
+          "mix.save": "Save this mix (MP3)",
+          "mix.reset.done": "All parts back to 100%, unmuted.",
+          "mute": "Mute {name}",
+          "solo": "Solo {name}",
+          "volume": "{name} volume",
+          "save": "Save {name} as MP3",
+          "saved": "Saved {file}.",
+          "encoding": "Making the MP3… {pct}%",
+          "save.preview": "Saving MP3 files is not available in this preview.",
+          "stem.vocals": "Vocals",
+          "stem.bass": "Bass",
+          "stem.drums": "Drums",
+          "stem.other": "Other (guitar, keys…)",
+          "stem.mix": "Mix",
+          "keys": "<kbd>Space</kbd> play / pause · <kbd>1</kbd>–<kbd>4</kbd> mute a part · <kbd>←</kbd> <kbd>→</kbd> 5 seconds back / forward",
+          "foot": "Your song is separated on this device and never uploaded. No account needed.",
+          "net.title.cellular": "You seem to be on mobile data",
+          "net.title.saveData": "Data Saver is on",
+          "net.title.unknown": "Are you on Wi-Fi?",
+          "net.body.cellular": "Separating needs a large download the first time. It can use a lot of your data plan, so we recommend connecting to Wi-Fi first.",
+          "net.body.saveData": "Your browser asks to save data. Separating needs a large download the first time, so we recommend connecting to Wi-Fi first.",
+          "net.body.unknown": "This browser does not tell the app whether you are on Wi-Fi or mobile data. Separating needs a large download the first time, so check that you are on Wi-Fi.",
+          "net.size": "Download: about {mb} MB (the AI model and the separation engine). Only the first time; it is kept on this device.",
+          "net.later": "Not now",
+          "net.ok": "Download and separate",
+          "err.decode": "This file could not be read. Try another format such as MP3, WAV, or M4A.",
+          "err.tooLong": "Songs up to 12 minutes can be separated. This one is {time}. Cut it shorter and try again.",
+          "err.offline": "You are offline. The AI model needs to be downloaded the first time; connect to the internet and try again.",
+          "err.download": "The AI model could not be downloaded. Check your connection and try again.",
+          "err.memory": "This device ran out of memory {where} ({msg}). Close other tabs and apps, try a shorter song, or use a computer.",
+          "err.run": "Separation failed {where} ({msg}). Close other tabs and apps, reload the page, and try again.",
+          "err.worker": "This browser cannot run the separation. Use a recent version of Chrome, Edge, Safari, or Firefox.",
+          "err.audio": "Sound could not be played in this browser.",
+          "err.save": "The file could not be saved.",
+          "intro.title": "Split a band song into vocals, drums, bass, and other",
+          "intro.body": "<p>Band Stem Mixer separates a song into <b>4 parts</b> with AI: vocals, drums, bass, and other (guitar, keys, and everything else). Choose an audio file such as MP3, WAV, or M4A and press “Separate into 4 parts”. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>\n        <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the drums to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as an MP3 file.</p>\n        <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 170 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>\n        <p>The model is Demucs (htdemucs), a music separation model by Meta. Like all such models it is not perfect: sounds can leak between parts. Guitar and keys are not split from each other; they come out together in “Other”. Free, with no sign-up and no ads.</p>",
+          "menu.help": "How to use",
+          "menu.privacy": "Privacy",
+          "menu.about": "About",
+          "menu.reset": "Clear settings",
+          "menu.model": "Delete the AI model",
+          "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
+          "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read and separated only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Clear the settings with ⚙ → “Clear settings” and delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\">privacy policy</a> and <a href=\"/bandstemmixer/about/\">about this site</a>.</li>",
+          "reset.title": "Clear settings?",
+          "reset.body": "This returns the mixer settings (each part's level and mute, and the master volume) to how they are when the app is first opened. The separated parts and the downloaded AI model stay.",
+          "reset.ok": "Clear",
+          "reset.done": "Settings cleared.",
+          "model.del.title": "Delete the AI model?",
+          "model.del.body": "This deletes the AI model (about 170 MB) saved in this browser, to free up space. It is downloaded again the next time you separate a song.",
+          "model.del.ok": "Delete",
+          "model.del.done": "Deleted the AI model.",
+          "about.license": "© 2026 ktkwmr · Licensed under the <a href=\"https://github.com/ktkwmr/BandStemMixer/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT License</a> · <a href=\"/bandstemmixer/about/\">About this site</a>",
+          "loading": "Loading…",
+          "err.license": "Could not load the license information. Check your connection and try again."
+        },
+        ja: {
+          "settings": "設定",
+          "song": "曲",
+          "file.choose": "音声ファイルを選ぶ",
+          "file.hint": "またはここにドロップ · MP3・WAV・M4A・FLAC など、12 分まで",
+          "file.reading": "ファイルを読み込んでいます…",
+          "file.meta": "{time} · {ch}",
+          "file.mono": "モノラル",
+          "file.stereo": "ステレオ",
+          "run": "4 つのパートに分離する",
+          "run.again": "もう一度分離する",
+          "cancel": "キャンセル",
+          "close": "閉じる",
+          "keepOpen": "終わるまでこの画面を開いたままにしてください。スマホでは、画面が消えたりほかのアプリに切り替えたりすると分離が止まります。",
+          "model.checking": "AI モデルを確認しています…",
+          "model.missing": "AI モデル（約 {mb} MB）は、最初に分離するときにダウンロードして、この端末に保存します。",
+          "model.ready": "AI モデルはこの端末に保存済みです。ダウンロードは不要です。",
+          "model.nocache": "このブラウザでは AI モデルを保存できないため、毎回ダウンロードします（約 {mb} MB）。",
+          "stage.download": "AI モデルをダウンロードしています…",
+          "stage.lib": "分離のプログラムを読み込んでいます…",
+          "stage.init": "AI モデルを準備しています…",
+          "stage.separate": "4 つのパートに分離しています…",
+          "stage.retry": "うまくいかなかったので、メモリを節約する設定でやり直しています…",
+          "where.download": "AI モデルのダウンロード中",
+          "where.init": "AI モデルの読み込み中",
+          "where.separate": "分離の途中",
+          "detail.download": "{loaded} / {total} MB",
+          "detail.downloadNoTotal": "{loaded} MB",
+          "detail.separate": "{done} / {chunks}（{pct}%）",
+          "detail.eta": "{done} / {chunks}（{pct}%）· 残り約 {eta}",
+          "eta.min": "{n} 分",
+          "eta.sec": "{n} 秒",
+          "backend.wasm": "CPU · {n} スレッド",
+          "backend.wasm1": "CPU · 1 スレッド",
+          "backend.safe": "CPU · メモリ節約モード",
+          "backend.webgpu": "GPU（WebGPU）",
+          "done": "{time} で分離しました。再生してください。",
+          "canceled": "分離をキャンセルしました。",
+          "mixer": "ミキサー",
+          "empty": "曲を選んで分離すると、ボーカル・ベース・ドラム・その他（ギター・鍵盤など）がここに並び、それぞれの音量を変えられます。",
+          "play": "再生",
+          "pause": "一時停止",
+          "position": "再生位置",
+          "master": "全体",
+          "mix.reset": "ミキサーを元に戻す",
+          "mix.save": "このミックスを保存（MP3）",
+          "mix.reset.done": "すべてのパートを 100%・ミュートなしに戻しました。",
+          "mute": "{name}をミュート",
+          "solo": "{name}をソロ",
+          "volume": "{name}の音量",
+          "save": "{name}を MP3 で保存",
+          "saved": "{file} を保存しました。",
+          "encoding": "MP3 を作っています… {pct}%",
+          "save.preview": "このプレビューでは MP3 ファイルを保存できません。",
+          "stem.vocals": "ボーカル",
+          "stem.bass": "ベース",
+          "stem.drums": "ドラム",
+          "stem.other": "その他（ギター・鍵盤など）",
+          "stem.mix": "ミックス",
+          "keys": "<kbd>Space</kbd> 再生・一時停止 · <kbd>1</kbd>〜<kbd>4</kbd> パートのミュート · <kbd>←</kbd> <kbd>→</kbd> 5 秒戻る・進む",
+          "foot": "曲はこの端末の中で分離し、どこにもアップロードしません。登録も不要です。",
+          "net.title.cellular": "モバイルデータ通信に接続しているようです",
+          "net.title.saveData": "データセーバーがオンになっています",
+          "net.title.unknown": "Wi-Fi に接続していますか？",
+          "net.body.cellular": "初めて分離するときは、大きなファイルをダウンロードします。データ通信量を多く使うため、Wi-Fi に接続してからの実行をおすすめします。",
+          "net.body.saveData": "ブラウザがデータ通信量の節約を求めています。初めて分離するときは大きなファイルをダウンロードするため、Wi-Fi に接続してからの実行をおすすめします。",
+          "net.body.unknown": "このブラウザでは、Wi-Fi とモバイルデータ通信のどちらに接続しているかをアプリから確かめられません。初めて分離するときは大きなファイルをダウンロードするため、Wi-Fi に接続していることを確かめてください。",
+          "net.size": "ダウンロード：約 {mb} MB（AI モデルと分離のプログラム）。初回だけで、この端末に保存します。",
+          "net.later": "やめておく",
+          "net.ok": "ダウンロードして分離する",
+          "err.decode": "このファイルは読み込めませんでした。MP3・WAV・M4A など、ほかの形式でお試しください。",
+          "err.tooLong": "分離できるのは 12 分までの曲です。この曲は {time} あります。短く切ってからお試しください。",
+          "err.offline": "オフラインです。初回は AI モデルのダウンロードが必要です。インターネットに接続してからもう一度お試しください。",
+          "err.download": "AI モデルをダウンロードできませんでした。接続を確認して、もう一度お試しください。",
+          "err.memory": "{where}に端末のメモリが足りなくなりました（{msg}）。ほかのタブやアプリを閉じるか、短い曲にするか、パソコンでお試しください。",
+          "err.run": "{where}に分離に失敗しました（{msg}）。ほかのタブやアプリを閉じ、ページを再読み込みして、もう一度お試しください。",
+          "err.worker": "このブラウザでは分離できません。新しいバージョンの Chrome・Edge・Safari・Firefox をお使いください。",
+          "err.audio": "このブラウザでは音を再生できませんでした。",
+          "err.save": "ファイルを保存できませんでした。",
+          "intro.title": "バンドの曲をボーカル・ドラム・ベース・その他に分離",
+          "intro.body": "<p>Band Stem Mixer は、AI で曲を <b>4 つのパート</b>（ボーカル・ドラム・ベース・その他（ギター・鍵盤など））に分離する無料の Web アプリです。MP3・WAV・M4A などの音声ファイルを選んで「4 つのパートに分離する」を押すだけ。パートごとに音量のフェーダーとミュート（M）・ソロ（S）があり、ぴったりそろって再生されます。</p>\n        <p>バンド練習に使えます。自分のパートだけミュートして残りの演奏に合わせて弾く（マイナスワン音源・カラオケ音源）、ベースやドラムだけをソロにしてフレーズを耳コピする、ボーカルを消してカラオケにする、など。各パートと、自分で作ったミックスは MP3 ファイルで保存できます。</p>\n        <p>分離は<b>ブラウザの中</b>で行い、曲はどこにもアップロードしません。初回だけ AI モデル（約 170 MB、次回のために端末に保存）をダウンロードするので、Wi-Fi でお使いください。モバイルデータ通信のときは、ダウンロードの前に確認を表示します。分離には時間がかかります。最近のパソコンで曲の長さと同じか数倍、スマホではさらにかかります。</p>\n        <p>AI モデルには、Meta の音源分離モデル Demucs（htdemucs）を使っています。ほかの分離ツールと同じく完璧ではなく、パートの間で音が混ざることがあります。ギターと鍵盤は分かれず、「その他」にまとめて入ります。無料・登録不要・広告なし。</p>",
+          "menu.help": "使い方",
+          "menu.privacy": "プライバシー",
+          "menu.about": "このアプリについて",
+          "menu.reset": "設定値をクリア",
+          "menu.model": "AI モデルを削除",
+          "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – 「4 つのパートに分離する」を押します。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した MP3 ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
+          "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込みと分離は、ブラウザの中だけで行います。サーバーに送られることはありません。MP3 ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。設定は ⚙ →「設定値をクリア」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\">運営者情報</a>をご覧ください。</li>",
+          "reset.title": "設定値をクリアしますか？",
+          "reset.body": "ミキサーの設定（各パートの音量とミュート、全体の音量）を、初めて開いたときの状態に戻します。分離したパートとダウンロードした AI モデルはそのまま残ります。",
+          "reset.ok": "クリアする",
+          "reset.done": "設定値をクリアしました。",
+          "model.del.title": "AI モデルを削除しますか？",
+          "model.del.body": "このブラウザに保存した AI モデル（約 170 MB）を削除して、容量を空けます。次に分離するときに、もう一度ダウンロードします。",
+          "model.del.ok": "削除する",
+          "model.del.done": "AI モデルを削除しました。",
+          "about.license": "© 2026 ktkwmr · <a href=\"https://github.com/ktkwmr/BandStemMixer/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT ライセンス</a> · <a href=\"/bandstemmixer/ja/about/\">運営者情報</a>",
+          "loading": "読み込んでいます…",
+          "err.license": "ライセンス情報を読み込めませんでした。接続を確認して、もう一度お試しください。"
+        }
+      };
+
+      // Order: ?lang=ja|en in the URL → the page's fixed language (data-page-lang of ja/index.html) → the browser's first language (English unless Japanese)
+      function detectLang() {
+        const q = new URLSearchParams(location.search).get("lang");
+        if (q === "ja" || q === "en") return q;
+        const fixed = document.documentElement.dataset.pageLang;
+        if (fixed === "ja" || fixed === "en") return fixed;
+        const first = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+        return /^ja\b/i.test(first) ? "ja" : "en";
+      }
+      const lang = detectLang();
+
+      function t(key, vars) {
+        let str = I18N[lang][key];
+        if (str === undefined) str = I18N.en[key] !== undefined ? I18N.en[key] : key;
+        if (vars) str = str.replace(/\{(\w+)\}/g, function (m, k) { return k in vars ? String(vars[k]) : m; });
+        return str;
+      }
+
+      function applyI18n() {
+        document.documentElement.lang = lang;
+        document.querySelectorAll("[data-i18n]").forEach(function (el) { el.textContent = t(el.dataset.i18n); });
+        document.querySelectorAll("[data-i18n-html]").forEach(function (el) { el.innerHTML = t(el.dataset.i18nHtml); });
+        document.querySelectorAll("[data-i18n-attr]").forEach(function (el) {
+          el.dataset.i18nAttr.split(";").forEach(function (pair) {
+            const parts = pair.split(":");
+            el.setAttribute(parts[0], t(parts[1]));
+          });
+        });
+      }
+
+      function isIOS() {
+        return /iP(hone|ad|od)/.test(navigator.userAgent) ||
+          (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      }
+      // iOS Safari zooms in when a control under 16px is tapped, so only on iOS add maximum-scale (pinch zoom still works)
+      if (isIOS()) {
+        const vp = document.querySelector('meta[name="viewport"]');
+        if (vp) vp.setAttribute("content", vp.getAttribute("content") + ", maximum-scale=1");
+      }
+      // Play through the iPhone's silent switch, like a music app (Safari 16.4+)
+      try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
+
+      const $ = (id) => document.getElementById(id);
+
+      // ---------- Model and parts ----------
+      // Keep MODEL_URL / MODEL_CACHE in sync with separator.js
+      const MODEL_URL = "https://huggingface.co/timcsy/demucs-web-onnx/resolve/main/htdemucs_embedded.onnx";
+      const MODEL_CACHE = "bandstemmixer-model-v2";
+      const MODEL_MB = 172;
+      // ONNX Runtime's WebAssembly file: CPU build / WebGPU build (used when the browser has WebGPU)
+      const ENGINE_MB = { cpu: 14, gpu: 27 };
+      const HAS_GPU = "gpu" in navigator;
+      const SR = 44100;
+      const MAX_SEC = 12 * 60;
+      // Display order (a band's usual order). idx = the model's output order: drums, bass, other, vocals
+      const PARTS = [
+        { key: "vocals", idx: 3 },
+        { key: "bass", idx: 1 },
+        { key: "drums", idx: 0 },
+        { key: "other", idx: 2 }
+      ];
+
+      // ---------- Saved state ----------
+      // Mixer settings only. Solo is not restored (a part left on solo would silence the others without notice).
+      const STATE_KEY = "bandstemmixer-state";
+      function freshState() {
+        const parts = {};
+        PARTS.forEach(function (p) { parts[p.key] = { vol: 1, mute: false }; });
+        return { v: 1, master: 1, parts: parts };
+      }
+      const clampVol = (v, max) => (typeof v === "number" && isFinite(v) ? Math.max(0, Math.min(max, v)) : 1);
+      let store = (function () {
+        const s = freshState();
+        try {
+          const o = JSON.parse(localStorage.getItem(STATE_KEY) || "null");
+          if (o && o.v === 1) {
+            s.master = clampVol(o.master, 1.5);
+            PARTS.forEach(function (p) {
+              const x = o.parts && o.parts[p.key];
+              if (x) s.parts[p.key] = { vol: clampVol(x.vol, 1.5), mute: x.mute === true };
+            });
+          }
+        } catch (e) {}
+        return s;
+      })();
+      function saveState() {
+        try { localStorage.setItem(STATE_KEY, JSON.stringify(store)); } catch (e) { /* storage full or blocked: keep going */ }
+      }
+      const solo = new Set();
+
+      // ---------- Helpers ----------
+      function fmtTime(sec) {
+        sec = Math.max(0, Math.floor(sec));
+        return Math.floor(sec / 60) + ":" + String(sec % 60).padStart(2, "0");
+      }
+      const mb = (bytes) => (bytes / 1048576).toFixed(1);
+      let toastTimer = 0;
+      // sticky: stays until the next message (progress of a long task)
+      function toast(msg, sticky) {
+        const el = $("toast");
+        el.textContent = msg;
+        el.hidden = false;
+        clearTimeout(toastTimer);
+        if (!sticky) toastTimer = setTimeout(function () { el.hidden = true; }, 3200);
+      }
+      function showError(msg) {
+        const el = $("err");
+        el.textContent = msg || "";
+        el.hidden = !msg;
+      }
+
+      // ---------- Network check before the large download ----------
+      // navigator.connection.type is reported by Chrome on Android (and ChromeOS) only. iPhone / iPad
+      // browsers and Firefox do not tell, so on a phone or tablet the app asks the person instead.
+      function isMobile() {
+        return isIOS() || /Android|Mobile/i.test(navigator.userAgent) || matchMedia("(pointer: coarse)").matches;
+      }
+      function connectionRisk() {
+        const c = navigator.connection;
+        if (c) {
+          if (c.saveData) return "saveData";
+          if (c.type === "cellular" || c.type === "wimax" || c.type === "bluetooth") return "cellular";
+          if (c.type === "wifi" || c.type === "ethernet") return null;
+        }
+        return isMobile() ? "unknown" : null;
+      }
+
+      let modelCached = false;
+      let cacheUsable = true;
+      async function checkModel() {
+        try {
+          const cache = await caches.open(MODEL_CACHE);
+          modelCached = !!(await cache.match(MODEL_URL));
+        } catch (e) {
+          cacheUsable = false;
+          modelCached = false;
+        }
+        $("modelState").textContent = modelCached ? t("model.ready") : t(cacheUsable ? "model.missing" : "model.nocache", { mb: MODEL_MB });
+      }
+
+      function askNetwork() {
+        const risk = modelCached ? null : connectionRisk();
+        if (!risk) return Promise.resolve(true);
+        const dlg = $("netDlg");
+        $("netTitle").textContent = t("net.title." + risk);
+        $("netBody").textContent = t("net.body." + risk);
+        $("netSize").textContent = t("net.size", { mb: MODEL_MB + (HAS_GPU ? ENGINE_MB.gpu : ENGINE_MB.cpu) });
+        return new Promise(function (resolve) {
+          let ok = false;
+          function finish() {
+            dlg.removeEventListener("close", finish);
+            resolve(ok);
+          }
+          $("netOk").onclick = function () { ok = true; dlg.close(); };
+          $("netCancel").onclick = function () { dlg.close(); };
+          dlg.addEventListener("close", finish);
+          openDlg(dlg);
+        });
+      }
+
+      // ---------- Reading the file ----------
+      let file = null;
+      let mix = null; // { left, right, duration } at 44.1 kHz
+      async function decode(f) {
+        const data = await f.arrayBuffer();
+        // An OfflineAudioContext at 44.1 kHz decodes and resamples to the rate the model needs
+        const Ctx = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+        const ctx = new Ctx(2, SR, SR);
+        const buf = await new Promise(function (resolve, reject) {
+          const p = ctx.decodeAudioData(data, resolve, reject);
+          if (p && p.catch) p.catch(reject);
+        });
+        const left = buf.getChannelData(0);
+        const right = buf.numberOfChannels > 1 ? buf.getChannelData(1) : left;
+        return { left: left, right: right, duration: buf.duration, channels: buf.numberOfChannels, rate: buf.sampleRate };
+      }
+
+      async function chooseFile(f) {
+        if (!f) return;
+        if (busy) return;
+        file = f;
+        mix = null;
+        showError("");
+        $("songInfo").hidden = false;
+        $("songName").textContent = f.name;
+        $("songMeta").textContent = t("file.reading");
+        $("runBtn").disabled = true;
+        $("runBtn").textContent = t("run");
+        try {
+          const d = await decode(f);
+          if (file !== f) return;
+          $("songMeta").textContent = t("file.meta", { time: fmtTime(d.duration), ch: t(d.channels > 1 ? "file.stereo" : "file.mono") });
+          if (d.duration > MAX_SEC) {
+            showError(t("err.tooLong", { time: fmtTime(d.duration) }));
+            return;
+          }
+          mix = d;
+          $("runBtn").disabled = false;
+        } catch (e) {
+          if (file !== f) return;
+          $("songMeta").textContent = "";
+          showError(t("err.decode"));
+        }
+      }
+
+      const fileInput = $("fileInput");
+      // On phones, accept= hides files that the picker does not recognize as audio (WEBAPP_BASELINE §9-5)
+      if (matchMedia("(pointer: coarse)").matches) fileInput.removeAttribute("accept");
+      fileInput.addEventListener("change", function () {
+        chooseFile(fileInput.files && fileInput.files[0]);
+        fileInput.value = "";
+      });
+      const drop = $("drop");
+      ["dragenter", "dragover"].forEach(function (ev) {
+        drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("over"); });
+      });
+      ["dragleave", "drop"].forEach(function (ev) {
+        drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove("over"); });
+      });
+      drop.addEventListener("drop", function (e) {
+        const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        chooseFile(f);
+      });
+
+      // ---------- Separation ----------
+      let worker = null;
+      let busy = false;
+      let wakeLock = null;
+      let startedAt = 0;
+
+      function setProgress(stage, detail, frac) {
+        $("progress").hidden = false;
+        $("stage").textContent = stage;
+        $("detail").textContent = detail || "";
+        const bar = $("bar");
+        bar.classList.toggle("indet", frac == null);
+        bar.firstElementChild.style.width = frac == null ? "" : Math.round(frac * 1000) / 10 + "%";
+      }
+      function setBusy(on) {
+        busy = on;
+        $("runBtn").disabled = on || !mix;
+        $("drop").style.pointerEvents = on ? "none" : "";
+        $("drop").style.opacity = on ? ".5" : "";
+        if (!on) $("progress").hidden = true;
+        if (on && "wakeLock" in navigator) {
+          navigator.wakeLock.request("screen").then(function (l) { wakeLock = l; }).catch(function () {});
+        } else if (!on && wakeLock) {
+          wakeLock.release().catch(function () {});
+          wakeLock = null;
+        }
+      }
+      // The screen lock is dropped when the page is hidden; take it again when it comes back
+      document.addEventListener("visibilitychange", function () {
+        if (busy && document.visibilityState === "visible" && "wakeLock" in navigator) {
+          navigator.wakeLock.request("screen").then(function (l) { wakeLock = l; }).catch(function () {});
+        }
+      });
+      window.addEventListener("beforeunload", function (e) {
+        if (busy) { e.preventDefault(); e.returnValue = ""; }
+      });
+
+      function onProgress(m) {
+        if (m.stage === "download") {
+          const detail = m.total ? t("detail.download", { loaded: mb(m.loaded), total: mb(m.total) }) : t("detail.downloadNoTotal", { loaded: mb(m.loaded) });
+          setProgress(t("stage.download"), detail, m.total ? m.loaded / m.total : null);
+        } else if (m.stage === "lib" || m.stage === "init") {
+          setProgress(t("stage." + m.stage), "", null);
+        } else if (m.stage === "separate") {
+          const pct = Math.floor((m.done / m.chunks) * 100);
+          let detail = t("detail.separate", { done: m.done, chunks: m.chunks, pct: pct });
+          if (m.done > 0 && m.done < m.chunks) {
+            const left = (m.elapsed / m.done) * (m.chunks - m.done) / 1000;
+            const eta = left >= 90 ? t("eta.min", { n: Math.round(left / 60) }) : t("eta.sec", { n: Math.max(5, Math.round(left / 5) * 5) });
+            detail = t("detail.eta", { done: m.done, chunks: m.chunks, pct: pct, eta: eta });
+          }
+          setProgress(t("stage.separate"), detail, m.done / m.chunks);
+        }
+      }
+
+      function stopWorker() {
+        if (worker) { worker.terminate(); worker = null; }
+      }
+
+      async function run() {
+        if (!mix || busy) return;
+        showError("");
+        await checkModel();
+        if (!modelCached && navigator.onLine === false) { showError(t("err.offline")); return; }
+        if (!(await askNetwork())) return;
+        stopPlayback();
+        setBusy(true);
+        startedAt = Date.now();
+        setProgress(t(modelCached ? "stage.lib" : "stage.download"), "", null);
+        attempt({ gpu: HAS_GPU, safe: false });
+      }
+
+      // One try in its own worker. If loading or running the model fails, it is tried once more in a
+      // fresh worker on the CPU with settings that need less memory (a failed ONNX Runtime backend
+      // cannot be restarted in the same worker).
+      function attempt(opts) {
+        try {
+          worker = new Worker("separator.js", { type: "module" });
+        } catch (e) {
+          setBusy(false);
+          showError(t("err.worker"));
+          return;
+        }
+        worker.onmessage = function (e) {
+          const m = e.data;
+          if (m.type === "progress") onProgress(m);
+          else if (m.type === "backend") {
+            $("backend").textContent = m.name === "webgpu" ? t("backend.webgpu") : m.safe ? t("backend.safe") : m.threads > 1 ? t("backend.wasm", { n: m.threads }) : t("backend.wasm1");
+            checkModel();
+          } else if (m.type === "done") {
+            stopWorker();
+            setBusy(false);
+            $("runBtn").textContent = t("run.again");
+            toast(t("done", { time: fmtTime((Date.now() - startedAt) / 1000) }));
+            loadStems(m.stems);
+          } else if (m.type === "error") {
+            stopWorker();
+            console.error("Separation failed", opts, m);
+            if (!opts.safe && (m.code === "run" || m.code === "memory")) {
+              setProgress(t("stage.retry"), "", null);
+              attempt({ gpu: false, safe: true });
+              return;
+            }
+            setBusy(false);
+            const where = t("where." + (m.stage || "separate"));
+            const key = "err." + m.code;
+            showError(I18N.en[key] ? t(key, { msg: m.message, where: where }) : t("err.run", { msg: m.message, where: where }));
+            checkModel();
+          }
+        };
+        worker.onerror = function (e) {
+          stopWorker();
+          setBusy(false);
+          showError(t("err.worker"));
+          console.error("Separation worker error", e);
+          if (e && e.preventDefault) e.preventDefault();
+        };
+        // Copies, so the decoded song stays here for a retry or "Separate again" (left and right may be the same mono array)
+        const left = new Float32Array(mix.left);
+        const right = mix.right === mix.left ? left.slice() : new Float32Array(mix.right);
+        worker.postMessage({ type: "run", left: left, right: right, gpu: opts.gpu, safe: opts.safe }, [left.buffer, right.buffer]);
+      }
+      $("runBtn").addEventListener("click", run);
+      $("cancelBtn").addEventListener("click", function () {
+        stopWorker();
+        setBusy(false);
+        toast(t("canceled"));
+      });
+
+      // ---------- Player and mixer ----------
+      let stems = null; // [[Int16Array L, Int16Array R] x 6] in the model's order
+      let length = 0;   // samples at 44.1 kHz
+      let ctx = null, node = null, audioReady = null;
+      let playing = false;
+      let pos = 0;
+      let seeking = false;
+
+      function ensureAudio() {
+        if (audioReady) return audioReady;
+        audioReady = (async function () {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          try { ctx = new AC({ sampleRate: SR, latencyHint: "playback" }); } catch (e) { ctx = new AC(); }
+          await ctx.audioWorklet.addModule("mixer.js");
+          node = new AudioWorkletNode(ctx, "stem-mixer", { numberOfInputs: 0, numberOfOutputs: 1, outputChannelCount: [2] });
+          node.connect(ctx.destination);
+          node.port.onmessage = onMixerMessage;
+        })();
+        audioReady.catch(function () { audioReady = null; });
+        return audioReady;
+      }
+
+      function onMixerMessage(e) {
+        const m = e.data;
+        if (m.type === "pos") {
+          pos = m.pos;
+          if (!seeking) $("seek").value = (pos / SR).toFixed(1);
+          $("timeNow").textContent = fmtTime(pos / SR);
+          PARTS.forEach(function (p, i) {
+            const v = m.peaks[p.idx] || 0;
+            meters[i].style.width = Math.min(100, Math.sqrt(v) * 100) + "%";
+          });
+        } else if (m.type === "ended") {
+          setPlaying(false);
+          pos = 0;
+          node.port.postMessage({ type: "seek", pos: 0 });
+        }
+      }
+
+      async function loadStems(s) {
+        stems = s;
+        length = s[0][0].length;
+        pos = 0;
+        $("empty").hidden = true;
+        $("mixer").hidden = false;
+        $("seek").max = (length / SR).toFixed(1);
+        $("seek").value = 0;
+        $("timeNow").textContent = "0:00";
+        $("timeEnd").textContent = fmtTime(length / SR);
+        try {
+          await ensureAudio();
+          // Shared memory is passed as is; plain arrays are copied (stems stays here for saving MP3 files)
+          node.port.postMessage({ type: "load", stems: stems });
+          sendGains();
+        } catch (e) {
+          showError(t("err.audio"));
+        }
+      }
+
+      function gainsOf() {
+        const g = new Array(PARTS.length).fill(0);
+        PARTS.forEach(function (p) {
+          const st = store.parts[p.key];
+          const on = solo.size ? solo.has(p.key) : !st.mute;
+          g[p.idx] = on ? st.vol * store.master : 0;
+        });
+        return g;
+      }
+      function sendGains() {
+        if (!node) return;
+        const g = gainsOf();
+        node.port.postMessage({ type: "gains", left: g, right: g });
+      }
+
+      function setPlaying(on) {
+        playing = on;
+        $("playIcon").hidden = on;
+        $("pauseIcon").hidden = !on;
+        $("playBtn").setAttribute("aria-label", t(on ? "pause" : "play"));
+        if (!on) meters.forEach(function (m) { m.style.width = "0"; });
+      }
+      function togglePlay() {
+        if (!stems) return;
+        if (playing) {
+          node.port.postMessage({ type: "pause" });
+          setPlaying(false);
+          return;
+        }
+        // resume() in the same tap, before any await, so iOS lets the sound start
+        if (ctx && ctx.state !== "running") ctx.resume().catch(function () {});
+        ensureAudio().then(function () {
+          if (ctx.state !== "running") ctx.resume().catch(function () {});
+          node.port.postMessage({ type: "play" });
+          setPlaying(true);
+        }).catch(function () { showError(t("err.audio")); });
+      }
+      function stopPlayback() {
+        if (node && playing) node.port.postMessage({ type: "pause" });
+        setPlaying(false);
+      }
+      function seekTo(sec) {
+        if (!node || !stems) return;
+        pos = Math.max(0, Math.min(length - 1, Math.round(sec * SR)));
+        node.port.postMessage({ type: "seek", pos: pos });
+        $("seek").value = (pos / SR).toFixed(1);
+        $("timeNow").textContent = fmtTime(pos / SR);
+      }
+      $("playBtn").addEventListener("click", togglePlay);
+      const seek = $("seek");
+      seek.addEventListener("input", function () {
+        seeking = true;
+        $("timeNow").textContent = fmtTime(Number(seek.value));
+      });
+      seek.addEventListener("change", function () {
+        seeking = false;
+        seekTo(Number(seek.value));
+      });
+
+      // Channel strips
+      const meters = [];
+      const stripEls = [];
+      function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+      function buildStrips() {
+        const box = $("strips");
+        PARTS.forEach(function (p, i) {
+          const name = t("stem." + p.key);
+          const row = el("div", "strip");
+          const nm = el("div", "sname");
+          nm.appendChild(el("b", null, name));
+          const meter = el("div", "meter");
+          const fill = el("div");
+          meter.appendChild(fill);
+          nm.appendChild(meter);
+          meters.push(fill);
+
+          const ms = el("div", "ms");
+          const m = el("button", "chip", "M");
+          m.type = "button";
+          m.setAttribute("aria-label", t("mute", { name: name }));
+          m.addEventListener("click", function () {
+            store.parts[p.key].mute = !store.parts[p.key].mute;
+            saveState(); renderStrips(); sendGains();
+          });
+          const s = el("button", "chip", "S");
+          s.type = "button";
+          s.setAttribute("aria-label", t("solo", { name: name }));
+          s.addEventListener("click", function () {
+            if (solo.has(p.key)) solo.delete(p.key); else solo.add(p.key);
+            renderStrips(); sendGains();
+          });
+          ms.appendChild(m); ms.appendChild(s);
+
+          const vol = el("label", "vol");
+          const range = el("input");
+          range.type = "range"; range.min = "0"; range.max = "1.5"; range.step = "0.01";
+          range.setAttribute("aria-label", t("volume", { name: name }));
+          const val = el("span", "val");
+          range.addEventListener("input", function () {
+            store.parts[p.key].vol = Number(range.value);
+            val.textContent = Math.round(range.value * 100) + "%";
+            sendGains();
+          });
+          range.addEventListener("change", saveState);
+          vol.appendChild(range); vol.appendChild(val);
+
+          const dl = el("button", "chip sq save-btn");
+          dl.type = "button";
+          dl.setAttribute("aria-label", t("save", { name: name }));
+          dl.title = t("save", { name: name });
+          dl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="m7 10 5 5 5-5"></path><path d="M5 20h14"></path></svg>';
+          dl.addEventListener("click", function () { saveMp3(p.key); });
+
+          row.appendChild(nm); row.appendChild(ms); row.appendChild(vol); row.appendChild(dl);
+          box.appendChild(row);
+          stripEls.push({ row: row, m: m, s: s, range: range, val: val });
+        });
+      }
+      function renderStrips() {
+        PARTS.forEach(function (p, i) {
+          const st = store.parts[p.key];
+          const x = stripEls[i];
+          x.m.setAttribute("aria-pressed", st.mute ? "true" : "false");
+          x.s.setAttribute("aria-pressed", solo.has(p.key) ? "true" : "false");
+          x.range.value = st.vol;
+          x.val.textContent = Math.round(st.vol * 100) + "%";
+          x.row.classList.toggle("off", solo.size ? !solo.has(p.key) : st.mute);
+        });
+        $("master").value = store.master;
+        $("masterVal").textContent = Math.round(store.master * 100) + "%";
+      }
+      $("master").addEventListener("input", function () {
+        store.master = Number($("master").value);
+        $("masterVal").textContent = Math.round(store.master * 100) + "%";
+        sendGains();
+      });
+      $("master").addEventListener("change", saveState);
+      $("resetMix").addEventListener("click", function () {
+        store = freshState();
+        solo.clear();
+        saveState(); renderStrips(); sendGains();
+        toast(t("mix.reset.done"));
+      });
+
+      // ---------- Saving MP3 files ----------
+      // encoder.js (a worker with LAME) makes a 192 kbps MP3, so the page does not freeze while it works
+      function mixPcm() {
+        const g = gainsOf();
+        const n = length;
+        const left = new Int16Array(n), right = new Int16Array(n);
+        for (let i = 0; i < n; i++) {
+          let l = 0, r = 0;
+          for (let s = 0; s < g.length; s++) {
+            if (!g[s]) continue;
+            l += stems[s][0][i] * g[s];
+            r += stems[s][1][i] * g[s];
+          }
+          left[i] = l > 32767 ? 32767 : l < -32768 ? -32768 : l;
+          right[i] = r > 32767 ? 32767 : r < -32768 ? -32768 : r;
+        }
+        return { left: left, right: right };
+      }
+      // own: the arrays were made just for this file (the mix), so they can be moved to the worker instead of copied
+      function encodeMp3(left, right, own) {
+        return new Promise(function (resolve, reject) {
+          let w;
+          try { w = new Worker("encoder.js", { type: "module" }); } catch (e) { reject(e); return; }
+          w.onmessage = function (e) {
+            const m = e.data;
+            if (m.type === "progress") toast(t("encoding", { pct: Math.floor(m.done * 100) }), true);
+            else if (m.type === "done") { w.terminate(); resolve(new Blob(m.chunks, { type: "audio/mpeg" })); }
+            else if (m.type === "error") { w.terminate(); reject(new Error(m.message)); }
+          };
+          w.onerror = function (e) { w.terminate(); if (e && e.preventDefault) e.preventDefault(); reject(new Error("encoder")); };
+          // A part's arrays stay here: shared memory is passed as is, plain arrays are copied
+          w.postMessage({ left: left, right: right }, own ? [left.buffer, right.buffer] : []);
+        });
+      }
+      function baseName() {
+        return ((file && file.name) || "song").replace(/\.[^.]+$/, "").replace(/[\\/:*?"<>|]+/g, "_").slice(0, 80);
+      }
+      // In the claude.ai preview, files are saved through the downloads capability (a[download] does nothing there)
+      async function saveBlob(name, blob) {
+        if (window.claude && typeof window.claude.use === "function") {
+          const downloads = await window.claude.use("downloads").catch(function () { return null; });
+          if (!downloads) { toast(t("save.preview")); return; }
+          try {
+            await downloads.save({ filename: name, data: blob });
+            toast(t("saved", { file: name }));
+          } catch (e) {
+            if (e && e.code === "declined") return;
+            toast(e && (e.code === "rejected_extension" || e.code === "unavailable") ? t("save.preview") : t("err.save"));
+          }
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+        toast(t("saved", { file: name }));
+      }
+      // One file at a time: the save buttons are disabled while encoding
+      let saving = false;
+      function setSaving(on) {
+        saving = on;
+        document.querySelectorAll(".save-btn").forEach(function (b) { b.disabled = on; });
+      }
+      async function saveMp3(key) {
+        if (!stems || saving) return;
+        setSaving(true);
+        toast(t("encoding", { pct: 0 }), true);
+        try {
+          let pcm, label;
+          if (key === "mix") {
+            pcm = mixPcm();
+            label = t("stem.mix");
+          } else {
+            const p = PARTS.find(function (x) { return x.key === key; });
+            pcm = { left: stems[p.idx][0], right: stems[p.idx][1] };
+            label = t("stem." + key);
+          }
+          const blob = await encodeMp3(pcm.left, pcm.right, key === "mix");
+          await saveBlob((baseName() + " - " + label).replace(/[\\/:*?"<>|]+/g, "_") + ".mp3", blob);
+        } catch (e) {
+          console.error("MP3 export failed", e);
+          toast(t("err.save"));
+        } finally {
+          setSaving(false);
+        }
+      }
+      $("saveMix").addEventListener("click", function () { saveMp3("mix"); });
+
+      // ---------- Keyboard ----------
+      document.addEventListener("keydown", function (e) {
+        if (!stems || e.ctrlKey || e.metaKey || e.altKey) return;
+        if (document.querySelector("dialog[open]") || !$("settingsMenu").hidden) return;
+        const tag = (e.target && e.target.tagName) || "";
+        const typing = tag === "INPUT" && e.target.type !== "range" && e.target.type !== "checkbox";
+        if (typing) return;
+        if (e.key === " " && tag !== "BUTTON") {
+          e.preventDefault();
+          togglePlay();
+        } else if (/^[1-4]$/.test(e.key)) {
+          const p = PARTS[Number(e.key) - 1];
+          store.parts[p.key].mute = !store.parts[p.key].mute;
+          saveState(); renderStrips(); sendGains();
+        } else if ((e.key === "ArrowLeft" || e.key === "ArrowRight") && tag !== "INPUT") {
+          e.preventDefault();
+          seekTo(pos / SR + (e.key === "ArrowLeft" ? -5 : 5));
+        }
+      });
+
+      // ---------- Tap feedback (WEBAPP_BASELINE §9-10) ----------
+      const PRESSABLE = ".chip:not([aria-pressed]), .primary, .play, #settingsBtn";
+      document.addEventListener("pointerdown", function (e) {
+        const b = e.target.closest && e.target.closest(PRESSABLE);
+        if (!b || b.disabled) return;
+        b.classList.add("is-pressed");
+        const t0 = Date.now();
+        const up = function () {
+          document.removeEventListener("pointerup", up);
+          document.removeEventListener("pointercancel", up);
+          setTimeout(function () { b.classList.remove("is-pressed"); }, Math.max(0, 150 - (Date.now() - t0)));
+        };
+        document.addEventListener("pointerup", up);
+        document.addEventListener("pointercancel", up);
+      });
+
+      // ---------- Settings (gear) menu: How to use / Privacy / About / Delete ----------
+      const settingsBtn = $("settingsBtn");
+      const settingsMenu = $("settingsMenu");
+      const helpDlg = $("helpDlg");
+      const privacyDlg = $("privacyDlg");
+      const aboutDlg = $("aboutDlg");
+      const resetDlg = $("resetDlg");
+      const modelDlg = $("modelDlg");
+
+      function closeMenu(returnFocus) {
+        if (settingsMenu.hidden) return;
+        settingsMenu.hidden = true;
+        settingsBtn.setAttribute("aria-expanded", "false");
+        if (returnFocus) settingsBtn.focus();
+      }
+      function openMenu() {
+        const r = settingsBtn.getBoundingClientRect();
+        settingsMenu.style.top = r.bottom + 6 + "px";
+        settingsMenu.style.right = Math.max(8, document.documentElement.clientWidth - r.right) + "px";
+        settingsMenu.hidden = false;
+        settingsBtn.setAttribute("aria-expanded", "true");
+        $("menuHelp").focus();
+      }
+      settingsBtn.addEventListener("click", function () {
+        if (settingsMenu.hidden) openMenu(); else closeMenu(true);
+      });
+      document.addEventListener("click", function (e) {
+        if (!settingsMenu.hidden && !settingsMenu.contains(e.target) && !settingsBtn.contains(e.target)) closeMenu(false);
+      });
+      document.addEventListener("keydown", function (e) {
+        if (settingsMenu.hidden) return;
+        if (e.key === "Escape") { closeMenu(true); return; }
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+          e.preventDefault();
+          const items = Array.prototype.slice.call(settingsMenu.querySelectorAll('[role="menuitem"]'));
+          const i = items.indexOf(document.activeElement);
+          const next = e.key === "ArrowDown" ? (i + 1) % items.length : (i - 1 + items.length) % items.length;
+          items[next].focus();
+        }
+      }, true);
+      window.addEventListener("resize", function () { closeMenu(false); });
+
+      // About: the license text is read from THIRD_PARTY_LICENSES.md
+      let licenseLoaded = false;
+      async function loadLicenses() {
+        if (licenseLoaded) return;
+        const box = $("licenseText");
+        box.textContent = t("loading");
+        try {
+          const res = await fetch("THIRD_PARTY_LICENSES.md");
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          // Hide the marker (HTML comment) used by the update script
+          box.textContent = (await res.text()).replace(/<!--[\s\S]*?-->\n?/g, "");
+          licenseLoaded = true;
+        } catch (e) {
+          box.textContent = t("err.license");
+        }
+      }
+
+      // Focus the dialog itself, not its first link, so no link looks selected on open (WEBAPP_BASELINE §9-11)
+      function openDlg(dlg) {
+        if (typeof dlg.showModal !== "function") return;
+        dlg.showModal(); dlg.focus();
+      }
+      $("menuHelp").addEventListener("click", function () { closeMenu(false); openDlg(helpDlg); });
+      $("menuPrivacy").addEventListener("click", function () { closeMenu(false); openDlg(privacyDlg); });
+      $("menuAbout").addEventListener("click", function () { closeMenu(false); loadLicenses(); openDlg(aboutDlg); });
+      $("menuReset").addEventListener("click", function () { closeMenu(false); openDlg(resetDlg); });
+      $("menuModel").addEventListener("click", function () { closeMenu(false); openDlg(modelDlg); });
+      // Clear settings: the mixer settings only. The separated parts and the model stay.
+      $("resetOk").addEventListener("click", function () {
+        try { localStorage.removeItem(STATE_KEY); } catch (e) {}
+        store = freshState();
+        solo.clear();
+        renderStrips(); sendGains();
+        resetDlg.close();
+        toast(t("reset.done"));
+      });
+      // Delete the AI model: frees the space the model cache takes. The offline copy of the app stays.
+      $("modelOk").addEventListener("click", async function () {
+        try { await caches.delete(MODEL_CACHE); } catch (e) {}
+        modelDlg.close();
+        await checkModel();
+        toast(t("model.del.done"));
+      });
+
+      // Dialogs: close with the Close button or a click outside; focus returns to the settings button
+      [[helpDlg, "helpClose"], [privacyDlg, "privacyClose"], [aboutDlg, "aboutClose"], [resetDlg, "resetCancel"], [modelDlg, "modelCancel"]].forEach(function (pair) {
+        const dlg = pair[0];
+        $(pair[1]).addEventListener("click", function () { dlg.close(); });
+        dlg.addEventListener("close", function () { settingsBtn.focus(); });
+      });
+      [helpDlg, privacyDlg, aboutDlg, resetDlg, modelDlg, $("netDlg")].forEach(function (dlg) {
+        dlg.addEventListener("click", function (e) {
+          const r = dlg.getBoundingClientRect();
+          if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+        });
+      });
+      $("netDlg").addEventListener("close", function () { $("runBtn").focus(); });
+
+      applyI18n();
+      buildStrips();
+      renderStrips();
+      checkModel();
+    })();
+  </script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    });
+  }
+</script>
+<!-- Cloudflare Web Analytics (page views; no cookies) -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "5c53079cb9a64d819d1ca53e8533ca63"}'></script>
+</body>
+</html>
