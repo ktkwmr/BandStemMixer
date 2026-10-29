@@ -418,6 +418,8 @@
           "crash": "The last separation stopped partway ({where}{progress}) and the page was reloaded. The device most likely ran out of memory. Close other apps and tabs and try again, try a shorter song, or use a computer.",
           "crash.progress": ", {done} of {chunks} sections done",
           "crash.song": " · song: {time}",
+          "crash.next": " Next time, this device separates with different settings: press “Separate into 4 parts” again.",
+          "crash.none": " Every setting has stopped on this device, so it probably cannot separate songs. Separate the song on a computer and use the saved MP3 files here.",
           "where.download": "while downloading the AI model",
           "where.init": "while loading the AI model",
           "where.separate": "while separating",
@@ -429,7 +431,7 @@
           "eta.sec": "{n} s",
           "backend.wasm": "CPU · {n} threads",
           "backend.wasm1": "CPU · 1 thread",
-          "backend.safe": "CPU · memory-saving mode",
+          "backend.safe": "CPU · memory-saving mode · {n} threads",
           "backend.webgpu": "GPU (WebGPU)",
           "done": "Done in {time}. Press play.",
           "canceled": "Separation canceled.",
@@ -521,6 +523,8 @@
           "crash": "前回の分離は途中で止まり、ページが読み込み直されました（{where}{progress}）。端末のメモリが足りなくなった可能性が高いです。ほかのアプリやタブを閉じてもう一度試すか、短い曲にするか、パソコンでお試しください。",
           "crash.progress": "、{chunks} 区間のうち {done} 区間まで完了",
           "crash.song": " · 曲の長さ {time}",
+          "crash.next": "次からは、この端末では別の設定で分離します。もう一度「4 つのパートに分離する」を押してください。",
+          "crash.none": "この端末では、どの設定でも途中で止まりました。分離できない可能性が高いので、パソコンで分離して、保存した MP3 をこの端末で使ってください。",
           "where.download": "AI モデルのダウンロード中",
           "where.init": "AI モデルの読み込み中",
           "where.separate": "分離の途中",
@@ -532,7 +536,7 @@
           "eta.sec": "{n} 秒",
           "backend.wasm": "CPU · {n} スレッド",
           "backend.wasm1": "CPU · 1 スレッド",
-          "backend.safe": "CPU · メモリ節約モード",
+          "backend.safe": "CPU · メモリ節約モード · {n} スレッド",
           "backend.webgpu": "GPU（WebGPU）",
           "done": "{time} で分離しました。再生してください。",
           "canceled": "分離をキャンセルしました。",
@@ -857,7 +861,7 @@
       const RUN_KEY = "bandstemmixer-running";
       function recordRun(info) {
         try {
-          if (info) localStorage.setItem(RUN_KEY, JSON.stringify(Object.assign({ at: Date.now(), sec: songSec }, info)));
+          if (info) localStorage.setItem(RUN_KEY, JSON.stringify(Object.assign({ at: Date.now(), sec: songSec, mode: runMode }, info)));
           else localStorage.removeItem(RUN_KEY);
         } catch (e) {}
       }
@@ -869,7 +873,16 @@
         const stage = r.stage === "download" || r.stage === "separate" ? r.stage : "init";
         const progress = stage === "separate" && r.chunks ? t("crash.progress", { done: r.done || 0, chunks: r.chunks }) : "";
         const song = r.sec ? t("crash.song", { time: fmtTime(r.sec) }) : "";
-        showError(t("crash", { where: t("where." + stage), progress: progress + song }));
+        // Remember the setting that crashed, so the next run uses the next one (only for a crash while the
+        // model was loading or running; a download that stopped is not about memory)
+        let next = "";
+        if (r.mode && MODES[r.mode] && stage !== "download") {
+          const crashed = crashedModes();
+          if (crashed.indexOf(r.mode) < 0) crashed.push(r.mode);
+          try { localStorage.setItem(CRASHED_KEY, JSON.stringify({ at: Date.now(), modes: crashed })); } catch (e) {}
+          next = LADDER.some(function (m) { return crashed.indexOf(m) < 0; }) ? t("crash.next") : t("crash.none");
+        }
+        showError(t("crash", { where: t("where." + stage), progress: progress + song }) + next);
         console.warn("Previous separation stopped", r);
       }
 
@@ -933,14 +946,46 @@
         setBusy(true);
         startedAt = Date.now();
         setProgress(t(modelCached ? "stage.lib" : "stage.download"), "", null);
-        // On a phone or a device with little memory, start with the settings that use less memory
-        attempt(LOW_MEM ? { gpu: false, safe: true } : { gpu: HAS_GPU, safe: false });
+        const modes = usableModes();
+        attempt(modes[0], modes.slice(1));
       }
 
-      // One try in its own worker. If loading or running the model fails, it is tried once more in a
-      // fresh worker on the CPU with settings that need less memory (a failed ONNX Runtime backend
-      // cannot be restarted in the same worker).
-      function attempt(opts) {
+      // Settings to try, in order, for this device. Each runs in its own worker; when one fails, the next is
+      // tried in a fresh worker (a failed ONNX Runtime backend cannot be restarted in the same worker).
+      // When one closes the tab (an iPhone out of memory), reportCrash() remembers it and the next run skips it.
+      //   full: GPU if there is one, many CPU threads (computers)
+      //   gpu:  GPU with the memory-saving settings. On an iPhone the GPU's working memory is held by Safari's
+      //         GPU process, not by the tab: htdemucs needs about 1 GB per 7.8 s chunk, more than the tab may use
+      //   cpu:  CPU, 2 threads, memory-saving settings
+      //   cpu1: CPU, 1 thread, memory-saving settings (last resort)
+      const MODES = {
+        full: { gpu: HAS_GPU, safe: false },
+        gpu: { gpu: true, safe: true },
+        cpu: { gpu: false, safe: true },
+        cpu1: { gpu: false, safe: true, threads: 1 }
+      };
+      const LADDER = LOW_MEM ? (HAS_GPU ? ["gpu", "cpu", "cpu1"] : ["cpu", "cpu1"]) : ["full", "cpu"];
+      const CRASHED_KEY = "bandstemmixer-crashed";
+      function crashedModes() {
+        try {
+          const o = JSON.parse(localStorage.getItem(CRASHED_KEY) || "null");
+          // Forget after 30 days (a browser update may fix it)
+          if (o && Array.isArray(o.modes) && Date.now() - o.at < 30 * 24 * 3600 * 1000) return o.modes;
+        } catch (e) {}
+        return [];
+      }
+      function usableModes() {
+        const crashed = crashedModes();
+        const left = LADDER.filter(function (m) { return crashed.indexOf(m) < 0; });
+        // Every setting crashed before: still try the lightest one
+        return left.length ? left : [LADDER[LADDER.length - 1]];
+      }
+      let runMode = "";
+
+      function attempt(mode, rest) {
+        const opts = MODES[mode];
+        runMode = mode;
+        recordRun({ stage: "download" });
         try {
           worker = new Worker("separator.js", { type: "module" });
         } catch (e) {
@@ -952,7 +997,7 @@
           const m = e.data;
           if (m.type === "progress") onProgress(m);
           else if (m.type === "backend") {
-            $("backend").textContent = m.name === "webgpu" ? t("backend.webgpu") : m.safe ? t("backend.safe") : m.threads > 1 ? t("backend.wasm", { n: m.threads }) : t("backend.wasm1");
+            $("backend").textContent = m.name === "webgpu" ? t("backend.webgpu") : m.safe ? t("backend.safe", { n: m.threads }) : m.threads > 1 ? t("backend.wasm", { n: m.threads }) : t("backend.wasm1");
             checkModel();
           } else if (m.type === "done") {
             stopWorker();
@@ -962,10 +1007,10 @@
             loadStems(m.stems);
           } else if (m.type === "error") {
             stopWorker();
-            console.error("Separation failed", opts, m);
-            if (!opts.safe && (m.code === "run" || m.code === "memory")) {
+            console.error("Separation failed", mode, m);
+            if (rest.length && (m.code === "run" || m.code === "memory")) {
               setProgress(t("stage.retry"), "", null);
-              attempt({ gpu: false, safe: true });
+              attempt(rest[0], rest.slice(1));
               return;
             }
             setBusy(false);
@@ -987,7 +1032,7 @@
         takePcm().then(function (pcm) {
           if (!worker) return; // canceled while decoding
           const right = pcm.right === pcm.left ? pcm.left.slice() : pcm.right;
-          worker.postMessage({ type: "run", left: pcm.left, right: right, gpu: opts.gpu, safe: opts.safe }, [pcm.left.buffer, right.buffer]);
+          worker.postMessage({ type: "run", left: pcm.left, right: right, gpu: opts.gpu, safe: opts.safe, threads: opts.threads || 0 }, [pcm.left.buffer, right.buffer]);
         }).catch(function () {
           stopWorker();
           setBusy(false);

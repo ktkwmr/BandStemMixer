@@ -28,7 +28,7 @@
 - 大きなダウンロードの前の確認（Wi-Fi でないときのダイアログ）は `index.html` の `connectionRisk()`・`askNetwork()`。モデルがキャッシュ済みなら出さない。ダウンロード量の表示は `MODEL_MB`・`ENGINE_MB`。
 - ページはクロスオリジン分離（`public/_headers` の COOP / COEP require-corp）。ONNX Runtime の複数スレッドと、分離結果を `SharedArrayBuffer` でプレーヤーと共有するのに必要。外部から読むファイルは CORS で読む（`<script type="module">`・`fetch`・`import()`）。CORS でない読み込み（`<img>` の外部画像など）を足すと COEP でブロックされる。
 - 外部ホストを足したら `public/_headers` の CSP と、プライバシーの説明（`scripts/pages/privacy.mjs`、アプリ内の `privacy.body`、README）を同じ PR で直す。
-- ミキサーの設定は `localStorage` の `bandstemmixer-state`（各パートの音量・ミュート、全体の音量）。GPU は WebGPU があれば自動で使う。ソロは保存しない。分離したパートは保存しない。
+- ミキサーの設定は `localStorage` の `bandstemmixer-state`（各パートの音量・ミュート、全体の音量）。分離の設定は端末ごとに順に試す（`index.html` の `MODES`・`LADDER`）。PC は full（WebGPU があれば GPU、CPU は多スレッド）→ cpu。スマホとメモリ 4 GB 以下の端末は gpu（GPU・メモリ節約）→ cpu（2 スレッド）→ cpu1（1 スレッド）。iPhone の Safari では GPU の作業メモリはタブではなく GPU プロセスが持つので、タブの上限（htdemucs は 1 区間で約 1 GB 使う）に触れにくい。エラーなら同じ分離の中で次の設定に移り、タブごと落ちたら（`bandstemmixer-running` の記録が残る）次に開いたときに `bandstemmixer-crashed` に覚えて、その設定を 30 日飛ばす。ソロは保存しない。分離したパートは保存しない。
 - トップページ（https://ktkwmr.com/）のアプリ一覧に載せたら、アプリ名・説明・アイコン・記事を変えたときに `ktkwmr/ktkwmr.com` の `scripts/pages/home.mjs` を直す PR を別に出す（ベースライン §2-16）。
 - 記事を追加・変更したら、PR のプレビューで人間が内容を確認してからマージする（ベースライン §10-7）。
 - 作業はブランチ → PR → Cloudflare のプレビュービルド確認 → squash マージ。
