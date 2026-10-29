@@ -30,7 +30,7 @@
 | 2-11 | Cloudflare に接続 | 👤 | Project name は `bandstemmixer`、Production branch は `main` |
 | 2-13 | 自動デプロイの確認 | 👤 | |
 | 2-14 | 2 つ目以降のアプリの Worker 設定 | ✅ | sitemap は `/bandstemmixer/sitemap.xml` |
-| 2-16 | トップページへの追加 | ❌ | `ktkwmr/ktkwmr.com` の `home.mjs`（`APPS`・`ICON`・`PREVIEW`）と `robots.txt` の `Sitemap:` 行。このセッションではそのリポジトリを追加できなかったため未対応 |
+| 2-16 | トップページへの追加 | ✅ | ktkwmr/ktkwmr.com#9（`APPS`・`ICON`・`PREVIEW`、`robots.txt` の `Sitemap:` 行）。アプリ名・説明・アイコン・画面を変えたら、そちらも直す |
 | 3-1〜3-5 | manifest・アイコン・meta・sw.js・SW 登録 | ✅ | |
 | 3-6 | `file://` の注意 | ✅ | README |
 | 3-7 | インストールの案内 | ❌ | 任意 |
@@ -46,6 +46,7 @@
 | 6-1〜6-4 | セキュリティヘッダー・CSP | ✅ | 加えて COOP / COEP require-corp（ONNX Runtime の複数スレッドと SharedArrayBuffer のため）。ローカルの E2E で CSP 違反・コンソールエラー 0 件 |
 | 7-1〜7-3 | プライバシー（アプリ内・ポリシー）・運営者情報 | ✅ | 外部送信に Hugging Face・jsDelivr を記載 |
 | 7-7 | ポリシーの外部リンクの確認 | 👤 | |
+| 7-8 | AI モデルの重みのライセンス | ✅ | Demucs の重みは科学研究目的のみ。非営利のまま運営（`CLAUDE.md`・README・`THIRD_PARTY_LICENSES.md`） |
 | 8-1〜8-3 | THIRD_PARTY_LICENSES・Actions・About | ✅ | Demucs（重みは MIT 対象外・科学研究目的のみ、と明記）は手書き。demucs-web と ONNX Runtime はスクリプトが追加 |
 | 8-4 | CDN のバージョン固定・遅延読み込み | ✅ | `onnxruntime-web@1.30.0`・`demucs-web@1.0.2`、分離を押したときだけ読む |
 | 9-1〜9-2 | 設定メニュー・使い方 | ⚠️ | ガイド記事がまだないので、メニューに記事へのリンクはない |
@@ -55,12 +56,15 @@
 | 9-8 | アクセシビリティ | ✅ | |
 | 9-9 | 自動テスト | ⚠️ | 偽モデルを使った Playwright の E2E をセッション内で実施（リポジトリには未収録） |
 | 9-10・9-11 | ボタンの反応・ダイアログのフォーカス | ✅ | |
+| 9-12 | iOS 26 のステータスバーのにじみ | ⚠️ | `.topbar`・`.site-head` を sticky・不透明に。iPhone 実機では未確認 |
+| 9-13 | 大きなダウンロードの前の通信の確認 | ✅ | `connectionRisk()`・`askNetwork()` |
 | 10 | 記事 | — | 人間が「やる」と言ったら |
 | 11-1〜11-3 | Web Analytics | ✅ | |
 | 11-4 | beacon の本番確認 | 👤 | COEP require-corp でも beacon（CORS のモジュールスクリプト）が 200 か確認 |
 | 12-1・12-2 | Actions | ✅ | |
 | 12-12 | Artifact で見せる | ✅ | 上の URL |
 | 12-13 | 人間がやる動作確認の方法 | ✅ | PC（`npx.cmd wrangler dev`）とスマホ（プレビュー URL）の手順と確認項目の表を、セッションで提示（ktkwmr/webapp-baseline#12 で追加した項目） |
+| 12-14 | 大きな AI モデルの確かめ方 | ✅ | 入出力が同じ偽モデルと `context.route`。`dsp.js` は demucs-web の関数と差 0 |
 | 13・14 | 公開時・公開後 | 👤 | |
 | 15 | 広告（AdSense） | — | 載せない。AI モデル（Demucs）の重みが科学研究目的のみのため。収益化するなら先に商用利用できる重みのモデルに替える |
 
