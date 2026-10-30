@@ -1,10 +1,12 @@
-// AudioWorklet that plays the separated stems (4: drums, bass, other, vocals) in sync and mixes them with the faders.
+// AudioWorklet that plays the separated stems (4: drums, bass, other, vocals; then the harmony voice and
+// guide tone when they are made) in sync and mixes them with the faders.
 // The stems are 16-bit PCM at 44.1 kHz. On a cross-origin isolated page they are SharedArrayBuffers
 // shared with the page (no copy); otherwise this worklet gets its own copy. If the device runs at
 // another sample rate, they are resampled on the fly with linear interpolation.
 //
 // Messages from the page:
-//   { type: "load", stems: [[Int16Array L, Int16Array R] x n] }
+//   { type: "load", stems: [[Int16Array L, Int16Array R] x n], keep? }  (keep: same song with tracks added,
+//                                                                     so the position and play state stay)
 //   { type: "play" } / { type: "pause" } / { type: "seek", pos }  (pos in 44.1 kHz samples)
 //   { type: "gains", left: [n], right: [n] }
 // Messages to the page:
@@ -36,9 +38,15 @@ class StemMixer extends AudioWorkletProcessor {
     if (msg.type === "load") {
       this.stems = msg.stems;
       this.length = msg.stems ? msg.stems[0][0].length : 0;
+      const before = this.count;
       this.count = msg.stems ? Math.min(MAX, msg.stems.length) : 0;
-      this.pos = 0;
-      this.playing = false;
+      // Added tracks start at their gains (the page sends the gains first), without a glide
+      for (let s = before; s < this.count; s++) { this.curL[s] = this.targetL[s]; this.curR[s] = this.targetR[s]; }
+      for (let s = this.count; s < MAX; s++) this.peaks[s] = 0;
+      if (!msg.keep || !msg.stems) {
+        this.pos = 0;
+        this.playing = false;
+      }
     } else if (msg.type === "play") {
       if (this.stems) {
         if (this.pos >= this.length - 1) this.pos = 0;
