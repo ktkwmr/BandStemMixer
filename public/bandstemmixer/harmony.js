@@ -4,10 +4,12 @@
 //      major / minor triads and smoothed with an HMM (Viterbi). The key is the Krumhansl–Schmuckler
 //      profile that fits the whole song best.
 //   2. melody and guide tone: the pitch of the vocals (YIN), cut into notes. Each note gets a harmony
-//      note a 3rd above (or below) in the key, moved to a chord tone where the 3rd would clash. The
-//      guide tone plays the harmony notes as a plain synth tone.
+//      note a 3rd above (or below) in the key, moved to a chord tone where the 3rd would clash. Notes
+//      close together are joined into phrases, so the harmony is legato. The guide tone plays the
+//      harmony notes as a plain synth tone.
 //   3. harmony voice: the vocals shifted to the harmony notes with TD-PSOLA (grains cut one pitch
-//      period apart and laid down at the new period), which keeps the singer's vibrato and voice.
+//      period apart and laid down at the new period), which keeps the singer's vibrato and voice. Each
+//      phrase is shifted as one piece, consonants included, with the shift gliding between notes.
 // The analysis runs at 11025 Hz (the song decimated by 4); the outputs are 44.1 kHz.
 //
 // Messages from the page:
@@ -15,7 +17,7 @@
 // Messages to the page:
 //   { type: "progress", stage: "chords" | "melody" | "voice", done }  (0–1, a few times a second)
 //   { type: "done", key: { tonic, minor }, chords: [{ t0, t1, root, minor }], frame, pitch: Float32Array,
-//     notes: [{ t0, t1, midi, harm }], voice: Int16Array, guide: Int16Array }
+//     notes: [{ t0, t1, midi, harm }] (contiguous within a phrase), voice: Int16Array, guide: Int16Array }
 //     (root -1 = no chord; pitch: MIDI note number per frame of `frame` seconds, NaN = no voice;
 //     voice / guide: mono at 44.1 kHz, shared memory when the page is cross-origin isolated)
 //   { type: "error", message }
@@ -410,18 +412,62 @@ function makeArray(n) {
   return new Int16Array(shared ? new SharedArrayBuffer(n * 2) : n);
 }
 
-// Guide tone: the harmony notes as a soft synth tone (a few harmonics, short fades)
-function makeGuide(notes, length) {
+// ---------- Phrases ----------
+// Notes less than JOIN apart (a consonant, a short breath, a note too short to keep) belong to one phrase:
+// they are made contiguous (each gap is split at its middle), and a phrase is made as one continuous sound,
+// so the harmony does not stop between notes. The pitch changes glide over GLIDE around each boundary.
+const JOIN = 0.3;
+const GLIDE = 0.04;
+
+function joinPhrases(notes) {
+  const phrases = [];
+  let cur = null;
+  for (const n of notes) {
+    const prev = cur && cur[cur.length - 1];
+    if (prev && n.t0 - prev.t1 < JOIN) {
+      const mid = (prev.t1 + n.t0) / 2;
+      prev.t1 = mid;
+      n.t0 = mid;
+      cur.push(n);
+    } else {
+      cur = [n];
+      phrases.push(cur);
+    }
+  }
+  return phrases;
+}
+// The note of a phrase sounding at time t (the first / last note before / after the phrase)
+function noteIndex(ph, t) {
+  let k = 0;
+  while (k + 1 < ph.length && ph[k + 1].t0 <= t) k++;
+  return k;
+}
+// val(note) at time t in note k, gliding linearly into the next note around their boundary
+function glideAt(ph, k, val, t) {
+  const v = val(ph[k]);
+  if (k + 1 < ph.length && t > ph[k + 1].t0 - GLIDE / 2) return v + ((val(ph[k + 1]) - v) * (t - ph[k + 1].t0 + GLIDE / 2)) / GLIDE;
+  if (k > 0 && t < ph[k].t0 + GLIDE / 2) { const u = val(ph[k - 1]); return u + ((v - u) * (t - ph[k].t0 + GLIDE / 2)) / GLIDE; }
+  return v;
+}
+const harmOf = (n) => n.harm;
+const midiOf = (n) => n.midi;
+const shiftOf = (n) => n.harm - n.midi;
+
+// Guide tone: the harmony notes as a soft synth tone, legato within a phrase (one oscillator that glides
+// from note to note, with a small accent at each new note so the notes can still be told apart)
+function makeGuide(phrases, length) {
   const out = makeArray(length);
   const fadeIn = 0.015 * SR, fadeOut = 0.04 * SR;
-  for (const n of notes) {
-    const a = Math.round(n.t0 * SR), e = Math.min(length, Math.round(n.t1 * SR));
-    const w = (2 * Math.PI * hzOf(n.harm)) / SR;
+  for (const ph of phrases) {
+    const a = Math.round(ph[0].t0 * SR), e = Math.min(length, Math.round(ph[ph.length - 1].t1 * SR));
+    let phase = 0, k = 0;
     for (let i = a; i < e; i++) {
-      const k = i - a;
-      const env = Math.min(1, k / fadeIn, (e - i) / fadeOut) * (0.75 + 0.25 * Math.exp(-k / (0.3 * SR)));
-      const ph = w * k;
-      const v = 0.16 * env * (Math.sin(ph) + 0.3 * Math.sin(2 * ph) + 0.12 * Math.sin(3 * ph));
+      const t = i / SR;
+      while (k + 1 < ph.length && ph[k + 1].t0 <= t) k++;
+      phase += (2 * Math.PI * hzOf(glideAt(ph, k, harmOf, t))) / SR;
+      const accent = k > 0 && ph[k].harm === ph[k - 1].harm ? 0.8 : 0.8 + 0.2 * Math.exp(-(t - ph[k].t0) / 0.12);
+      const env = Math.min(1, (i - a) / fadeIn, (e - i) / fadeOut) * accent;
+      const v = 0.16 * env * (Math.sin(phase) + 0.3 * Math.sin(2 * phase) + 0.12 * Math.sin(3 * phase));
       out[i] = Math.max(-32768, Math.min(32767, out[i] + Math.round(v * 32767)));
     }
   }
@@ -429,39 +475,43 @@ function makeGuide(notes, length) {
 }
 
 // ---------- 3. Harmony voice (TD-PSOLA) ----------
-function makeVoice(L, R, notes, pitch, progress) {
+// One phrase at a time, from a little before its first note (to keep the first consonant) to a little after
+// its last. Consonants and breaths inside the phrase go through too, so the words stay and nothing drops out.
+const PRE = 0.06, POST = 0.06;
+function makeVoice(L, R, phrases, pitch, progress) {
   const length = L.length;
   const out = makeArray(length);
   const x = (i) => (i < 0 || i >= length ? 0 : (L[i] + R[i]) / 65536);
-  // The sung pitch at sample i (from the pitch track), or the note itself where the track has a hole
-  const periodAt = (i, midi) => {
-    const f = Math.round((i / DEC) / HOP);
-    let m = NaN;
-    for (let k = 0; k <= 3 && isNaN(m); k++) {
-      if (f - k >= 0 && !isNaN(pitch[f - k])) m = pitch[f - k];
-      else if (f + k < pitch.length && !isNaN(pitch[f + k])) m = pitch[f + k];
-    }
-    if (isNaN(m) || Math.abs(m - midi) > 2) m = midi;
-    return SR / hzOf(m);
-  };
   const peak = (from, to) => {
     let best = from, bv = -Infinity;
     for (let i = from; i <= to; i++) { const v = x(i); if (v > bv) { bv = v; best = i; } }
     return best;
   };
-  const fade = Math.round(0.012 * SR);
-  notes.forEach((n, ni) => {
-    if (progress && (ni & 31) === 0) progress(ni / notes.length);
-    const a = Math.round(n.t0 * SR), e = Math.min(length, Math.round(n.t1 * SR));
+  const fade = Math.round(0.025 * SR);
+  phrases.forEach((ph, pi) => {
+    if (progress && (pi & 7) === 0) progress(pi / phrases.length);
+    const a = Math.max(0, Math.round((ph[0].t0 - PRE) * SR)), e = Math.min(length, Math.round((ph[ph.length - 1].t1 + POST) * SR));
     if (e - a < 2 * fade) return;
-    const ratio = Math.pow(2, (n.harm - n.midi) / 12);
+    const at = (i, val) => { const t = i / SR; return glideAt(ph, noteIndex(ph, t), val, t); };
+    // The sung pitch at sample i (the pitch track), or the notes where the track has a hole or strays
+    const periodAt = (i) => {
+      const melody = at(i, midiOf);
+      const f = Math.round(i / DEC / HOP);
+      let m = NaN;
+      for (let k = 0; k <= 3 && isNaN(m); k++) {
+        if (f - k >= 0 && !isNaN(pitch[f - k])) m = pitch[f - k];
+        else if (f + k < pitch.length && !isNaN(pitch[f + k])) m = pitch[f + k];
+      }
+      if (isNaN(m) || Math.abs(m - melody) > 2) m = melody;
+      return SR / hzOf(m);
+    };
     // Analysis marks: one per pitch period, each moved to the nearby waveform peak
     const marks = [];
-    let T = periodAt(a, n.midi);
+    let T = periodAt(a);
     let m = peak(a, a + Math.round(T));
     while (m < e + T) {
       marks.push(m);
-      T = periodAt(m, n.midi);
+      T = periodAt(m);
       const next = Math.round(m + T), r = Math.max(1, Math.round(T * 0.2));
       m = peak(next - r, next + r);
     }
@@ -471,13 +521,14 @@ function makeVoice(L, R, notes, pitch, progress) {
     while (ts < e) {
       while (k + 1 < marks.length && Math.abs(marks[k + 1] - ts) <= Math.abs(marks[k] - ts)) k++;
       const ta = marks[k];
-      const P = periodAt(ta, n.midi);
+      const ratio = Math.pow(2, at(ts, shiftOf) / 12);
+      const P = periodAt(ta);
       const half = Math.round(P);
       const c = Math.round(ts);
       for (let j = -half; j <= half; j++) {
         const o = c + j - a;
         if (o < 0 || o >= acc.length) continue;
-        acc[o] += x(ta + j) * (0.5 + 0.5 * Math.cos((Math.PI * j) / half)) / ratio;
+        acc[o] += (x(ta + j) * (0.5 + 0.5 * Math.cos((Math.PI * j) / half))) / ratio;
       }
       ts += P / ratio;
     }
@@ -509,9 +560,10 @@ export function analyze(msg, progress) {
     n.harm = pickHarmony(n.midi, key, chord, dir, lastIv);
     lastIv = n.harm - n.midi;
   }
-  const guide = makeGuide(notes, vL.length);
+  const phrases = joinPhrases(notes);
+  const guide = makeGuide(phrases, vL.length);
   // 3. Harmony voice
-  const voice = makeVoice(vL, vR, notes, pitch, (d) => report("voice", d));
+  const voice = makeVoice(vL, vR, phrases, pitch, (d) => report("voice", d));
   return { key: key, chords: chords, frame: HOP / ASR, pitch: pitch, notes: notes, voice: voice, guide: guide };
 }
 
