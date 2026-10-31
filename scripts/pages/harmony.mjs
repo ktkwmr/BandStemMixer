@@ -28,7 +28,7 @@ export default {
   <li><b>Choose the part</b> next to the button: upper (a 3rd above), lower (a 3rd below), or a 5th above or below.</li>
   <li><b>Press “Find chords &amp; make harmony”.</b> It takes from a few seconds to about a minute, depending on the song and the device. Playback goes on while it works.</li>
 </ol>
-<p>Everything is worked out in your browser, without the AI model or any download. After the first time the button becomes <b>“Remake the harmony”</b>: it reuses the chords and the melody it already found, so it is quicker. Use it after you change the part or the chords.</p>
+<p>Everything is worked out in your browser, without the AI model or any download. After the first time the button becomes <b>“Remake the harmony”</b>: it reuses the chords and the melody it already found, so it is quicker. Use it after you change the part or the chords: the button turns black when the harmony no longer matches them.</p>
 
 <h2 id="screen">Reading the screen</h2>
 <figure class="shot">
@@ -42,7 +42,7 @@ export default {
   <li><b>BPM</b> – The tempo found in the song. The chords change on its beats.</li>
   <li><b>The roll</b> – The chord names on top, with a small tick at every beat; the vocal melody as a <b>grey line</b>; the harmony notes as <b>black bars</b>; the black vertical line is the play position. Drag it sideways (or use a sideways swipe or Shift + wheel) to look ahead or back; tap it to jump there. It follows the playback again when you press play.</li>
   <li><b>Harmony (voice)</b> – The separated vocals moved to the harmony notes. It keeps the singer's vibrato and words, so it sounds like a second singer.</li>
-  <li><b>Harmony guide tone</b> – The same notes as a plain, steady tone. The pitch is exact, which makes it the easiest to sing along to.</li>
+  <li><b>Harmony guide tone</b> – The same notes as a plain, steady tone. The pitch is exact, which makes it the easiest to sing along to. It starts muted; press its M to hear it.</li>
 </ol>
 <p>Both new parts have M, S, a fader, and the ↓ button to save them as MP3 files, like the other parts.</p>
 
@@ -62,7 +62,7 @@ export default {
 <h2 id="practice">A practice plan in four steps</h2>
 <ol>
   <li><b>Listen.</b> Solo the guide tone (S) and listen to the harmony on its own a few times. Then add the vocals (S on both) to hear how the two lines fit.</li>
-  <li><b>Sing with the guide.</b> Keep the vocals and the guide tone on, and sing the harmony along with the guide. Turn the harmony voice off (M) for now.</li>
+  <li><b>Sing with the guide.</b> Turn the guide tone on (its M; it starts muted) and keep the vocals on, and sing the harmony along with the guide. Turn the harmony voice off (M) for now.</li>
   <li><b>Lower the help.</b> Turn the guide tone down step by step — 60%, 30% — until you are carrying the harmony yourself against the lead vocal.</li>
   <li><b>Sing it alone.</b> Mute the guide tone and the harmony voice and sing the harmony against the lead and the band. To check yourself, unmute the harmony voice for a moment.</li>
 </ol>
@@ -110,7 +110,7 @@ export default {
   <li>ボタンの横で<b>パートを選びます</b>。上ハモ（3 度上）・下ハモ（3 度下）・5 度上・5 度下から選べます。</li>
   <li><b>「コード推定＆ハモリ生成」を押します。</b>曲と端末によって、数秒から 1 分ほどかかります。その間も再生は止まりません。</li>
 </ol>
-<p>処理はすべてブラウザの中で行い、AI モデルもダウンロードも使いません。一度作るとボタンは<b>「ハモリを再生成」</b>に変わり、推定したコードと旋律を使い回すので、2 回目からは速く終わります。パートやコードを変えたあとに押してください。</p>
+<p>処理はすべてブラウザの中で行い、AI モデルもダウンロードも使いません。一度作るとボタンは<b>「ハモリを再生成」</b>に変わり、推定したコードと旋律を使い回すので、2 回目からは速く終わります。パートやコードを変えたあとに押してください。作り直しが必要なときは、ボタンが黒くなります。</p>
 
 <h2 id="screen">画面の見方</h2>
 <figure class="shot">
@@ -124,7 +124,7 @@ export default {
   <li><b>BPM</b> – 曲から推定したテンポ。コードはこの拍の上で切り替わります。</li>
   <li><b>表示</b> – 上の段にコード名（拍ごとに小さな目盛り）、<b>灰色の線</b>がボーカルの音程、<b>黒い帯</b>がハモリの音、黒い縦線が再生位置です。横にドラッグ（または横スワイプ・Shift＋ホイール）すると前後を見られ、タップするとその位置に移ります。再生を始めると、再生位置に戻ります。</li>
   <li><b>ハモリ（声）</b> – 分離したボーカルを、ハモリの音程に変えたもの。歌い手のビブラートや歌詞が残るので、もう一人が歌っているように聞こえます。</li>
-  <li><b>ハモリのガイド音</b> – 同じ音を、揺れのない単純な音で鳴らします。音程が正確なので、いちばん合わせやすい音です。</li>
+  <li><b>ハモリのガイド音</b> – 同じ音を、揺れのない単純な音で鳴らします。音程が正確なので、いちばん合わせやすい音です。最初はミュートになっているので、聞くときは M を押します。</li>
 </ol>
 <p>増えた 2 つのパートにも、ほかのパートと同じく M・S・フェーダーと、MP3 で保存する ↓ ボタンがあります。</p>
 
@@ -144,7 +144,7 @@ export default {
 <h2 id="practice">4 ステップの練習法</h2>
 <ol>
   <li><b>聞く</b> – ガイド音だけをソロ（S）にして、ハモリを何度か聞きます。次にボーカルも S にして、2 つの線の重なり方を聞きます。</li>
-  <li><b>ガイドと一緒に歌う</b> – ボーカルとガイド音を鳴らしたまま、ガイドに合わせてハモリを歌います。ハモリ（声）は、まずはミュート（M）しておきます。</li>
+  <li><b>ガイドと一緒に歌う</b> – ガイド音の M を押してミュートを外し（最初はミュート）、ボーカルとガイド音を鳴らしたまま、ガイドに合わせてハモリを歌います。ハモリ（声）は、まずはミュート（M）しておきます。</li>
   <li><b>助けを減らす</b> – ガイド音を 60%、30% と少しずつ下げ、主旋律に対して自分でハモリを保てるようにします。</li>
   <li><b>一人で歌う</b> – ガイド音とハモリ（声）をミュートし、主旋律とバンドに対してハモリを歌います。確かめたいときは、ハモリ（声）を少しだけ戻します。</li>
 </ol>

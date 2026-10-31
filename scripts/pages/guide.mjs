@@ -75,7 +75,7 @@ export default {
   <li><b>Fader</b> – The volume of the part, from 0% to ${FADER_MAX}%.</li>
   <li><b>↓ (save the part)</b> – Saves that part alone as an MP3 file.</li>
   <li><b>Master</b> – The volume of the whole mix.</li>
-  <li><b>Reset mixer</b> – Puts every part back to 100% and unmuted.</li>
+  <li><b>Reset mixer</b> – Puts every part back to 100% and unmuted (the harmony guide tone back to muted).</li>
   <li><b>Save this mix (MP3)</b> – Saves what you hear now as one MP3 file.</li>
 </ol>
 <p>The faders, M, and the master volume are remembered for next time; S is not, so you never start in solo by mistake.</p>
@@ -94,7 +94,7 @@ export default {
   <li><b>BPM</b> – the tempo found in the song.</li>
   <li><b>The view</b> – chord names on top (tap a beat there to change the chord), the vocal melody as a grey line, and the harmony notes as black bars. Drag it sideways to look ahead; tap it to jump there.</li>
   <li><b>Harmony (voice)</b> – the vocals moved to the harmony notes.</li>
-  <li><b>Harmony guide tone</b> – the same notes as a plain tone.</li>
+  <li><b>Harmony guide tone</b> – the same notes as a plain tone. It starts muted; press its M to hear it.</li>
 </ol>
 <p>All of this runs in your browser without the AI model. For more, see <a href="../harmony/">practicing harmonies</a> and <a href="../chords-and-key/">chords and key change</a>.</p>
 
@@ -206,7 +206,7 @@ export default {
   <li><b>フェーダー</b> – パートの音量（0〜${FADER_MAX}%）。</li>
   <li><b>↓（パートを保存）</b> – そのパートだけを MP3 ファイルで保存します。</li>
   <li><b>全体</b> – ミックス全体の音量。</li>
-  <li><b>ミキサーを元に戻す</b> – すべてのパートを 100%・ミュートなしに戻します。</li>
+  <li><b>ミキサーを元に戻す</b> – すべてのパートを 100%・ミュートなしに戻します（ハモリのガイド音はミュートに戻します）。</li>
   <li><b>このミックスを保存（MP3）</b> – いま聞こえている音を 1 つの MP3 ファイルで保存します。</li>
 </ol>
 <p>フェーダー・M・全体の音量は次回も残ります。S は残らないので、うっかりソロのまま始まることはありません。</p>
@@ -225,7 +225,7 @@ export default {
   <li><b>BPM</b> – 曲から推定したテンポ。</li>
   <li><b>表示</b> – 上の段にコード名（拍をタップするとコードを変えられます）、灰色の線がボーカルの音程、黒い帯がハモリの音。横にドラッグすると先を見られ、タップするとその位置に移ります。</li>
   <li><b>ハモリ（声）</b> – ボーカルをハモリの音程に変えたもの。</li>
-  <li><b>ハモリのガイド音</b> – 同じ音を単純な音で鳴らしたもの。</li>
+  <li><b>ハモリのガイド音</b> – 同じ音を単純な音で鳴らしたもの。最初はミュートなので、聞くときは M を押します。</li>
 </ol>
 <p>これらはすべて、AI モデルを使わずにブラウザの中で処理します。詳しくは<a href="../harmony/">ハモリの練習</a>と<a href="../chords-and-key/">コード表示とキー変更</a>をご覧ください。</p>
 
