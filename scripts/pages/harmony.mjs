@@ -28,7 +28,7 @@ export default {
   <li><b>Choose the part</b> next to the button: upper (a 3rd above), lower (a 3rd below), or a 5th above or below.</li>
   <li><b>Press “Find chords &amp; make harmony”.</b> It takes from a few seconds to about a minute, depending on the song and the device. Playback goes on while it works.</li>
 </ol>
-<p>Everything is worked out in your browser, without the AI model or any download. After the first time the button becomes <b>“Remake the harmony”</b>: it reuses the chords and the melody it already found, so it is quicker. Use it after you change the part or the chords.</p>
+<p>Everything is worked out in your browser, without the AI model or any download. After the first time the button becomes <b>“Remake the harmony”</b>: it reuses the chords and the melody it already found, so it is quicker. Use it after you change the part or the chords: the button turns black when the harmony no longer matches them.</p>
 
 <h2 id="screen">Reading the screen</h2>
 <figure class="shot">
@@ -110,7 +110,7 @@ export default {
   <li>ボタンの横で<b>パートを選びます</b>。上ハモ（3 度上）・下ハモ（3 度下）・5 度上・5 度下から選べます。</li>
   <li><b>「コード推定＆ハモリ生成」を押します。</b>曲と端末によって、数秒から 1 分ほどかかります。その間も再生は止まりません。</li>
 </ol>
-<p>処理はすべてブラウザの中で行い、AI モデルもダウンロードも使いません。一度作るとボタンは<b>「ハモリを再生成」</b>に変わり、推定したコードと旋律を使い回すので、2 回目からは速く終わります。パートやコードを変えたあとに押してください。</p>
+<p>処理はすべてブラウザの中で行い、AI モデルもダウンロードも使いません。一度作るとボタンは<b>「ハモリを再生成」</b>に変わり、推定したコードと旋律を使い回すので、2 回目からは速く終わります。パートやコードを変えたあとに押してください。作り直しが必要なときは、ボタンが黒くなります。</p>
 
 <h2 id="screen">画面の見方</h2>
 <figure class="shot">

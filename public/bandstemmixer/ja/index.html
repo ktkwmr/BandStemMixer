@@ -1721,6 +1721,11 @@
       function renderHarm() {
         // Once made, the button remakes the harmony from the chords on screen (estimated or edited)
         $("harmBtn").textContent = t(harm ? "harm.regen" : "harm.run");
+        // Black (like the other main buttons) when the harmony no longer matches what is on screen: the chords
+        // were edited, or another part (3rd / 5th, above / below) was chosen
+        const set = harmSettings();
+        const regen = !!harm && (harm.stale || set.dir !== harm.dir || set.interval !== harm.interval);
+        $("harmBtn").className = regen ? "primary" : "chip";
         if (!harm) return;
         $("bpmVal").textContent = harm.bpm ? t("harm.bpm", { bpm: Math.round(harm.bpm) }) : t("harm.noBeat");
         $("chordsNote").hidden = !harm.stale && !harm.edited;
@@ -1739,6 +1744,7 @@
       }
       $("keyDown").addEventListener("click", function () { changeKey(semis - 1); });
       $("keyUp").addEventListener("click", function () { changeKey(semis + 1); });
+      $("harmDir").addEventListener("change", renderHarm);
       $("harmBtn").addEventListener("click", function () {
         if (!orig) return;
         wantHarm = true;
