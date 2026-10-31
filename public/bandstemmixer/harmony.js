@@ -1,8 +1,9 @@
 // Harmony worker (module worker, started by index.html when "Make a harmony" is pressed).
 // From the separated parts, with no AI model and no library:
-//   1. key and chords: chroma (the strength of the 12 notes) of "bass" and "other", matched against
-//      major / minor triads and smoothed with an HMM (Viterbi). The key is the Krumhansl–Schmuckler
-//      profile that fits the whole song best.
+//   1. beats, key, and chords: the beats (quarter notes) and the tempo of the whole song, with Loop
+//      Trainer's beat detection. Then one chord per beat: chroma (the strength of the 12 notes) of "bass"
+//      and "other", matched against major / minor triads and smoothed over the beats with an HMM (Viterbi).
+//      The key is the Krumhansl–Schmuckler profile that fits the whole song best.
 //   2. melody and guide tone: the pitch of the vocals (YIN), cut into notes. Each note gets a harmony
 //      note a 3rd or a 5th above (or below) in the key, moved to a chord tone where it would clash. Notes
 //      close together are joined into phrases, so the harmony is legato. The guide tone plays the
@@ -16,14 +17,17 @@
 //
 // Messages from the page:
 //   { type: "run", vocals: [L, R], dir: 1 | -1, interval: 3 | 5, semis,
-//     bass?: [L, R], other?: [L, R],   (Int16Array, 44.1 kHz; bass / other only to find the chords)
+//     bass?, other?, drums?: [L, R],   (Int16Array, 44.1 kHz; only to find the beats and chords)
 //     chords?, key?,                   (from an earlier run, maybe edited: used instead of finding them)
 //     pitch?, notes? }                 (from an earlier run: the melody is not tracked again)
 // Messages to the page:
 //   { type: "progress", stage: "chords" | "melody" | "voice", done }  (0–1, a few times a second)
-//   { type: "done", key: { tonic, minor }, chords: [{ t0, t1, root, q }], frame, pitch: Float32Array,
+//   { type: "done", key: { tonic, minor }, chords: [{ t0, t1, root, q }], grid: Float64Array | null, bpm,
+//     frame, pitch: Float32Array,
 //     notes: [{ t0, t1, midi, harm }] (contiguous within a phrase), voice: Int16Array, guide: Int16Array }
-//     (root -1 = no chord; q: chord type, a key of CHORD_TYPES; pitch: MIDI note number per frame of
+//     (grid: the beat cells' edges in seconds, 0 to the end, and bpm (0 = no beat found), only when the chords
+//     were found in this run; the chords change only on the grid. root -1 = no chord; q: chord type, a key of
+//     CHORD_TYPES; pitch: MIDI note number per frame of
 //     `frame` seconds, NaN = no voice; voice / guide: mono at 44.1 kHz, shared memory when the page is
 //     cross-origin isolated)
 //   { type: "error", message }
@@ -48,7 +52,10 @@ const PROFILE_MAJOR = [6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.6
 const PROFILE_MINOR = [6.33, 2.68, 3.52, 5.38, 2.6, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17];
 
 // Chord types (semitones above the root). Found chords are "" (major) or "m"; the others come from editing.
-const CHORD_TYPES = { "": [0, 4, 7], m: [0, 3, 7], "7": [0, 4, 7, 10], maj7: [0, 4, 7, 11], m7: [0, 3, 7, 10], dim: [0, 3, 6], sus4: [0, 5, 7] };
+const CHORD_TYPES = {
+  "": [0, 4, 7], m: [0, 3, 7], "7": [0, 4, 7, 10], maj7: [0, 4, 7, 11], m7: [0, 3, 7, 10], add9: [0, 4, 7, 2],
+  dim: [0, 3, 6], dim7: [0, 3, 6, 9], m7b5: [0, 3, 6, 10], aug: [0, 4, 8], sus4: [0, 5, 7]
+};
 
 const mod12 = (n) => ((n % 12) + 12) % 12;
 const hzOf = (midi) => 440 * Math.pow(2, (midi - 69) / 12);
@@ -156,15 +163,148 @@ function percentile(arr, p) {
   return a.length ? a[Math.min(a.length - 1, Math.floor(a.length * p))] : 0;
 }
 
-// ---------- 1. Key and chords ----------
+// ---------- 1. Beats, key, and chords ----------
+// Tempo and beats, from Loop Trainer (ktkwmr/LoopTrainer, detectBeats(), MIT, the same author), without its
+// bar-start part: onset strength (spectral flux of the 11025 Hz mono song) → tempo by autocorrelation,
+// weighted toward 120 BPM → beats by dynamic programming (D. Ellis, "Beat Tracking by Dynamic Programming",
+// 2007) → each beat moved to the nearest onset peak. Returns null when the onsets do not repeat clearly.
+// The detected beats sit about 14 ms early (measured in Loop Trainer with test signals of known tempo)
+const BEAT_BIAS = 0.014;
+function detectBeats(x) {
+  const fs = ASR, N = 512, BHOP = 64, fps = fs / BHOP;
+  const len = x.length;
+  const frames = len >= N ? Math.floor((len - N) / BHOP) + 1 : 0;
+  if (frames < fps * 4) return null;
+  const fft = makeFft(N);
+  const win = new Float64Array(N);
+  for (let i = 0; i < N; i++) win[i] = 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / N);
+  const re = new Float64Array(N), im = new Float64Array(N), prev = new Float32Array(N / 2), env = new Float32Array(frames);
+  for (let f = 0; f < frames; f++) {
+    const o = f * BHOP;
+    for (let i = 0; i < N; i++) { re[i] = x[o + i] * win[i]; im[i] = 0; }
+    fft(re, im);
+    let flux = 0;
+    for (let k = 1; k < N / 2; k++) {
+      const m = Math.log(1 + 100 * Math.sqrt(re[k] * re[k] + im[k] * im[k]));
+      if (m > prev[k]) flux += m - prev[k];
+      prev[k] = m;
+    }
+    env[f] = f ? flux : 0;
+  }
+  // Almost no change at all (a steady tone, silence): no beat
+  let mean = 0;
+  for (let i = 0; i < frames; i++) mean += env[i];
+  if (mean / frames < 1) return null;
+  // Remove the slowly changing part (about 0.5 s) and normalize, so loud and quiet parts count alike
+  const half = Math.round(fps * 0.25), onset = new Float32Array(frames);
+  let acc = 0, sq = 0;
+  for (let i = 0; i < Math.min(frames, half); i++) acc += env[i];
+  for (let i = 0; i < frames; i++) {
+    if (i + half < frames) acc += env[i + half];
+    if (i - half - 1 >= 0) acc -= env[i - half - 1];
+    const n = Math.min(frames - 1, i + half) - Math.max(0, i - half) + 1;
+    onset[i] = Math.max(0, env[i] - acc / n);
+    sq += onset[i] * onset[i];
+  }
+  const sd = Math.sqrt(sq / frames) || 1;
+  for (let i = 0; i < frames; i++) onset[i] /= sd;
+  // Tempo: autocorrelation between 40 and 240 BPM, weighted by a log-normal around 120 BPM
+  const lagMin = Math.floor((fps * 60) / 240), lagMax = Math.min(frames - 1, Math.ceil((fps * 60) / 40));
+  const score = new Float32Array(lagMax + 2);
+  let bestLag = 0;
+  for (let lag = lagMin; lag <= lagMax; lag++) {
+    let v = 0;
+    for (let i = 0; i + lag < frames; i++) v += onset[i] * onset[i + lag];
+    v /= frames - lag;
+    const l2 = Math.log2((60 * fps) / lag / 120);
+    score[lag] = v * Math.exp(-0.5 * l2 * l2);
+    if (!bestLag || score[lag] > score[bestLag]) bestLag = lag;
+  }
+  if (!bestLag || score[bestLag] <= 0) return null;
+  // How clearly the onsets repeat at that period, between 0 (noise) and 1 (steady beats 0.87 or more, noise,
+  // pads, and notes at random times 0.26 or less in Loop Trainer's tests)
+  const ac = (lag) => { let v = 0; for (let i = 0; i + lag < frames; i++) v += onset[i] * onset[i + lag]; return v / (frames - lag); };
+  const acs = [];
+  for (let lag = lagMin; lag <= lagMax; lag += 2) acs.push(ac(lag));
+  acs.sort((p, q) => p - q);
+  const base = acs[acs.length >> 1], zero = ac(0);
+  if (zero <= base || (ac(bestLag) - base) / (zero - base) < 0.3) return null;
+  let period = bestLag;
+  if (bestLag > lagMin && bestLag < lagMax) {
+    const a = score[bestLag - 1], b = score[bestLag], c = score[bestLag + 1], den = a - 2 * b + c;
+    if (den < 0) period += (0.5 * (a - c)) / den;
+  }
+  // Beats: each beat is an onset, and the gap to the previous beat stays close to the period
+  const sigma = period / 32, kr = Math.ceil(sigma * 3), kern = [];
+  for (let k = -kr; k <= kr; k++) kern.push(Math.exp(-0.5 * (k / sigma) * (k / sigma)));
+  const local = new Float32Array(frames);
+  for (let i = 0; i < frames; i++) {
+    let v = 0;
+    for (let k = -kr; k <= kr; k++) { const j = i + k; if (j >= 0 && j < frames) v += onset[j] * kern[k + kr]; }
+    local[i] = v;
+  }
+  const TIGHT = 100, cum = new Float32Array(frames), back = new Int32Array(frames).fill(-1);
+  const lo = Math.round(period * 2), hi = Math.round(period / 2);
+  for (let t = 0; t < frames; t++) {
+    let best = -Infinity, arg = -1;
+    for (let p = Math.max(0, t - lo); p <= t - hi; p++) {
+      const lr = Math.log((t - p) / period), v = cum[p] - TIGHT * lr * lr;
+      if (v > best) { best = v; arg = p; }
+    }
+    cum[t] = local[t] + (arg >= 0 && best > 0 ? best : 0);
+    back[t] = arg >= 0 && best > 0 ? arg : -1;
+  }
+  let end = Math.max(0, frames - Math.round(period));
+  for (let t = end; t < frames; t++) if (cum[t] > cum[end]) end = t;
+  const idx = [];
+  for (let t = end; t >= 0; t = back[t]) idx.push(t);
+  idx.reverse();
+  // Drop beats in silence at the start and the end
+  const strength = idx.map((i) => local[i]).sort((a, b) => a - b), med = strength[strength.length >> 1] || 0;
+  while (idx.length && local[idx[0]] < med * 0.25) idx.shift();
+  while (idx.length && local[idx[idx.length - 1]] < med * 0.25) idx.pop();
+  if (idx.length < 4) return null;
+  // Move each beat to the onset peak within ±20 ms (sub-frame by parabolic interpolation)
+  const r = Math.max(1, Math.round(fps * 0.02));
+  const beats = new Float64Array(idx.length);
+  for (let n = 0; n < idx.length; n++) {
+    let m = idx[n];
+    for (let i = Math.max(1, idx[n] - r); i <= Math.min(frames - 2, idx[n] + r); i++) if (onset[i] > onset[m]) m = i;
+    let fm = m;
+    if (m > 0 && m < frames - 1) {
+      const a = onset[m - 1], b = onset[m], c = onset[m + 1], den = a - 2 * b + c;
+      if (den < 0) fm += (0.5 * (a - c)) / den;
+    }
+    // The flux of frame f compares the windows starting at f-1 and f: the onset is near the start of the window's second half
+    beats[n] = (fm * BHOP + N * 0.5) / fs + BEAT_BIAS;
+  }
+  return { tempo: (60 * fps) / period, beats: beats };
+}
+
+// The chord grid: one cell per beat (quarter note), from 0 to the end of the song. Before the first and after
+// the last detected beat, the beats go on at the tempo. Without beats, cells of half a second.
+function makeGrid(beat, duration) {
+  const step = beat ? 60 / beat.tempo : 0.5;
+  const b = beat ? Array.from(beat.beats) : [0];
+  const head = [];
+  for (let t = b[0] - step; t > step * 0.25; t -= step) head.unshift(t);
+  const grid = [0].concat(head, b.filter((t) => t > step * 0.25 && t < duration));
+  for (let t = grid[grid.length - 1] + step; t < duration - step * 0.25; t += step) grid.push(t);
+  grid.push(duration);
+  return Float64Array.from(grid);
+}
+
 // States 0–23: root * 2 + (0 major, 1 minor); 24: no chord
 const N_STATES = 25;
-const BETA = 24;         // how sharply the chroma decides (log-likelihood per unit of score)
-const P_CHANGE = 0.03;   // chance of a chord change per 93 ms frame
+const BETA = 24;         // how sharply the chroma decides (log-likelihood per unit of score, per 93 ms frame)
+const P_CHANGE = 0.12;   // chance of a chord change at a beat
 const NO_CHORD = 0.5;    // score of "no chord" when there is sound
 
-function findChords(other, bass) {
+// One chord per cell of the grid: the evidence of the frames in a cell is added up, then smoothed over the
+// cells with an HMM (Viterbi)
+function findChords(other, bass, grid) {
   const frames = Math.min(other.frames, bass.frames);
+  const cells = grid.length - 1;
   const eAll = new Float32Array(frames);
   for (let f = 0; f < frames; f++) eAll[f] = other.energy[f] + bass.energy[f];
   const gate = percentile(eAll, 0.9) * 0.06;
@@ -176,12 +316,14 @@ function findChords(other, bass) {
   };
   const co = new Float64Array(12), cb = new Float64Array(12), c = new Float64Array(12);
   const keySum = new Float64Array(12);
-  const emit = new Float32Array(frames * N_STATES);
+  const emit = new Float64Array(cells * N_STATES);
+  let cell = 0;
   for (let f = 0; f < frames; f++) {
-    const row = f * N_STATES;
+    const t = (f * HOPC) / ASR;
+    while (cell + 1 < cells && grid[cell + 1] <= t) cell++;
+    const row = cell * N_STATES;
     if (eAll[f] < gate) {
-      for (let s = 0; s < 24; s++) emit[row + s] = 0;
-      emit[row + 24] = BETA;
+      emit[row + 24] += BETA;
       continue;
     }
     unit(other.out, f, co);
@@ -193,38 +335,36 @@ function findChords(other, bass) {
     for (let root = 0; root < 12; root++) {
       for (let q = 0; q < 2; q++) {
         const score = (c[root] + c[(root + (q ? 3 : 4)) % 12] + c[(root + 7) % 12]) / Math.sqrt(3) + 0.15 * cb[root];
-        emit[row + root * 2 + q] = BETA * score;
+        emit[row + root * 2 + q] += BETA * score;
       }
     }
-    emit[row + 24] = BETA * NO_CHORD;
+    emit[row + 24] += BETA * NO_CHORD;
   }
-  // Viterbi
+  // Viterbi over the cells
   const stay = Math.log(1 - P_CHANGE), move = Math.log(P_CHANGE / (N_STATES - 1));
-  const back = new Uint8Array(frames * N_STATES);
+  const back = new Uint8Array(cells * N_STATES);
   let prev = new Float64Array(N_STATES), cur = new Float64Array(N_STATES);
   for (let s = 0; s < N_STATES; s++) prev[s] = emit[s];
-  for (let f = 1; f < frames; f++) {
+  for (let i = 1; i < cells; i++) {
     let best = 0;
     for (let s = 1; s < N_STATES; s++) if (prev[s] > prev[best]) best = s;
     for (let s = 0; s < N_STATES; s++) {
       const a = prev[s] + stay, b = prev[best] + move;
-      if (a >= b) { cur[s] = a; back[f * N_STATES + s] = s; } else { cur[s] = b; back[f * N_STATES + s] = best; }
-      cur[s] += emit[f * N_STATES + s];
+      if (a >= b) { cur[s] = a; back[i * N_STATES + s] = s; } else { cur[s] = b; back[i * N_STATES + s] = best; }
+      cur[s] += emit[i * N_STATES + s];
     }
     const t = prev; prev = cur; cur = t;
   }
-  const path = new Uint8Array(frames);
+  const path = new Uint8Array(cells);
   let s = 0;
   for (let k = 1; k < N_STATES; k++) if (prev[k] > prev[s]) s = k;
-  for (let f = frames - 1; f >= 0; f--) { path[f] = s; if (f) s = back[f * N_STATES + s]; }
-  const step = HOPC / ASR;
+  for (let i = cells - 1; i >= 0; i--) { path[i] = s; if (i) s = back[i * N_STATES + s]; }
   const chords = [];
-  for (let f = 0; f < frames; f++) {
-    const st = path[f];
-    const t0 = Math.max(0, (f - 0.5) * step), t1 = (f + 0.5) * step;
+  for (let i = 0; i < cells; i++) {
+    const st = path[i];
     const last = chords[chords.length - 1];
-    if (last && last.state === st) last.t1 = t1;
-    else chords.push({ t0: t0, t1: t1, state: st, root: st === 24 ? -1 : st >> 1, q: st !== 24 && (st & 1) === 1 ? "m" : "" });
+    if (last && last.state === st) last.t1 = grid[i + 1];
+    else chords.push({ t0: grid[i], t1: grid[i + 1], state: st, root: st === 24 ? -1 : st >> 1, q: st !== 24 && (st & 1) === 1 ? "m" : "" });
   }
   chords.forEach((ch) => delete ch.state);
   return { chords: chords, key: majorOrMinor(findKey(keySum), chords) };
@@ -565,11 +705,22 @@ export function analyze(msg, progress) {
   const semis = msg.semis || 0;
   // 1. Key and chords (or the ones from an earlier run, maybe edited)
   let chords = msg.chords, key = msg.key;
+  let grid = null, bpm = 0;
   if (!chords || !key) {
-    const [bL, bR] = msg.bass, [oL, oR] = msg.other;
-    const other = chroma(decimate(oL, oR, (d) => report("chords", d * 0.3)), 40, 95, (d) => report("chords", 0.3 + d * 0.3));
-    const bass = chroma(decimate(bL, bR, (d) => report("chords", 0.6 + d * 0.2)), 28, 64, (d) => report("chords", 0.8 + d * 0.2));
-    ({ chords, key } = findChords(other, bass));
+    const [bL, bR] = msg.bass, [oL, oR] = msg.other, [dL, dR] = msg.drums;
+    // Beats from the whole song (the sum of the 4 parts, as Loop Trainer reads the mix)
+    const oth = decimate(oL, oR, (d) => report("chords", d * 0.15));
+    const bas = decimate(bL, bR, (d) => report("chords", 0.15 + d * 0.15));
+    const mix = decimate(dL, dR, (d) => report("chords", 0.3 + d * 0.15));
+    const vox = decimate(vL, vR, (d) => report("chords", 0.45 + d * 0.15));
+    for (let i = 0; i < mix.length; i++) mix[i] = (mix[i] + oth[i] + bas[i] + vox[i]) / 2;
+    const beat = detectBeats(mix);
+    report("chords", 0.7);
+    grid = makeGrid(beat, vL.length / SR);
+    bpm = beat ? beat.tempo : 0;
+    const other = chroma(oth, 40, 95, (d) => report("chords", 0.7 + d * 0.2));
+    const bass = chroma(bas, 28, 64, (d) => report("chords", 0.9 + d * 0.1));
+    ({ chords, key } = findChords(other, bass, grid));
   }
   // 2. Melody (or the one from an earlier run), harmony notes, guide tone
   let pitch = msg.pitch, notes;
@@ -590,7 +741,7 @@ export function analyze(msg, progress) {
   const guide = makeGuide(phrases, vL.length, semis);
   // 3. Harmony voice
   const voice = makeVoice(vL, vR, phrases, pitch, semis, (d) => report("voice", d));
-  return { key: key, chords: chords, frame: HOP / ASR, pitch: pitch, notes: notes, voice: voice, guide: guide };
+  return { key: key, chords: chords, grid: grid, bpm: bpm, frame: HOP / ASR, pitch: pitch, notes: notes, voice: voice, guide: guide };
 }
 
 // Only when started as its own worker (keyshift.js imports makeFft from this file)
