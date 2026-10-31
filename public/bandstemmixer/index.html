@@ -529,7 +529,7 @@
           "master": "Master",
           "mix.reset": "Reset mixer",
           "mix.save": "Save this mix (MP3)",
-          "mix.reset.done": "All parts back to 100%, unmuted.",
+          "mix.reset.done": "All parts back to 100%, unmuted (the guide tone muted).",
           "mute": "Mute {name}",
           "solo": "Solo {name}",
           "volume": "{name} volume",
@@ -672,7 +672,7 @@
           "master": "全体",
           "mix.reset": "ミキサーを元に戻す",
           "mix.save": "このミックスを保存（MP3）",
-          "mix.reset.done": "すべてのパートを 100%・ミュートなしに戻しました。",
+          "mix.reset.done": "すべてのパートを 100%・ミュートなし（ガイド音はミュート）に戻しました。",
           "mute": "{name}をミュート",
           "solo": "{name}をソロ",
           "volume": "{name}の音量",
@@ -843,20 +843,23 @@
       // ---------- Saved state ----------
       // Mixer settings only. Solo is not restored (a part left on solo would silence the others without notice).
       const STATE_KEY = "bandstemmixer-state";
+      // The harmony guide tone starts muted (the harmony voice is usually what you want to hear first)
       function freshState() {
         const parts = {};
-        ALL.forEach(function (p) { parts[p.key] = { vol: 1, mute: false }; });
-        return { v: 1, master: 1, parts: parts };
+        ALL.forEach(function (p) { parts[p.key] = { vol: 1, mute: p.key === "guide" }; });
+        return { v: 2, master: 1, parts: parts };
       }
       const clampVol = (v, max) => (typeof v === "number" && isFinite(v) ? Math.max(0, Math.min(max, v)) : 1);
       let store = (function () {
         const s = freshState();
         try {
           const o = JSON.parse(localStorage.getItem(STATE_KEY) || "null");
-          if (o && o.v === 1) {
+          // v1 (before the guide tone started muted): everything but the guide tone carries over
+          if (o && (o.v === 1 || o.v === 2)) {
             s.master = clampVol(o.master, 1.5);
             ALL.forEach(function (p) {
               const x = o.parts && o.parts[p.key];
+              if (o.v === 1 && p.key === "guide") return;
               if (x) s.parts[p.key] = { vol: clampVol(x.vol, 1.5), mute: x.mute === true };
             });
           }
