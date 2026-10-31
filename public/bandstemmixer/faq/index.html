@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="/bandstemmixer/icons/icon.svg" />
   <link rel="apple-touch-icon" href="/bandstemmixer/icons/apple-touch-icon.png" />
   <title>Band Stem Mixer FAQ | Band Stem Mixer</title>
-  <meta name="description" content="Answers to common questions about Band Stem Mixer: privacy, which parts it separates, supported files, how long it takes, the AI model download, iPhone, leftover sounds, saving MP3 files, and offline use." />
+  <meta name="description" content="Answers to common questions about Band Stem Mixer: privacy, which parts it separates, supported files, how long it takes, the AI model download, iPhone, leftover sounds, chords, harmony, key change, saving MP3 files, and offline use." />
   <link rel="canonical" href="https://ktkwmr.com/bandstemmixer/faq/" />
   <link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/faq/" />
   <link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/faq/" />
@@ -16,7 +16,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="Band Stem Mixer" />
   <meta property="og:title" content="Band Stem Mixer FAQ" />
-  <meta property="og:description" content="Answers to common questions about Band Stem Mixer: privacy, which parts it separates, supported files, how long it takes, the AI model download, iPhone, leftover sounds, saving MP3 files, and offline use." />
+  <meta property="og:description" content="Answers to common questions about Band Stem Mixer: privacy, which parts it separates, supported files, how long it takes, the AI model download, iPhone, leftover sounds, chords, harmony, key change, saving MP3 files, and offline use." />
   <meta property="og:locale" content="en_US" />
   <meta property="og:locale:alternate" content="ja_JP" />
   <meta property="og:url" content="https://ktkwmr.com/bandstemmixer/faq/" />
@@ -124,7 +124,39 @@
         "name": "Are the separated parts saved?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Not in the app: they are gone when you reload or choose another song. Save the ones you want as MP3 files (192 kbps) with the ↓ buttons or “Save this mix (MP3)”. The mixer settings (faders, mute, master volume) are remembered."
+          "text": "Not in the app: they are gone when you reload or choose another song, and so are the chords and the harmony. Save the ones you want as MP3 files (192 kbps) with the ↓ buttons or “Save this mix (MP3)”. The mixer settings (faders, mute, master volume) are remembered."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can it find the chords of a song?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. After separating, press “Find chords & make harmony”: it finds the tempo (BPM) and a chord on every beat. Only major and minor chords are found automatically, and they can be wrong, so each beat can be edited by hand (including 7, maj7, m7, add9, dim7, m7b5, aug, and sus4). See chords and key change."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can it make a harmony part?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes: a 3rd or a 5th above or below the vocal melody, as the singer's voice moved to the harmony notes and as a plain guide tone, each with its own fader. It is chosen to fit the key and the chords, and it is an estimate. See practicing harmonies."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I change the key?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, up to 12 semitones up or down, without changing the tempo. The vocals, bass, and other move; the drums do not. The chord names and the harmony follow. See changing the key."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "The chords or the harmony are wrong after a key change partway through the song.",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The app treats a song as one key and one tempo. After a key change or a tempo change, the harmony and the beats can be off; fix the chords by hand where needed and press “Remake the harmony”."
         }
       },
       {
@@ -301,7 +333,15 @@
   <dt>I can still hear a little of the part I muted.</dt>
   <dd>AI separation is an estimate, so traces of a part can remain in the others. It is usually quieter than the rest; turning the other parts up a little helps. See <a href="../how-it-works/#leak">why sounds leak between parts</a>.</dd>
   <dt>Are the separated parts saved?</dt>
-  <dd>Not in the app: they are gone when you reload or choose another song. Save the ones you want as MP3 files (192 kbps) with the ↓ buttons or “Save this mix (MP3)”. The mixer settings (faders, mute, master volume) are remembered.</dd>
+  <dd>Not in the app: they are gone when you reload or choose another song, and so are the chords and the harmony. Save the ones you want as MP3 files (192 kbps) with the ↓ buttons or “Save this mix (MP3)”. The mixer settings (faders, mute, master volume) are remembered.</dd>
+  <dt>Can it find the chords of a song?</dt>
+  <dd>Yes. After separating, press “Find chords & make harmony”: it finds the tempo (BPM) and a chord on every beat. Only major and minor chords are found automatically, and they can be wrong, so each beat can be edited by hand (including 7, maj7, m7, add9, dim7, m7b5, aug, and sus4). See <a href="../chords-and-key/">chords and key change</a>.</dd>
+  <dt>Can it make a harmony part?</dt>
+  <dd>Yes: a 3rd or a 5th above or below the vocal melody, as the singer's voice moved to the harmony notes and as a plain guide tone, each with its own fader. It is chosen to fit the key and the chords, and it is an estimate. See <a href="../harmony/">practicing harmonies</a>.</dd>
+  <dt>Can I change the key?</dt>
+  <dd>Yes, up to 12 semitones up or down, without changing the tempo. The vocals, bass, and other move; the drums do not. The chord names and the harmony follow. See <a href="../chords-and-key/#key">changing the key</a>.</dd>
+  <dt>The chords or the harmony are wrong after a key change partway through the song.</dt>
+  <dd>The app treats a song as one key and one tempo. After a key change or a tempo change, the harmony and the beats can be off; fix the chords by hand where needed and press “Remake the harmony”.</dd>
   <dt>Can I publish the parts or a karaoke version I made?</dt>
   <dd>Only for songs whose rights you have, such as your own band's recordings. Publishing or sharing separated parts of someone else's song usually needs the permission of the rights holders.</dd>
   <dt>Can I use it offline?</dt>
@@ -322,6 +362,8 @@
           <li><a href="/bandstemmixer/guide/">How to use (guide)</a></li>
           <li><a href="/bandstemmixer/minus-one/">Practicing with your part removed</a></li>
           <li><a href="/bandstemmixer/learn-by-ear/">Hearing the bass and drums clearly</a></li>
+          <li><a href="/bandstemmixer/harmony/">Practicing harmonies</a></li>
+          <li><a href="/bandstemmixer/chords-and-key/">Chords and key change</a></li>
           <li><a href="/bandstemmixer/how-it-works/">How AI separation works</a></li>
           <li><a href="/bandstemmixer/better-results/">Tips for better separation</a></li>
           <li><a href="/bandstemmixer/faq/" aria-current="page">FAQ</a></li>

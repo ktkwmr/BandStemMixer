@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="/bandstemmixer/icons/icon.svg" />
   <link rel="apple-touch-icon" href="/bandstemmixer/icons/apple-touch-icon.png" />
   <title>よくある質問（FAQ） | Band Stem Mixer</title>
-  <meta name="description" content="Band Stem Mixer についてのよくある質問。プライバシー、分離するパート、開けるファイル、かかる時間、AI モデルのダウンロード、iPhone、残る音、MP3 の保存、オフライン。" />
+  <meta name="description" content="Band Stem Mixer についてのよくある質問。プライバシー、分離するパート、開けるファイル、かかる時間、AI モデルのダウンロード、iPhone、残る音、コード、ハモリ、キーの変更、MP3 の保存、オフライン。" />
   <link rel="canonical" href="https://ktkwmr.com/bandstemmixer/ja/faq/" />
   <link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/faq/" />
   <link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/faq/" />
@@ -16,7 +16,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="Band Stem Mixer" />
   <meta property="og:title" content="よくある質問（FAQ）" />
-  <meta property="og:description" content="Band Stem Mixer についてのよくある質問。プライバシー、分離するパート、開けるファイル、かかる時間、AI モデルのダウンロード、iPhone、残る音、MP3 の保存、オフライン。" />
+  <meta property="og:description" content="Band Stem Mixer についてのよくある質問。プライバシー、分離するパート、開けるファイル、かかる時間、AI モデルのダウンロード、iPhone、残る音、コード、ハモリ、キーの変更、MP3 の保存、オフライン。" />
   <meta property="og:locale" content="ja_JP" />
   <meta property="og:locale:alternate" content="en_US" />
   <meta property="og:url" content="https://ktkwmr.com/bandstemmixer/ja/faq/" />
@@ -124,7 +124,39 @@
         "name": "分離したパートは保存されますか？",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "アプリには残りません。ページを読み込み直したり別の曲を選んだりすると消えます。残したいものは ↓ ボタンや「このミックスを保存（MP3）」で MP3（192 kbps）にしてください。ミキサーの設定（音量・ミュート・全体の音量）は次回も残ります。"
+          "text": "アプリには残りません。ページを読み込み直したり別の曲を選んだりすると、コードやハモリと一緒に消えます。残したいものは ↓ ボタンや「このミックスを保存（MP3）」で MP3（192 kbps）にしてください。ミキサーの設定（音量・ミュート・全体の音量）は次回も残ります。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "曲のコードを調べられますか？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "調べられます。分離したあと「コード推定＆ハモリ生成」を押すと、テンポ（BPM）と 1 拍ごとのコードを推定します。自動で推定するのはメジャーとマイナーだけで、間違うこともあるので、拍ごとに手で直せます（7・maj7・m7・add9・dim7・m7b5・aug・sus4 も選べます）。コード表示とキー変更をご覧ください。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "ハモリのパートを作れますか？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "作れます。ボーカルの旋律の 3 度か 5 度の上か下に、歌い手の声をハモリの音程に変えたものと、単純なガイド音の 2 つを作り、それぞれ音量を変えられます。キーとコードに合うように選びますが、推定なので外れることもあります。ハモリの練習をご覧ください。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "キーを変えられますか？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "テンポはそのままで、上下 12 半音まで変えられます。ボーカル・ベース・その他が動き、ドラムは動きません。コード名とハモリも一緒に変わります。キーを変えるをご覧ください。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "転調する曲で、途中からコードやハモリが合いません。",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "アプリは曲全体を 1 つのキー・1 つのテンポとして扱います。転調やテンポの変化のあとは、ハモリや拍がずれることがあります。必要なところのコードを手で直して「ハモリを再生成」を押してください。"
         }
       },
       {
@@ -301,7 +333,15 @@
   <dt>ミュートしたパートが少し聞こえます。</dt>
   <dd>AI の分離は推定なので、ほかのパートにその音が少し残ることがあります。たいていは周りより小さいので、ほかのパートを少し上げると目立たなくなります。<a href="../how-it-works/#leak">パートの間で音が混ざる理由</a>をご覧ください。</dd>
   <dt>分離したパートは保存されますか？</dt>
-  <dd>アプリには残りません。ページを読み込み直したり別の曲を選んだりすると消えます。残したいものは ↓ ボタンや「このミックスを保存（MP3）」で MP3（192 kbps）にしてください。ミキサーの設定（音量・ミュート・全体の音量）は次回も残ります。</dd>
+  <dd>アプリには残りません。ページを読み込み直したり別の曲を選んだりすると、コードやハモリと一緒に消えます。残したいものは ↓ ボタンや「このミックスを保存（MP3）」で MP3（192 kbps）にしてください。ミキサーの設定（音量・ミュート・全体の音量）は次回も残ります。</dd>
+  <dt>曲のコードを調べられますか？</dt>
+  <dd>調べられます。分離したあと「コード推定＆ハモリ生成」を押すと、テンポ（BPM）と 1 拍ごとのコードを推定します。自動で推定するのはメジャーとマイナーだけで、間違うこともあるので、拍ごとに手で直せます（7・maj7・m7・add9・dim7・m7b5・aug・sus4 も選べます）。<a href="../chords-and-key/">コード表示とキー変更</a>をご覧ください。</dd>
+  <dt>ハモリのパートを作れますか？</dt>
+  <dd>作れます。ボーカルの旋律の 3 度か 5 度の上か下に、歌い手の声をハモリの音程に変えたものと、単純なガイド音の 2 つを作り、それぞれ音量を変えられます。キーとコードに合うように選びますが、推定なので外れることもあります。<a href="../harmony/">ハモリの練習</a>をご覧ください。</dd>
+  <dt>キーを変えられますか？</dt>
+  <dd>テンポはそのままで、上下 12 半音まで変えられます。ボーカル・ベース・その他が動き、ドラムは動きません。コード名とハモリも一緒に変わります。<a href="../chords-and-key/#key">キーを変える</a>をご覧ください。</dd>
+  <dt>転調する曲で、途中からコードやハモリが合いません。</dt>
+  <dd>アプリは曲全体を 1 つのキー・1 つのテンポとして扱います。転調やテンポの変化のあとは、ハモリや拍がずれることがあります。必要なところのコードを手で直して「ハモリを再生成」を押してください。</dd>
   <dt>作ったパートやカラオケ音源を公開してもいいですか？</dt>
   <dd>自分たちのバンドの録音など、権利を持っている曲だけにしてください。他人の曲を分離したパートを公開・配布するには、ふつう権利者の許可が必要です。</dd>
   <dt>オフラインで使えますか？</dt>
@@ -322,6 +362,8 @@
           <li><a href="/bandstemmixer/ja/guide/">使い方ガイド</a></li>
           <li><a href="/bandstemmixer/ja/minus-one/">自分のパートを消して練習する</a></li>
           <li><a href="/bandstemmixer/ja/learn-by-ear/">ベースとドラムを聞き取る</a></li>
+          <li><a href="/bandstemmixer/ja/harmony/">ハモリの練習</a></li>
+          <li><a href="/bandstemmixer/ja/chords-and-key/">コード表示とキー変更</a></li>
           <li><a href="/bandstemmixer/ja/how-it-works/">AI 音源分離の仕組み</a></li>
           <li><a href="/bandstemmixer/ja/better-results/">うまく分離するコツ</a></li>
           <li><a href="/bandstemmixer/ja/faq/" aria-current="page">よくある質問</a></li>

@@ -9,7 +9,7 @@ const JSDELIVR = "https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net";
 export default {
   slug: "privacy",
   schemaType: "WebPage",
-  modified: "2026-10-28",
+  modified: "2026-10-31",
   en: {
     title: "Privacy Policy",
     heading: "Privacy policy",
@@ -31,7 +31,7 @@ export default {
 </ol></nav>
 
 <h2 id="app">1. What you do in the app</h2>
-<p>The audio file you choose is read, separated into parts by the AI model, and played only in your browser. The file, the separated parts, and their names are never sent to our server or to anyone else. Saving a part or a mix as an MP3 file only saves it on your device. The app does not use the microphone. This site has no accounts, and we do not ask for your name, email address, or other personal information.</p>
+<p>The audio file you choose is read, separated into parts by the AI model, analyzed (tempo, chords, and the vocal melody, to make a harmony part), moved to another key when you ask, and played only in your browser. The file, the separated parts, the results of the analysis, and their names are never sent to our server or to anyone else. Saving a part or a mix as an MP3 file only saves it on your device. The app does not use the microphone. This site has no accounts, and we do not ask for your name, email address, or other personal information.</p>
 
 <h2 id="storage">2. Data saved in your browser</h2>
 <p>The following data is saved in your browser's storage on your device. It is not sent to us.</p>
@@ -40,7 +40,7 @@ export default {
   <li><b>Mixer settings:</b> the level and mute of each part, the master volume, and whether the GPU is used.</li>
   <li><b>App files:</b> the pages and files of this site and the ONNX Runtime library, so the app works offline.</li>
 </ul>
-<p>Your songs and the separated parts are not saved in the browser; they are gone when you close or reload the page. To delete the data above, use “Reset mixer” and ⚙ → “Delete the AI model” in the app, or clear this site's data (site data, cookies, and storage for ktkwmr.com) in your browser settings.</p>
+<p>Your songs, the separated parts, the chords, and the harmony are not saved in the browser; they are gone when you close or reload the page. To delete the data above, use “Reset mixer” and ⚙ → “Delete the AI model” in the app, or clear this site's data (site data, cookies, and storage for ktkwmr.com) in your browser settings.</p>
 
 <h2 id="external">3. Information sent to external services</h2>
 <p>When you use this site, your browser sends information to the following services. This list also serves as the notice of external transmission required under Japan's Telecommunications Business Act.</p>
@@ -70,7 +70,7 @@ export default {
 
 <h2 id="changes">8. Changes to this policy</h2>
 <p>We may update this policy when the site changes, for example when we add or remove a service. The updated policy applies from the time it is posted on this page.</p>
-<p>Effective: October 28, 2026</p>
+<p>Effective: October 28, 2026 (updated October 31, 2026: chord estimation, harmony, and key change added to section 1, all done in the browser)</p>
 `,
   },
   ja: {
@@ -94,7 +94,7 @@ export default {
 </ol></nav>
 
 <h2 id="app">1. アプリで行うこと</h2>
-<p>選んだ音声ファイルの読み込み、AI モデルによるパートへの分離、再生は、ブラウザの中だけで行います。ファイル、分離したパート、ファイル名が、運営者のサーバーやほかの誰かに送られることはありません。パートやミックスを MP3 ファイルで保存しても、端末に保存するだけです。マイクは使いません。本サイトにはアカウント登録はなく、氏名やメールアドレスなどの個人情報をお聞きすることもありません。</p>
+<p>選んだ音声ファイルの読み込み、AI モデルによるパートへの分離、解析（ハモリを作るためのテンポ・コード・ボーカルの旋律の推定）、キーの変更、再生は、ブラウザの中だけで行います。ファイル、分離したパート、解析の結果、ファイル名が、運営者のサーバーやほかの誰かに送られることはありません。パートやミックスを MP3 ファイルで保存しても、端末に保存するだけです。マイクは使いません。本サイトにはアカウント登録はなく、氏名やメールアドレスなどの個人情報をお聞きすることもありません。</p>
 
 <h2 id="storage">2. ブラウザに保存するデータ</h2>
 <p>次のデータを、お使いの端末のブラウザ内に保存します。運営者に送られることはありません。</p>
@@ -103,7 +103,7 @@ export default {
   <li><b>ミキサーの設定：</b>各パートの音量とミュート、全体の音量、GPU を使うかどうか。</li>
   <li><b>アプリのファイル：</b>オフラインでも使えるよう、本サイトのページやファイルと ONNX Runtime のライブラリを保存します。</li>
 </ul>
-<p>曲と分離したパートはブラウザに保存しません。ページを閉じたり再読み込みしたりすると消えます。上のデータを消したいときは、アプリの「ミキサーを元に戻す」と ⚙ →「AI モデルを削除」を使うか、ブラウザの設定でこのサイト（ktkwmr.com）のデータ（サイトデータ・Cookie・ストレージ）を削除してください。</p>
+<p>曲・分離したパート・コード・ハモリはブラウザに保存しません。ページを閉じたり再読み込みしたりすると消えます。上のデータを消したいときは、アプリの「ミキサーを元に戻す」と ⚙ →「AI モデルを削除」を使うか、ブラウザの設定でこのサイト（ktkwmr.com）のデータ（サイトデータ・Cookie・ストレージ）を削除してください。</p>
 
 <h2 id="external">3. 外部への情報の送信</h2>
 <p>本サイトを利用すると、お使いのブラウザから次のサービスに情報が送信されます。この一覧は、電気通信事業法の外部送信規律に基づく公表を兼ねています。</p>
@@ -133,7 +133,7 @@ export default {
 
 <h2 id="changes">8. 改定</h2>
 <p>サービスの追加・終了など本サイトの変更に合わせて、本ポリシーを改定することがあります。改定後のポリシーは、このページに掲載した時点から適用されます。</p>
-<p>制定日：2026 年 10 月 28 日</p>
+<p>制定日：2026 年 10 月 28 日（2026 年 10 月 31 日改定：1. にコードの推定・ハモリ・キーの変更を追加。いずれもブラウザの中で行います）</p>
 `,
   },
 };

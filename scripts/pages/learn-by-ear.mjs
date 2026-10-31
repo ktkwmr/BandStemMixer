@@ -51,6 +51,7 @@ export default {
 <h2 id="pairs">Listening to two parts together</h2>
 <p>Solo works on more than one part. Press S on both <b>Bass and Drums</b> to hear the rhythm section on its own: how the bass follows the kick, and where they play different rhythms. This is the best way to learn the groove before you play along with the full band.</p>
 <p>Bass players can also do the opposite: mute only the bass and play along. See <a href="../minus-one/">practicing with your part removed</a>.</p>
+<p>Guitar and keyboard players: “Find chords &amp; make harmony” shows a chord on every beat above the parts. Solo “Other”, follow the chords, and check each one by ear; fix the ones that sound wrong. See <a href="../chords-and-key/">chords and key change</a>.</p>
 
 <h2 id="slow">Slowing a part down</h2>
 <p>Fast passages are easier to follow slowly. Save the soloed part with the ↓ button, then open the MP3 in <a href="/looptrainer/">Loop Trainer</a>, a practice player on this site that loops a section and slows it down without changing the pitch.</p>
@@ -112,6 +113,7 @@ export default {
 <h2 id="pairs">2 つのパートを一緒に聞く</h2>
 <p>ソロは複数のパートにかけられます。<b>ベースとドラム</b>の両方の S を押すと、リズム隊だけを聞けます。ベースがキックにどう合わせているか、どこで違うリズムを弾いているかが分かり、バンド全体に合わせる前にグルーヴをつかむのにいちばんの方法です。</p>
 <p>ベーシストは逆に、ベースだけをミュートして合わせて弾く練習もできます。<a href="../minus-one/">自分のパートを消して練習する</a>を見てください。</p>
+<p>ギター・鍵盤の人は、「コード推定＆ハモリ生成」を押すと、パートの上に 1 拍ごとのコードが出ます。「その他」をソロにしてコードを目で追い、1 つずつ耳で確かめて、違って聞こえるものは直します。<a href="../chords-and-key/">コード表示とキー変更</a>をご覧ください。</p>
 
 <h2 id="slow">ゆっくり聞く</h2>
 <p>速いフレーズは、ゆっくり聞くと追いやすくなります。ソロにしたパートを ↓ ボタンで保存し、その MP3 を同じサイトの <a href="/looptrainer/ja/">Loop Trainer</a> で開くと、区間をループさせ、音程を変えずにスロー再生できます。</p>

@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="/bandstemmixer/icons/icon.svg" />
   <link rel="apple-touch-icon" href="/bandstemmixer/icons/apple-touch-icon.png" />
   <title>Band Stem Mixer の使い方：曲をパートに分離してミックスする | Band Stem Mixer</title>
-  <meta name="description" content="Band Stem Mixer の使い方を画面写真つきで解説。曲を選んで AI でボーカル・ドラム・ベース・その他に分離し、パートごとにミュート・ソロ・音量を変えて、MP3 で保存するまで。" />
+  <meta name="description" content="Band Stem Mixer の使い方を画面写真つきで解説。曲を選んで AI でボーカル・ドラム・ベース・その他に分離し、パートごとにミュート・ソロ・音量を変え、キーの変更・コード表示・ハモリ作りをして、MP3 で保存するまで。" />
   <link rel="canonical" href="https://ktkwmr.com/bandstemmixer/ja/guide/" />
   <link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/guide/" />
   <link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/guide/" />
@@ -16,7 +16,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="Band Stem Mixer" />
   <meta property="og:title" content="Band Stem Mixer の使い方：曲をパートに分離してミックスする" />
-  <meta property="og:description" content="Band Stem Mixer の使い方を画面写真つきで解説。曲を選んで AI でボーカル・ドラム・ベース・その他に分離し、パートごとにミュート・ソロ・音量を変えて、MP3 で保存するまで。" />
+  <meta property="og:description" content="Band Stem Mixer の使い方を画面写真つきで解説。曲を選んで AI でボーカル・ドラム・ベース・その他に分離し、パートごとにミュート・ソロ・音量を変え、キーの変更・コード表示・ハモリ作りをして、MP3 で保存するまで。" />
   <meta property="og:locale" content="ja_JP" />
   <meta property="og:locale:alternate" content="en_US" />
   <meta property="og:url" content="https://ktkwmr.com/bandstemmixer/ja/guide/" />
@@ -29,7 +29,7 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "Band Stem Mixer の使い方",
-    "description": "Band Stem Mixer の使い方を画面写真つきで解説。曲を選んで AI でボーカル・ドラム・ベース・その他に分離し、パートごとにミュート・ソロ・音量を変えて、MP3 で保存するまで。",
+    "description": "Band Stem Mixer の使い方を画面写真つきで解説。曲を選んで AI でボーカル・ドラム・ベース・その他に分離し、パートごとにミュート・ソロ・音量を変え、キーの変更・コード表示・ハモリ作りをして、MP3 で保存するまで。",
     "url": "https://ktkwmr.com/bandstemmixer/ja/guide/",
     "inLanguage": "ja",
     "datePublished": "2026-10-28",
@@ -188,6 +188,7 @@
   <li><a href="#song">曲を選んで分離する</a></li>
   <li><a href="#first">初回は AI モデルをダウンロード</a></li>
   <li><a href="#mixer">ミキサー</a></li>
+  <li><a href="#harmony">キー・コード・ハモリ</a></li>
   <li><a href="#save">MP3 で保存する</a></li>
   <li><a href="#phone">スマホ・タブレットで使う</a></li>
   <li><a href="#keys">キーボード操作</a></li>
@@ -230,7 +231,7 @@
 
 <h2 id="mixer">ミキサー</h2>
 <figure class="shot">
-  <a href="/bandstemmixer/images/guide/ja-mixer.png"><img src="/bandstemmixer/images/guide/ja-mixer.png" alt="再生中のミキサー。停止ボタンと再生位置（1:00 のうち 0:21）、ボーカル（80%）・ベース（ミュート）・ドラム・その他（ギター・鍵盤など）の 4 行に、それぞれレベルメーター、M と S のボタン、フェーダー、保存ボタン。下に全体の音量、「ミキサーを元に戻す」「このミックスを保存（MP3）」。1〜10 の番号付き。" width="1548" height="1288" loading="lazy" decoding="async"></a>
+  <a href="/bandstemmixer/images/guide/ja-mixer.png"><img src="/bandstemmixer/images/guide/ja-mixer.png" alt="再生中のミキサー。停止ボタンと再生位置（1:00 のうち 0:21）、キーの − ＋ と「コード推定＆ハモリ生成」ボタン、ボーカル（80%）・ベース（ミュート）・ドラム・その他（ギター・鍵盤など）の 4 行に、それぞれレベルメーター、M と S のボタン、フェーダー、保存ボタン。下に全体の音量、「ミキサーを元に戻す」「このミックスを保存（MP3）」。1〜10 の番号付き。" width="1548" height="1288" loading="lazy" decoding="async"></a>
   <figcaption>ベーシストの練習のように、ベースをミュート（M）し、ボーカルを 80% に下げたところ。</figcaption>
 </figure>
 <ol>
@@ -246,14 +247,32 @@
   <li><b>このミックスを保存（MP3）</b> – いま聞こえている音を 1 つの MP3 ファイルで保存します。</li>
 </ol>
 <p>フェーダー・M・全体の音量は次回も残ります。S は残らないので、うっかりソロのまま始まることはありません。</p>
+<p>再生ボタンとパートの間にある「キー」と「コード推定＆ハモリ生成」は、次の節で説明します。</p>
 <p>練習のしかたは、<a href="../minus-one/">自分のパートを消して練習する</a>と<a href="../learn-by-ear/">ベースとドラムを聞き取る</a>を見てください。</p>
+
+<h2 id="harmony">キー・コード・ハモリ</h2>
+<figure class="shot">
+  <a href="/bandstemmixer/images/guide/ja-harmony.png"><img src="/bandstemmixer/images/guide/ja-harmony.png" alt="ハモリを作ったあとのミキサー。キーの − と ＋、「ハモリを再生成」ボタンとパート、BPM 120、コード・ボーカルの音程・ハモリの音が流れる表示、増えた 2 行「ハモリ（声）」「ハモリのガイド音」。1〜7 の番号付き。" width="1548" height="1832" loading="lazy" decoding="async"></a>
+  <figcaption>「コード推定＆ハモリ生成」を押したあと。番号は下の説明と対応しています。</figcaption>
+</figure>
+<ol>
+  <li><b>キー（ドラム以外）</b> – − と ＋ で、ボーカル・ベース・その他を半音ずつ、上下 1 オクターブまで動かします。テンポとドラムは変わりません。</li>
+  <li><b>コード推定＆ハモリ生成</b> – テンポ、拍ごとのコード、ボーカルの旋律を推定し、ハモリのパートを作ります。2 回目からは「ハモリを再生成」になります。</li>
+  <li><b>ハモリのパート</b> – 旋律の 3 度か 5 度の、上か下か。</li>
+  <li><b>BPM</b> – 曲から推定したテンポ。</li>
+  <li><b>表示</b> – 上の段にコード名（拍をタップするとコードを変えられます）、灰色の線がボーカルの音程、黒い帯がハモリの音。横にドラッグすると先を見られ、タップするとその位置に移ります。</li>
+  <li><b>ハモリ（声）</b> – ボーカルをハモリの音程に変えたもの。</li>
+  <li><b>ハモリのガイド音</b> – 同じ音を単純な音で鳴らしたもの。</li>
+</ol>
+<p>これらはすべて、AI モデルを使わずにブラウザの中で処理します。詳しくは<a href="../harmony/">ハモリの練習</a>と<a href="../chords-and-key/">コード表示とキー変更</a>をご覧ください。</p>
 
 <h2 id="save">MP3 で保存する</h2>
 <ul>
   <li><b>パートごと</b> – 各行の ↓ ボタンで、そのパートを分離したままの音で保存します（フェーダーや M は反映しません）。</li>
   <li><b>自分のミックス</b> – 「このミックスを保存（MP3）」で、いま聞こえている音（フェーダー・M・S・全体の音量）を保存します。</li>
-  <li>ファイルは 192 kbps の MP3（44.1 kHz ステレオ）で、名前は曲名から付けます（例：<code>練習曲 - ベース.mp3</code>）。</li>
-  <li>分離したパートはアプリに残りません。ページを読み込み直したり別の曲を選んだりすると消えるので、残したいものは保存するか、もう一度分離してください。</li>
+  <li><b>ハモリ</b> – ハモリの 2 つのパートにも ↓ ボタンがあります。</li>
+  <li>ファイルは 192 kbps の MP3（44.1 kHz ステレオ）で、名前は曲名から付けます（例：<code>練習曲 - ベース.mp3</code>）。キーを変えたときは名前に入ります（例：<code>練習曲 - ベース（キー +2）.mp3</code>）。</li>
+  <li>分離したパート・コード・ハモリはアプリに残りません。ページを読み込み直したり別の曲を選んだりすると消えるので、残したいものは保存するか、もう一度分離してください。</li>
 </ul>
 <p>保存した MP3 はどの端末でも再生できます。パソコンで分離して、スマホでそのファイルを使って練習することもできます。</p>
 
@@ -271,7 +290,7 @@
     <thead><tr><th scope="col">キー</th><th scope="col">操作</th></tr></thead>
     <tbody>
       <tr><th scope="row"><code>Space</code></th><td>再生・停止</td></tr>
-      <tr><th scope="row"><code>1</code>〜<code>4</code></th><td>ボーカル・ベース・ドラム・その他のミュートの切り替え</td></tr>
+      <tr><th scope="row"><code>1</code>〜<code>6</code></th><td>ボーカル・ベース・ドラム・その他のミュートの切り替え（ハモリを作ったあとは 5・6 でハモリ（声）・ガイド音）</td></tr>
       <tr><th scope="row"><code>←</code> <code>→</code></th><td>5 秒戻る・進む</td></tr>
     </tbody>
   </table>
@@ -283,7 +302,7 @@
   <li>ミキサーの設定（各パートの音量とミュート、全体の音量）。</li>
   <li>アプリ本体（通信がなくても開けるように）。ホーム画面に追加できます。</li>
 </ul>
-<p>曲と分離したパートは保存せず、アップロードもしません。<a href="../privacy/">プライバシーポリシー</a>もご覧ください。</p>
+<p>曲・分離したパート・コード・ハモリは保存せず、アップロードもしません。<a href="../privacy/">プライバシーポリシー</a>もご覧ください。</p>
     </article>
     <aside class="cta">
       <h2>曲をパートに分離してバンド練習に</h2>
@@ -299,6 +318,8 @@
           <li><a href="/bandstemmixer/ja/guide/" aria-current="page">使い方ガイド</a></li>
           <li><a href="/bandstemmixer/ja/minus-one/">自分のパートを消して練習する</a></li>
           <li><a href="/bandstemmixer/ja/learn-by-ear/">ベースとドラムを聞き取る</a></li>
+          <li><a href="/bandstemmixer/ja/harmony/">ハモリの練習</a></li>
+          <li><a href="/bandstemmixer/ja/chords-and-key/">コード表示とキー変更</a></li>
           <li><a href="/bandstemmixer/ja/how-it-works/">AI 音源分離の仕組み</a></li>
           <li><a href="/bandstemmixer/ja/better-results/">うまく分離するコツ</a></li>
           <li><a href="/bandstemmixer/ja/faq/">よくある質問</a></li>

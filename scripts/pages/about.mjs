@@ -5,7 +5,7 @@ const REPO = "https://github.com/ktkwmr/BandStemMixer";
 export default {
   slug: "about",
   schemaType: "AboutPage",
-  modified: "2026-10-28",
+  modified: "2026-10-31",
   en: {
     title: "About This Site",
     heading: "About this site",
@@ -18,7 +18,7 @@ export default {
       <tr><th scope="row">Site name</th><td>Band Stem Mixer</td></tr>
       <tr><th scope="row">URL</th><td><a href="/bandstemmixer/">https://ktkwmr.com/bandstemmixer/</a></td></tr>
       <tr><th scope="row">Operator</th><td>ktkwmr (individual developer)</td></tr>
-      <tr><th scope="row">What we offer</th><td>A free, non-commercial web app that separates a band song into 4 parts (vocals, drums, bass, and other) with AI on your device, and mixes them for practice</td></tr>
+      <tr><th scope="row">What we offer</th><td>A free, non-commercial web app that separates a band song into 4 parts (vocals, drums, bass, and other) with AI on your device and mixes them for practice, with chord estimation, a harmony part, and key change</td></tr>
       <tr><th scope="row">Contact</th><td><a href="${ISSUES}" rel="noopener">GitHub Issues</a></td></tr>
     </tbody>
   </table>
@@ -30,7 +30,7 @@ export default {
 
 <h2 id="disclaimer">Disclaimer</h2>
 <ul>
-  <li>The separation is done by an AI model and is not perfect: sounds can leak between parts or be lost. We do not guarantee the quality of the separated parts or that the information on this site is correct or complete.</li>
+  <li>The separation is done by an AI model and is not perfect: sounds can leak between parts or be lost. The tempo, chords, and harmony are also estimated automatically and can be wrong. We do not guarantee the quality of the separated parts or that the information on this site is correct or complete.</li>
   <li>Separation needs a lot of memory and processing. On some devices it can be slow or fail, and the device can get warm.</li>
   <li>Separate only recordings you made or have the rights to use. Publishing or distributing separated parts of other people's songs may infringe copyright. You are responsible for how you use the files.</li>
   <li>We are not responsible for any loss or damage resulting from the use of this site.</li>
@@ -61,7 +61,7 @@ export default {
       <tr><th scope="row">サイト名</th><td>Band Stem Mixer</td></tr>
       <tr><th scope="row">URL</th><td><a href="/bandstemmixer/ja/">https://ktkwmr.com/bandstemmixer/ja/</a></td></tr>
       <tr><th scope="row">運営者</th><td>ktkwmr（個人開発者）</td></tr>
-      <tr><th scope="row">内容</th><td>バンドの曲を AI で端末の中で 4 つのパート（ボーカル・ドラム・ベース・その他）に分離し、練習用にミックスできる、無料・非営利の Web アプリ</td></tr>
+      <tr><th scope="row">内容</th><td>バンドの曲を AI で端末の中で 4 つのパート（ボーカル・ドラム・ベース・その他）に分離し、練習用にミックスできる、無料・非営利の Web アプリ（コードの推定・ハモリの作成・キーの変更つき）</td></tr>
       <tr><th scope="row">お問い合わせ</th><td><a href="${ISSUES}" rel="noopener">GitHub の Issues</a></td></tr>
     </tbody>
   </table>
@@ -73,7 +73,7 @@ export default {
 
 <h2 id="disclaimer">免責事項</h2>
 <ul>
-  <li>分離は AI モデルが行うもので、完全ではありません。パートの間で音が混ざったり、音が欠けたりすることがあります。分離したパートの品質や、本サイトの情報が正確・完全であることを保証するものではありません。</li>
+  <li>分離は AI モデルが行うもので、完全ではありません。パートの間で音が混ざったり、音が欠けたりすることがあります。テンポ・コード・ハモリも自動の推定で、間違うことがあります。分離したパートの品質や、本サイトの情報が正確・完全であることを保証するものではありません。</li>
   <li>分離には多くのメモリと処理が必要です。端末によっては時間がかかったり失敗したりし、端末が熱くなることがあります。</li>
   <li>分離するのは、自分で録音した音源か、使う権利のある音源だけにしてください。ほかの人の曲を分離したパートを公開・配布すると、著作権の侵害になることがあります。ファイルの使い方は利用者の責任となります。</li>
   <li>本サイトの利用によって生じた損害について、運営者は責任を負いません。</li>

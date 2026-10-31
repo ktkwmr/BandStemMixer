@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="/bandstemmixer/icons/icon.svg" />
   <link rel="apple-touch-icon" href="/bandstemmixer/icons/apple-touch-icon.png" />
   <title>How AI Music Source Separation Works (Demucs) — and Why It Is Not Perfect | Band Stem Mixer</title>
-  <meta name="description" content="How an AI model like Demucs splits a mixed song into vocals, drums, bass, and other: what it learns, why sounds leak between parts, why guitar and keys stay together, and how Band Stem Mixer runs it in your browser." />
+  <meta name="description" content="How an AI model like Demucs splits a mixed song into vocals, drums, bass, and other: what it learns, why sounds leak between parts, why guitar and keys stay together, how Band Stem Mixer runs it in your browser, and how it finds chords, makes harmonies, and changes the key." />
   <link rel="canonical" href="https://ktkwmr.com/bandstemmixer/how-it-works/" />
   <link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/how-it-works/" />
   <link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/how-it-works/" />
@@ -16,7 +16,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="Band Stem Mixer" />
   <meta property="og:title" content="How AI Music Source Separation Works (Demucs) — and Why It Is Not Perfect" />
-  <meta property="og:description" content="How an AI model like Demucs splits a mixed song into vocals, drums, bass, and other: what it learns, why sounds leak between parts, why guitar and keys stay together, and how Band Stem Mixer runs it in your browser." />
+  <meta property="og:description" content="How an AI model like Demucs splits a mixed song into vocals, drums, bass, and other: what it learns, why sounds leak between parts, why guitar and keys stay together, how Band Stem Mixer runs it in your browser, and how it finds chords, makes harmonies, and changes the key." />
   <meta property="og:locale" content="en_US" />
   <meta property="og:locale:alternate" content="ja_JP" />
   <meta property="og:url" content="https://ktkwmr.com/bandstemmixer/how-it-works/" />
@@ -29,7 +29,7 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "How AI music separation works, and why it is not perfect",
-    "description": "How an AI model like Demucs splits a mixed song into vocals, drums, bass, and other: what it learns, why sounds leak between parts, why guitar and keys stay together, and how Band Stem Mixer runs it in your browser.",
+    "description": "How an AI model like Demucs splits a mixed song into vocals, drums, bass, and other: what it learns, why sounds leak between parts, why guitar and keys stay together, how Band Stem Mixer runs it in your browser, and how it finds chords, makes harmonies, and changes the key.",
     "url": "https://ktkwmr.com/bandstemmixer/how-it-works/",
     "inLanguage": "en",
     "datePublished": "2026-10-28",
@@ -190,6 +190,7 @@
   <li><a href="#parts">Why four parts, and why guitar and keys stay together</a></li>
   <li><a href="#leak">Why sounds leak between parts</a></li>
   <li><a href="#browser">How it runs in your browser</a></li>
+  <li><a href="#chords">Chords, harmony, and key change (without AI)</a></li>
 </ol></nav>
 
 <h2 id="problem">Why separating a mix is hard</h2>
@@ -232,6 +233,17 @@
   <li>Each section needs a lot of memory — about 1 GB while the model runs. That is why computers are much faster, and why some phones cannot finish.</li>
 </ul>
 <p>Once separated, the four parts are played together in sync, and the mixer only changes their volumes, so moving a fader is instant.</p>
+
+<h2 id="chords">Chords, harmony, and key change (without AI)</h2>
+<p>The chords, the harmony, and the key change do not use an AI model. They are classic signal-processing methods, written in JavaScript and run in the browser, that work much better on the separated parts than on the full mix:</p>
+<ul>
+  <li><b>Beats and tempo</b> – the moments where new sounds start, the interval between them that repeats most (autocorrelation), and the chain of beats that fits both best (dynamic programming, after D. Ellis, 2007).</li>
+  <li><b>Chords</b> – for each beat, the strength of each of the 12 notes (a “chroma”) in the bass and “Other” parts, compared with the 24 major and minor chords; a hidden Markov model keeps the chords from changing on every beat without reason. Without guitar and vocals mixed in, the bass part makes the root of each chord much clearer.</li>
+  <li><b>Melody</b> – the pitch of the separated vocals, found with the YIN method and cut into notes.</li>
+  <li><b>Harmony voice</b> – the vocals moved to the harmony notes with TD-PSOLA, which repeats or skips single cycles of the voice, so the voice keeps its character.</li>
+  <li><b>Key change</b> – a phase vocoder that stretches each part in time by the pitch ratio and plays it back at the original length.</li>
+</ul>
+<p>Like the separation, these are estimates. See <a href="../chords-and-key/#limits">what to expect from the chords</a> and <a href="../harmony/#limits">from the harmony</a>.</p>
     </article>
     <aside class="cta">
       <h2>Split a song into parts and practice with your band</h2>
@@ -247,6 +259,8 @@
           <li><a href="/bandstemmixer/guide/">How to use (guide)</a></li>
           <li><a href="/bandstemmixer/minus-one/">Practicing with your part removed</a></li>
           <li><a href="/bandstemmixer/learn-by-ear/">Hearing the bass and drums clearly</a></li>
+          <li><a href="/bandstemmixer/harmony/">Practicing harmonies</a></li>
+          <li><a href="/bandstemmixer/chords-and-key/">Chords and key change</a></li>
           <li><a href="/bandstemmixer/how-it-works/" aria-current="page">How AI separation works</a></li>
           <li><a href="/bandstemmixer/better-results/">Tips for better separation</a></li>
           <li><a href="/bandstemmixer/faq/">FAQ</a></li>

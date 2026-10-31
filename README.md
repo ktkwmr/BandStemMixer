@@ -51,8 +51,8 @@ Full policy: `/bandstemmixer/privacy/` (`/bandstemmixer/ja/privacy/`). Operator:
 
 ## Guides / ガイド記事
 
-`/bandstemmixer/<slug>/` (`/bandstemmixer/ja/<slug>/`): `guide` (how to use), `minus-one` (practicing with your part removed), `learn-by-ear` (hearing the bass and drums), `how-it-works` (how AI separation works), `better-results` (tips), `faq`. Written in `scripts/pages/<slug>.mjs`; values shared with the app (model size, song length limit, fader range, MP3 bitrate) are read from the app's files by `scripts/pages/app.mjs`. Before an article change is merged, a person reads it on the PR preview (`docs/article-review.md`).
-使い方・マイナスワン・耳コピ・仕組み・コツ・FAQ の 6 本。記事を変えたら、マージ前に PR のプレビューで人間が内容を確認します。
+`/bandstemmixer/<slug>/` (`/bandstemmixer/ja/<slug>/`): `guide` (how to use), `minus-one` (practicing with your part removed), `learn-by-ear` (hearing the bass and drums), `harmony` (practicing harmonies), `chords-and-key` (chords, tempo, and key change), `how-it-works` (how AI separation works), `better-results` (tips), `faq`. Written in `scripts/pages/<slug>.mjs`; values shared with the app (model size, song length limit, fader range, MP3 bitrate) are read from the app's files by `scripts/pages/app.mjs`. Before an article change is merged, a person reads it on the PR preview (`docs/article-review.md`).
+使い方・マイナスワン・耳コピ・ハモリの練習・コードとキー変更・仕組み・コツ・FAQ の 8 本。記事を変えたら、マージ前に PR のプレビューで人間が内容を確認します。
 
 ## Project structure / 構成
 
