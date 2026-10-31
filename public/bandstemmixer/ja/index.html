@@ -189,15 +189,12 @@
     .sel { height: var(--ctl-h); padding: 0 8px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--paper); color: var(--ink); font-size: 13px; font-weight: 600; }
     .sel:disabled { opacity: .4; }
     .chords { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; font-size: 13px; color: var(--muted); }
-    .chord-now { appearance: none; min-width: 3ch; padding: 0 6px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--ink); font-family: var(--mono); font-size: 20px; font-weight: 700; cursor: pointer; }
-    @media (hover: hover) { .chord-now:hover { border-color: var(--line-strong); background: var(--hover-fill); } }
     .chords-note { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 8px 0; padding: 8px 10px; border-radius: var(--radius); background: var(--hover-fill); font-size: 12px; }
     .keyrow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
     .keylabel { font-size: 12px; font-weight: 700; margin-right: 4px; }
     .keyval { font-family: var(--mono); font-size: 14px; font-weight: 700; min-width: 3ch; text-align: center; }
     .chord-edit { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 18px; }
     .chord-edit label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 700; }
-    .chords .next { font-family: var(--mono); }
     /* pan-y: a sideways drag scrolls the roll (pointer events), an up / down swipe still scrolls the page */
     .roll { display: block; width: 100%; height: 132px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
     .mix-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px 16px; }
@@ -314,7 +311,6 @@
             <button class="chip sq" id="keyDown" type="button" aria-label="キーを半音下げる" data-i18n-attr="aria-label:key.down">−</button>
             <span class="keyval" id="keyVal">0</span>
             <button class="chip sq" id="keyUp" type="button" aria-label="キーを半音上げる" data-i18n-attr="aria-label:key.up">+</button>
-            <button class="chip" id="keyReset" type="button" data-i18n="key.reset" hidden>原曲のキー</button>
           </div>
           <div class="harm" id="harm">
             <div class="harm-row">
@@ -331,7 +327,7 @@
               <div class="bar" id="harmBar"><div></div></div>
             </div>
             <div id="harmView" hidden>
-              <div class="chords"><span id="keyName"></span><span id="bpmVal"></span><button class="chord-now" id="chordNow" type="button" title="このコードを編集" data-i18n-attr="title:chord.edit"></button><span class="next" id="chordNext"></span></div>
+              <div class="chords"><span id="bpmVal"></span></div>
               <div class="chords-note" id="chordsNote" hidden><span id="chordsStale" data-i18n="chords.stale">コードを変更しました。ハモリに反映するには「ハモリを再生成」を押してください。</span><button class="chip" id="chordsReset" type="button" data-i18n="chords.reset">推定したコードに戻す</button></div>
               <canvas class="roll" id="roll" role="img" aria-label="コード、ボーカルの音程（灰色の線）、ハモリの音（黒い帯）" data-i18n-attr="aria-label:harm.roll"></canvas>
             </div>
@@ -547,13 +543,11 @@
           "harm.up5": "Upper (5th above)",
           "harm.down5": "Lower (5th below)",
           "harm.hint": "Finds the key and chords, follows the vocal melody, and adds a harmony part: the vocals shifted to the harmony notes, and a guide tone. Grey line: the vocal melody; black bars: the harmony notes. Drag it sideways to scroll. Tap it to jump there, or tap a beat in the chord row to change the chord (one chord per beat). It is estimated automatically and can be wrong.",
-          "harm.keyShift": "Key: {key} (original: {orig})",
           "harm.bpm": "BPM {bpm}",
           "harm.noBeat": "No beat found (chords every 0.5 s)",
           "key.label": "Key (all but drums)",
           "key.up": "Key up a semitone",
           "key.down": "Key down a semitone",
-          "key.reset": "Original key",
           "key.stage": "Changing the key…",
           "key.done": "Key changed ({n}).",
           "key.err": "The key could not be changed ({msg}).",
@@ -568,19 +562,14 @@
           "chord.beat": "1 beat",
           "chord.beats": "{n} beats",
           "chord.ok": "Change",
-          "chord.edit": "Edit this chord",
           "chords.stale": "The chords were changed. Press “Remake the harmony” to use them in the harmony.",
           "chords.reset": "Back to the estimated chords",
           "harm.stage.chords": "Finding the key and chords…",
           "harm.stage.melody": "Following the vocal melody…",
           "harm.stage.voice": "Making the harmony voice…",
-          "harm.done": "Harmony made (key: {key}). Press play.",
+          "harm.done": "Harmony made. Press play.",
           "harm.none": "No vocal melody was found, so only the chords are shown.",
           "harm.err": "The harmony could not be made ({msg}).",
-          "harm.key": "Key: {key}",
-          "harm.major": "{root} major",
-          "harm.minor": "{root} minor",
-          "harm.next": "next {chord}",
           "harm.roll": "Chords, the vocal melody (grey line), and the harmony notes (black bars)",
           "stem.harmony": "Harmony (voice)",
           "stem.guide": "Harmony guide tone",
@@ -697,13 +686,11 @@
           "harm.up5": "上ハモ（5 度上）",
           "harm.down5": "下ハモ（5 度下）",
           "harm.hint": "キーとコードを推定し、ボーカルの音程を追って、ハモリのパート（ボーカルの音程を変えた声と、ガイド音）を作ります。灰色の線がボーカルの音程、黒い帯がハモリの音です。表示は横にドラッグしてスクロールできます。タップするとその位置に移り、上の段（コード）をタップすると、その拍からのコードを変えられます（コードは 1 拍ごと）。自動の推定なので、間違うこともあります。",
-          "harm.keyShift": "キー：{key}（原曲 {orig}）",
           "harm.bpm": "BPM {bpm}",
           "harm.noBeat": "拍を検出できませんでした（コードは 0.5 秒ごと）",
           "key.label": "キー（ドラム以外）",
           "key.up": "キーを半音上げる",
           "key.down": "キーを半音下げる",
-          "key.reset": "原曲のキー",
           "key.stage": "キーを変えています…",
           "key.done": "キーを変えました（{n}）。",
           "key.err": "キーを変えられませんでした（{msg}）。",
@@ -718,19 +705,14 @@
           "chord.beat": "1 拍",
           "chord.beats": "{n} 拍",
           "chord.ok": "変更する",
-          "chord.edit": "このコードを編集",
           "chords.stale": "コードを変更しました。ハモリに反映するには「ハモリを再生成」を押してください。",
           "chords.reset": "推定したコードに戻す",
           "harm.stage.chords": "キーとコードを推定しています…",
           "harm.stage.melody": "ボーカルの音程を追っています…",
           "harm.stage.voice": "ハモリの声を作っています…",
-          "harm.done": "ハモリを作りました（キー：{key}）。再生してください。",
+          "harm.done": "ハモリを作りました。再生してください。",
           "harm.none": "ボーカルの旋律が見つからなかったので、コードだけを表示しています。",
           "harm.err": "ハモリを作れませんでした（{msg}）。",
-          "harm.key": "キー：{key}",
-          "harm.major": "{root} メジャー",
-          "harm.minor": "{root} マイナー",
-          "harm.next": "次 {chord}",
           "harm.roll": "コード、ボーカルの音程（灰色の線）、ハモリの音（黒い帯）",
           "stem.harmony": "ハモリ（声）",
           "stem.guide": "ハモリのガイド音",
@@ -1584,9 +1566,6 @@
       function chordName(c) {
         return !c || c.root < 0 ? "" : noteName(c.root + semis) + c.q;
       }
-      function keyName(shift) {
-        return t(harm.key.minor ? "harm.minor" : "harm.major", { root: noteName(harm.key.tonic + shift) });
-      }
       function harmSettings() {
         const v = Number($("harmDir").value);
         return { dir: v < 0 ? -1 : 1, interval: Math.abs(v) === 5 ? 5 : 3 };
@@ -1674,7 +1653,7 @@
           applyStems();
           if (makeNew) {
             wantHarm = false;
-            toast(made && made.notes.length ? t("harm.done", { key: keyName(semis) }) : t("harm.none"));
+            toast(made && made.notes.length ? t("harm.done") : t("harm.none"));
           } else if (parts) {
             toast(t("key.done", { n: signed(target) }));
           }
@@ -1731,19 +1710,16 @@
         $("keyVal").textContent = signed(semis);
         $("keyDown").disabled = !orig || semis <= -12;
         $("keyUp").disabled = !orig || semis >= 12;
-        $("keyReset").hidden = semis === 0;
         renderHarm();
       }
       function renderHarm() {
         // Once made, the button remakes the harmony from the chords on screen (estimated or edited)
         $("harmBtn").textContent = t(harm ? "harm.regen" : "harm.run");
         if (!harm) return;
-        $("keyName").textContent = semis ? t("harm.keyShift", { key: keyName(semis), orig: keyName(0) }) : t("harm.key", { key: keyName(0) });
         $("bpmVal").textContent = harm.bpm ? t("harm.bpm", { bpm: Math.round(harm.bpm) }) : t("harm.noBeat");
         $("chordsNote").hidden = !harm.stale && !harm.edited;
         $("chordsStale").hidden = !harm.stale;
         $("chordsReset").hidden = !harm.edited;
-        lastChord = null;
         drawRoll();
       }
       // The key buttons can be pressed several times in a row: the work starts 0.6 s after the last press
@@ -1757,7 +1733,6 @@
       }
       $("keyDown").addEventListener("click", function () { changeKey(semis - 1); });
       $("keyUp").addEventListener("click", function () { changeKey(semis + 1); });
-      $("keyReset").addEventListener("click", function () { changeKey(0); });
       $("harmBtn").addEventListener("click", function () {
         if (!orig) return;
         wantHarm = true;
@@ -1783,8 +1758,8 @@
       }
 
       // ---------- Editing the chords ----------
-      // One chord per beat (quarter note). Tap a beat in the chord row of the roll, or the chord playing now; the
-      // change can cover several beats from there. The chords are kept in the song's key; the editor shows them
+      // One chord per beat (quarter note). Tap a beat in the chord row of the roll; the change can cover several
+      // beats from there. The chords are kept in the song's key; the editor shows them
       // in the key as it sounds. "Remake the harmony" then uses the edited chords.
       const chordDlg = $("chordDlg");
       let editing = -1;
@@ -1874,7 +1849,6 @@
       });
       $("chordCancel").addEventListener("click", function () { chordDlg.close(); });
       chordDlg.addEventListener("close", function () { if (harm) renderHarm(); });
-      $("chordNow").addEventListener("click", function () { if (harm) openChordEditor(cellIndex(nowSec())); });
       $("chordsReset").addEventListener("click", function () {
         if (!harm) return;
         harm.cells = copyCells(harm.auto);
@@ -1889,7 +1863,7 @@
       // (finger or mouse) or scrolled with a sideways wheel; then it stays where it was put, and follows again
       // when playback starts, after a jump, or 3 s after the last scroll while playing.
       const roll = $("roll");
-      let lastChord = null, rollRaf = 0;
+      let rollRaf = 0;
       let viewStart = null, followTimer = 0;
       function nowSec() {
         let p = pos;
@@ -1929,7 +1903,7 @@
         for (let c = Math.ceil((harm.lo + semis) / 12) * 12; c <= harm.hi + semis; c += 12) {
           g.beginPath(); g.moveTo(0, Math.round(y(c)) + 0.5); g.lineTo(w, Math.round(y(c)) + 0.5); g.stroke();
         }
-        // Beats (short ticks in the chord row), then the chords: a line where one starts, its name after it
+        // Beats (short ticks in the chord row), then each chord's name where it starts
         g.fillStyle = "#e5e5e5";
         for (let i = cellIndex(t0); i < harm.grid.length && harm.grid[i] <= t1; i++) g.fillRect(Math.round(x(harm.grid[i])), lane - 6, 1, 6);
         g.font = "600 12px " + getComputedStyle(document.body).getPropertyValue("--mono");
@@ -1938,8 +1912,6 @@
           const c = harm.chords[i];
           if (c.t1 < t0) continue;
           const a = Math.max(0, x(c.t0));
-          g.fillStyle = "#e5e5e5";
-          g.fillRect(Math.round(x(c.t0)), 0, 1, h);
           g.fillStyle = "#000";
           g.fillText(chordName(c), a + 5, lane / 2 - 2);
         }
@@ -1970,14 +1942,6 @@
         // Now
         g.fillStyle = "#000";
         g.fillRect(Math.round(x(now)) - 1, 0, 2, h);
-        // Chord now / next, as text
-        const ci = chordIndex(now);
-        if (ci !== lastChord) {
-          lastChord = ci;
-          $("chordNow").textContent = chordName(harm.chords[ci]);
-          const next = harm.chords[ci + 1];
-          $("chordNext").textContent = next && next.root >= 0 ? t("harm.next", { chord: chordName(next) }) : "";
-        }
       }
       function animateRoll() {
         if (rollRaf) return;
