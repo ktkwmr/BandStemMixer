@@ -46,10 +46,10 @@ export default {
   <li><b>The AI model</b> – Whether the AI model is already saved on this device. If not, it is downloaded when you press the button.</li>
 </ol>
 <figure class="shot">
-  ${img("en", "progress", "Separation in progress: the bar shows 4 of 11 sections done, about 40 seconds left, with a Cancel button, a note to keep the screen open, and the line Separating with: GPU (WebGPU).")}
-  <figcaption>While it separates. The song is cut into short sections (about 7.8 seconds each) and the bar counts them.</figcaption>
+  ${img("en", "progress", "Separation in progress: the bar shows 36% done, about 40 seconds left, with a Cancel button, a note to keep the screen open, and the line Separating with: GPU (WebGPU).")}
+  <figcaption>While it separates.</figcaption>
 </figure>
-<p>The bar shows how many sections are done and about how long is left. How long it takes depends on the device: on a recent computer, about the length of the song or a few times longer; on a phone, longer. The line under the bar shows how the separation runs: on the <b>GPU (WebGPU)</b> when the browser supports it, otherwise on the CPU.</p>
+<p>The bar shows how far it is (in %) and about how long is left. How long it takes depends on the device: on a recent computer, about the length of the song or a few times longer; on a phone, longer. The line under the bar shows how the separation runs: on the <b>GPU (WebGPU)</b> when the browser supports it, otherwise on the CPU.</p>
 <div class="note"><p>Keep the screen open until it finishes. On a phone, separation stops when the screen turns off or you switch to another app. If it stops with a memory error, the app tries again with settings that use less memory.</p></div>
 
 <h2 id="first">The first time: downloading the AI model</h2>
@@ -90,7 +90,7 @@ export default {
 <ol>
   <li><b>Key (all but drums)</b> – − and + move the vocals, bass, and other by a semitone, up to an octave either way. The tempo and the drums stay the same.</li>
   <li><b>Find chords &amp; make harmony</b> – Finds the tempo, the chord on every beat, and the vocal melody, and makes a harmony part. After the first time it says “Remake the harmony”.</li>
-  <li><b>The harmony part</b> – a 3rd or a 5th, above or below the melody, and the pitch correction of the harmony voice (off / weak / strong; weak at first).</li>
+  <li><b>The harmony part</b> – a 3rd or a 5th, above or below the melody.</li>
   <li><b>BPM</b> – the tempo found in the song.</li>
   <li><b>The view</b> – chord names on top (tap a beat there to change the chord), the vocal melody as a grey line, and the harmony notes as black bars. Drag it sideways to look ahead; tap it to jump there.</li>
   <li><b>Harmony (voice)</b> – the vocals moved to the harmony notes.</li>
@@ -177,10 +177,10 @@ export default {
   <li><b>AI モデル</b> – AI モデルがこの端末に保存済みかどうか。まだなら、ボタンを押したときにダウンロードします。</li>
 </ol>
 <figure class="shot">
-  ${img("ja", "progress", "分離中の画面。バーは 11 区間のうち 4 区間が完了、残り約 40 秒、キャンセルボタン、画面を開いたままにする案内、「分離に使っている設定：GPU（WebGPU）」の表示。")}
-  <figcaption>分離中の画面。曲を約 7.8 秒ずつの区間に分けて処理し、バーはその数を数えます。</figcaption>
+  ${img("ja", "progress", "分離中の画面。バーは 36% まで完了、残り約 40 秒、キャンセルボタン、画面を開いたままにする案内、「分離に使っている設定：GPU（WebGPU）」の表示。")}
+  <figcaption>分離中の画面。</figcaption>
 </figure>
-<p>バーには、終わった区間の数と残り時間の目安が出ます。かかる時間は端末によって違い、最近のパソコンで曲の長さと同じくらいから数倍、スマホではさらにかかります。バーの下には分離の方法が出ます。ブラウザが対応していれば <b>GPU（WebGPU）</b>、そうでなければ CPU で処理します。</p>
+<p>バーには、進み具合（%）と残り時間の目安が出ます。かかる時間は端末によって違い、最近のパソコンで曲の長さと同じくらいから数倍、スマホではさらにかかります。バーの下には分離の方法が出ます。ブラウザが対応していれば <b>GPU（WebGPU）</b>、そうでなければ CPU で処理します。</p>
 <div class="note"><p>終わるまで画面を開いたままにしてください。スマホでは、画面が消えたりほかのアプリに切り替えたりすると分離が止まります。メモリ不足で止まったときは、メモリを節約する設定で自動的にやり直します。</p></div>
 
 <h2 id="first">初回は AI モデルをダウンロード</h2>
@@ -221,7 +221,7 @@ export default {
 <ol>
   <li><b>キー（ドラム以外）</b> – − と ＋ で、ボーカル・ベース・その他を半音ずつ、上下 1 オクターブまで動かします。テンポとドラムは変わりません。</li>
   <li><b>コード推定＆ハモリ生成</b> – テンポ、拍ごとのコード、ボーカルの旋律を推定し、ハモリのパートを作ります。2 回目からは「ハモリを再生成」になります。</li>
-  <li><b>ハモリのパート</b> – 旋律の 3 度か 5 度の、上か下か。横はハモリの声の音程補正（なし・弱・強。最初は弱）。</li>
+  <li><b>ハモリのパート</b> – 旋律の 3 度か 5 度の、上か下か。</li>
   <li><b>BPM</b> – 曲から推定したテンポ。</li>
   <li><b>表示</b> – 上の段にコード名（拍をタップするとコードを変えられます）、灰色の線がボーカルの音程、黒い帯がハモリの音。横にドラッグすると先を見られ、タップするとその位置に移ります。</li>
   <li><b>ハモリ（声）</b> – ボーカルをハモリの音程に変えたもの。</li>

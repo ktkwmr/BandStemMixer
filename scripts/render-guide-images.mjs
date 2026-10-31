@@ -118,7 +118,7 @@ async function open(page, lang) {
 async function separate(page, { progressShot, started } = {}) {
   if (!started) await page.click("#runBtn");
   if (progressShot) {
-    await page.waitForFunction(() => /^\s*4\s*\//.test(document.getElementById("detail").textContent));
+    await page.waitForFunction(() => /^36%/.test(document.getElementById("detail").textContent));
     await progressShot();
   }
   await page.waitForSelector("#mixer:not([hidden])", { timeout: 60000 });

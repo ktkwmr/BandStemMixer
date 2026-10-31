@@ -38,7 +38,7 @@ export default {
 <ol>
   <li><b>Key</b> – Moves every part except the drums, and the harmony with them, by semitones. See <a href="../chords-and-key/">chords and key change</a>.</li>
   <li><b>Find chords &amp; make harmony / Remake the harmony</b></li>
-  <li><b>The harmony part</b> – 3rd or 5th, above or below. Next to it: pitch correction of the harmony voice (see below).</li>
+  <li><b>The harmony part</b> – 3rd or 5th, above or below.</li>
   <li><b>BPM</b> – The tempo found in the song. The chords change on its beats.</li>
   <li><b>The roll</b> – The chord names on top, with a small tick at every beat; the vocal melody as a <b>grey line</b>; the harmony notes as <b>black bars</b>; the black vertical line is the play position. Drag it sideways (or use a sideways swipe or Shift + wheel) to look ahead or back; tap it to jump there. It follows the playback again when you press play.</li>
   <li><b>Harmony (voice)</b> – The separated vocals moved to the harmony notes. It keeps the singer's vibrato and words, so it sounds like a second singer.</li>
@@ -58,7 +58,7 @@ export default {
   </table>
 </div>
 <p>The app does not simply add a fixed interval. For each note it picks a note in the song's key, and when that note would clash with the chord at that moment, it moves to a chord tone instead — so a “3rd above” is sometimes a 4th, and a “5th” sometimes a 6th, as a singer would do. Short gaps between notes are joined, so the harmony moves smoothly through a phrase instead of stopping and starting.</p>
-<p><b>Pitch correction</b> (off / weak / strong, next to the part) works on the harmony voice only. Without it, the harmony voice copies the lead singer's pitch: if the singer is a little flat or slides up into a note, so is the harmony. <b>Weak</b> (the default) pulls each note most of the way to the exact harmony note and keeps the vibrato; <b>strong</b> also evens out the vibrato, which starts to sound like an effect. If the lead itself is often off, <b>off</b> may blend better with it. Notes too short to be notes of their own, such as the slide into a note, are joined to the note next to them, so the harmony does not jump for a moment.</p>
+<p><b>Pitch correction:</b> the harmony voice is pitch-corrected, like Auto-Tune. Without it, the voice would copy the lead singer's pitch: if the singer were a little flat or slid up into a note, so would the harmony. The correction pulls each note onto the exact harmony note and evens out most of the vibrato, so the harmony stays steady, with a slight “corrected” sound. Notes too short to be notes of their own, such as the slide into a note, are joined to the note next to them, so the harmony does not jump for a moment.</p>
 
 <h2 id="practice">A practice plan in four steps</h2>
 <ol>
@@ -81,7 +81,7 @@ export default {
 <ul>
   <li><b>It is an estimate.</b> The chords, the melody, and the choice of harmony notes are worked out automatically and can be wrong, especially with backing vocals in the vocal part, fast runs, or songs with unusual chords.</li>
   <li><b>One key for the whole song.</b> A song that changes key partway (for example a last chorus a step up) is harmonized in one key, so notes after the change can be off.</li>
-  <li><b>The harmony voice is processed sound.</b> Moving a voice a 3rd or more changes its character a little, and anything that leaked into the vocal part moves with it. Pitch correction steadies it; for an exact pitch, use the guide tone.</li>
+  <li><b>The harmony voice is processed sound.</b> Moving a voice a 3rd or more changes its character a little, and anything that leaked into the vocal part moves with it. Pitch correction keeps it steady; for a pure, exact pitch, use the guide tone.</li>
   <li><b>A harmony is a suggestion, not the record.</b> If the song has its own harmony part, learn that one by ear; the app's harmony is a starting point or a practice tool.</li>
 </ul>
 <p>Use songs you have the rights to use; see <a href="../minus-one/#rights">which songs you can use</a>.</p>
@@ -121,7 +121,7 @@ export default {
 <ol>
   <li><b>キー</b> – ドラム以外のパートと、ハモリを、半音ずつ上げ下げします。<a href="../chords-and-key/">コード表示とキー変更</a>をご覧ください。</li>
   <li><b>コード推定＆ハモリ生成／ハモリを再生成</b></li>
-  <li><b>ハモリのパート</b> – 3 度か 5 度、上か下か。その横は、ハモリの声の音程補正です（下で説明します）。</li>
+  <li><b>ハモリのパート</b> – 3 度か 5 度、上か下か。</li>
   <li><b>BPM</b> – 曲から推定したテンポ。コードはこの拍の上で切り替わります。</li>
   <li><b>表示</b> – 上の段にコード名（拍ごとに小さな目盛り）、<b>灰色の線</b>がボーカルの音程、<b>黒い帯</b>がハモリの音、黒い縦線が再生位置です。横にドラッグ（または横スワイプ・Shift＋ホイール）すると前後を見られ、タップするとその位置に移ります。再生を始めると、再生位置に戻ります。</li>
   <li><b>ハモリ（声）</b> – 分離したボーカルを、ハモリの音程に変えたもの。歌い手のビブラートや歌詞が残るので、もう一人が歌っているように聞こえます。</li>
@@ -141,7 +141,7 @@ export default {
   </table>
 </div>
 <p>アプリは、決まった音程をそのまま足しているわけではありません。音ごとに曲のキーの中の音を選び、そのときのコードとぶつかる場合はコードの音に寄せます。そのため「3 度上」がところどころ 4 度に、「5 度」が 6 度になることがあります。歌い手が実際にハモるときと同じ考え方です。音と音の短いすき間はつなぐので、フレーズの途中で途切れず、なめらかに動きます。</p>
-<p><b>音程補正</b>（なし・弱・強。パートの横で選びます）は、ハモリ（声）にだけかかります。補正なしでは、ハモリの声は歌い手の音程をそのまま写すので、歌い手が少し低かったり、音にしゃくり上げて入ったりすると、ハモリも同じようになります。<b>弱</b>（最初の設定）は、音ごとに正しいハモリの音へ大きく寄せ、ビブラートは残します。<b>強</b>はビブラートもならすので、エフェクトのような響きに近づきます。主旋律そのものがずれがちな曲では、<b>なし</b>のほうが主旋律となじむこともあります。しゃくりのように、1 つの音と呼ぶには短すぎる音は隣の音にまとめるので、ハモリが一瞬跳ねることもありません。</p>
+<p><b>音程補正：</b>ハモリ（声）には、Auto-Tune のような音程補正をかけています。補正しないと、ハモリの声は歌い手の音程をそのまま写すので、歌い手が少し低かったり、音にしゃくり上げて入ったりすると、ハモリも同じようになってしまいます。補正では、音ごとに正しいハモリの音へ寄せ、ビブラートの大部分もならすので、ハモリは安定し、少し「補正した」感じの声になります。しゃくりのように、1 つの音と呼ぶには短すぎる音は隣の音にまとめるので、ハモリが一瞬跳ねることもありません。</p>
 
 <h2 id="practice">4 ステップの練習法</h2>
 <ol>
@@ -164,7 +164,7 @@ export default {
 <ul>
   <li><b>自動の推定です。</b>コード・旋律・ハモリの音の選び方は自動で決めるので、間違うことがあります。ボーカルのパートにコーラスが入っている曲、速い動きの多い曲、珍しいコードの曲は特に外れやすくなります。</li>
   <li><b>キーは曲全体で 1 つです。</b>途中で転調する曲（最後のサビで 1 音上がるなど）も 1 つのキーで考えるので、転調のあとはハモリが外れることがあります。</li>
-  <li><b>ハモリ（声）は加工した音です。</b>声の音程を 3 度以上動かすと声の感じが少し変わり、ボーカルのパートに残っているほかの音も一緒に動きます。音程補正で安定させられますが、正確な音程はガイド音で確かめてください。</li>
+  <li><b>ハモリ（声）は加工した音です。</b>声の音程を 3 度以上動かすと声の感じが少し変わり、ボーカルのパートに残っているほかの音も一緒に動きます。音程補正で安定させていますが、混じりけのない正確な音程はガイド音で確かめてください。</li>
   <li><b>原曲のハモリとは限りません。</b>曲にハモリのパートがあるなら、それは耳で覚えてください。アプリのハモリは、練習のきっかけや練習用の素材です。</li>
 </ul>
 <p>使う曲は、使う権利のあるものにしてください。<a href="../minus-one/#rights">使える曲</a>もご覧ください。</p>

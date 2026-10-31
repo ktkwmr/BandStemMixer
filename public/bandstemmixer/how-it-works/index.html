@@ -229,7 +229,7 @@
 <ul>
   <li>The browser downloads the model (about 172 MB, converted to the ONNX format) once and keeps it.</li>
   <li><b>ONNX Runtime Web</b> runs the model, on the graphics chip (GPU) through WebGPU when the browser supports it, otherwise on the processor (CPU).</li>
-  <li>This model takes 7.8 seconds of sound at a time, so the song is cut into sections that overlap by a quarter, and the overlaps are cross-faded so no seams can be heard. A 4-minute song is 42 sections — the count you see on the progress bar.</li>
+  <li>This model takes 7.8 seconds of sound at a time, so the song is cut into sections that overlap by a quarter, and the overlaps are cross-faded so no seams can be heard. A 4-minute song is 42 sections.</li>
   <li>Each section needs a lot of memory — about 1 GB while the model runs. That is why computers are much faster, and why some phones cannot finish.</li>
 </ul>
 <p>Once separated, the four parts are played together in sync, and the mixer only changes their volumes, so moving a fader is instant.</p>
@@ -240,7 +240,7 @@
   <li><b>Beats and tempo</b> – the moments where new sounds start, the interval between them that repeats most (autocorrelation), and the chain of beats that fits both best (dynamic programming, after D. Ellis, 2007).</li>
   <li><b>Chords</b> – for each beat, the strength of each of the 12 notes (a “chroma”) in the bass and “Other” parts, compared with the 24 major and minor chords; a hidden Markov model keeps the chords from changing on every beat without reason. Without guitar and vocals mixed in, the bass part makes the root of each chord much clearer.</li>
   <li><b>Melody</b> – the pitch of the separated vocals, found with the YIN method and cut into notes.</li>
-  <li><b>Harmony voice</b> – the vocals moved to the harmony notes with TD-PSOLA, which repeats or skips single cycles of the voice, so the voice keeps its character. Pitch correction (like Auto-Tune) can pull it toward the exact harmony notes.</li>
+  <li><b>Harmony voice</b> – the vocals moved to the harmony notes with TD-PSOLA, which repeats or skips single cycles of the voice, so the voice keeps its character. Pitch correction (like Auto-Tune) then pulls it onto the exact harmony notes.</li>
   <li><b>Key change</b> – a phase vocoder that stretches each part in time by the pitch ratio and plays it back at the original length.</li>
 </ul>
 <p>Like the separation, these are estimates. See <a href="../chords-and-key/#limits">what to expect from the chords</a> and <a href="../harmony/#limits">from the harmony</a>.</p>
