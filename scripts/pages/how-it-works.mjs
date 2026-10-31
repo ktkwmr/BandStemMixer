@@ -73,7 +73,7 @@ export default {
   <li><b>Beats and tempo</b> – the moments where new sounds start, the interval between them that repeats most (autocorrelation), and the chain of beats that fits both best (dynamic programming, after D. Ellis, 2007).</li>
   <li><b>Chords</b> – for each beat, the strength of each of the 12 notes (a “chroma”) in the bass and “Other” parts, compared with the 24 major and minor chords; a hidden Markov model keeps the chords from changing on every beat without reason. Without guitar and vocals mixed in, the bass part makes the root of each chord much clearer.</li>
   <li><b>Melody</b> – the pitch of the separated vocals, found with the YIN method and cut into notes.</li>
-  <li><b>Harmony voice</b> – the vocals moved to the harmony notes with TD-PSOLA, which repeats or skips single cycles of the voice, so the voice keeps its character.</li>
+  <li><b>Harmony voice</b> – the vocals moved to the harmony notes with TD-PSOLA, which repeats or skips single cycles of the voice, so the voice keeps its character. Pitch correction (like Auto-Tune) can pull it toward the exact harmony notes.</li>
   <li><b>Key change</b> – a phase vocoder that stretches each part in time by the pitch ratio and plays it back at the original length.</li>
 </ul>
 <p>Like the separation, these are estimates. See <a href="../chords-and-key/#limits">what to expect from the chords</a> and <a href="../harmony/#limits">from the harmony</a>.</p>
@@ -145,7 +145,7 @@ export default {
   <li><b>拍とテンポ</b> – 新しい音が鳴り始める位置と、その間隔でいちばん繰り返されるもの（自己相関）を調べ、両方にいちばん合う拍の並びを決めます（動的計画法。D. Ellis、2007 年の方法）。</li>
   <li><b>コード</b> – 拍ごとに、ベースと「その他」のパートで 12 の音それぞれがどれだけ鳴っているか（クロマ）を調べ、24 のメジャー・マイナーのコードと比べます。隠れマルコフモデルで、理由なく 1 拍ごとにコードが変わらないようにします。ギターや歌が混ざっていないベースのパートは、コードのルートを見つける大きな手がかりになります。</li>
   <li><b>旋律</b> – 分離したボーカルの音程を YIN という方法で調べ、音符に区切ります。</li>
-  <li><b>ハモリ（声）</b> – TD-PSOLA という方法で、ボーカルの波の 1 周期ずつを重ねたり間引いたりして音程を変えるので、声の感じが残ります。</li>
+  <li><b>ハモリ（声）</b> – TD-PSOLA という方法で、ボーカルの波の 1 周期ずつを重ねたり間引いたりして音程を変えるので、声の感じが残ります。音程補正（Auto-Tune のような処理）で、正しいハモリの音に寄せることもできます。</li>
   <li><b>キーの変更</b> – フェーズボコーダーで、各パートを音程の比率だけ時間方向に伸ばし、元の長さで再生し直します。</li>
 </ul>
 <p>分離と同じく、これらも推定です。<a href="../chords-and-key/#limits">コードの仕上がり</a>と<a href="../harmony/#limits">ハモリの仕上がり</a>もご覧ください。</p>

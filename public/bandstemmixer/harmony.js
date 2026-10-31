@@ -10,13 +10,14 @@
 //      harmony notes as a plain synth tone.
 //   3. harmony voice: the vocals shifted to the harmony notes with TD-PSOLA (grains cut one pitch
 //      period apart and laid down at the new period), which keeps the singer's vibrato and voice. Each
-//      phrase is shifted as one piece, consonants included, with the shift gliding between notes.
+//      phrase is shifted as one piece, consonants included, with the shift gliding between notes. Optional
+//      pitch correction pulls the voice toward the exact harmony notes.
 // The analysis runs at 11025 Hz (the song decimated by 4); the outputs are 44.1 kHz.
 // Everything is in the song's own key; with a key change (semis), only the voice and guide tone are
 // rendered that many semitones higher or lower.
 //
 // Messages from the page:
-//   { type: "run", vocals: [L, R], dir: 1 | -1, interval: 3 | 5, semis,
+//   { type: "run", vocals: [L, R], dir: 1 | -1, interval: 3 | 5, semis, correct: 0 | 1 | 2,  (pitch correction: none, weak, strong)
 //     bass?, other?, drums?: [L, R],   (Int16Array, 44.1 kHz; only to find the beats and chords)
 //     chords?, key?,                   (from an earlier run, maybe edited: used instead of finding them)
 //     pitch?, notes? }                 (from an earlier run: the melody is not tracked again)
@@ -523,7 +524,32 @@ function findNotes(pitch) {
     if (last && last.midi === midi && t0 - last.t1 < 0.03) last.t1 = t1;
     else out.push({ t0: t0, t1: t1, midi: midi });
   }
-  return out;
+  return mergeShort(out);
+}
+
+// A note shorter than SHORT that touches a neighbour is usually a scoop or the slide between two notes, not a
+// note of its own: it joins the touching neighbour closer in pitch (the harmony would otherwise jump for a moment)
+const SHORT = 0.1;
+function mergeShort(notes) {
+  for (let i = 0; i < notes.length; ) {
+    const n = notes[i];
+    if (n.t1 - n.t0 >= SHORT) { i++; continue; }
+    const prev = i > 0 && n.t0 - notes[i - 1].t1 < 0.03 ? notes[i - 1] : null;
+    const next = i + 1 < notes.length && notes[i + 1].t0 - n.t1 < 0.03 ? notes[i + 1] : null;
+    if (!prev && !next) { i++; continue; }
+    const into = !next || (prev && Math.abs(prev.midi - n.midi) <= Math.abs(next.midi - n.midi)) ? prev : next;
+    into.t0 = Math.min(into.t0, n.t0);
+    into.t1 = Math.max(into.t1, n.t1);
+    notes.splice(i, 1);
+    // The neighbour may now touch another note with the same pitch
+    const j = notes.indexOf(into);
+    if (j + 1 < notes.length && notes[j + 1].midi === into.midi && notes[j + 1].t0 - into.t1 < 0.03) {
+      into.t1 = notes[j + 1].t1;
+      notes.splice(j + 1, 1);
+    }
+    i = Math.max(0, j);
+  }
+  return notes;
 }
 
 // The chord sounding at time t (the one that covers the middle of a note)
@@ -628,11 +654,53 @@ function makeGuide(phrases, length, semis) {
   return out;
 }
 
+// ---------- Pitch correction (like Auto-Tune, on the harmony voice only) ----------
+// Without it, the harmony voice copies the singer's pitch: a lead that is a little flat, scoops into a note, or
+// wobbles makes the harmony do the same. With it, part of how far the sung pitch is from its note is taken
+// away, frame by frame. The deviation is split into a slow part (over about 160 ms: being off pitch, scoops) and
+// a fast part (vibrato): "weak" corrects most of the slow part and keeps the vibrato, "strong" corrects all of
+// the slow part and some of the vibrato. Where the pitch track is missing or more than a semitone away from the
+// note (a stray frame, a consonant), nothing is corrected, so a tracking error cannot pull the voice off.
+const CORRECT = { 0: null, 1: { slow: 0.7, fast: 0 }, 2: { slow: 1, fast: 0.6 } };
+function correction(pitch, notes, level) {
+  const k = CORRECT[level];
+  if (!k) return null;
+  const frames = pitch.length;
+  const step = HOP / ASR;
+  const dev = new Float32Array(frames).fill(NaN);
+  let n = 0;
+  for (let f = 0; f < frames; f++) {
+    const t = f * step;
+    while (n + 1 < notes.length && notes[n + 1].t0 <= t) n++;
+    const note = notes[n];
+    if (!note || t < note.t0 || t >= note.t1 || isNaN(pitch[f])) continue;
+    const d = pitch[f] - note.midi;
+    if (Math.abs(d) < 1) dev[f] = d;
+  }
+  const raw = new Float32Array(frames);
+  for (let f = 0; f < frames; f++) {
+    let sum = 0, cnt = 0;
+    for (let j = f - 3; j <= f + 3; j++) if (j >= 0 && j < frames && !isNaN(dev[j])) { sum += dev[j]; cnt++; }
+    if (cnt < 3) continue;
+    const slow = sum / cnt;
+    const fast = isNaN(dev[f]) ? 0 : dev[f] - slow;
+    raw[f] = -(k.slow * slow + k.fast * fast);
+  }
+  // Short average, so switching between corrected and not corrected frames does not click
+  const out = new Float32Array(frames);
+  for (let f = 0; f < frames; f++) {
+    let sum = 0, cnt = 0;
+    for (let j = f - 2; j <= f + 2; j++) if (j >= 0 && j < frames) { sum += raw[j]; cnt++; }
+    out[f] = sum / cnt;
+  }
+  return out;
+}
+
 // ---------- 3. Harmony voice (TD-PSOLA) ----------
 // One phrase at a time, from a little before its first note (to keep the first consonant) to a little after
 // its last. Consonants and breaths inside the phrase go through too, so the words stay and nothing drops out.
 const PRE = 0.06, POST = 0.06;
-function makeVoice(L, R, phrases, pitch, semis, progress) {
+function makeVoice(L, R, phrases, pitch, semis, corr, progress) {
   const length = L.length;
   const out = makeArray(length);
   const x = (i) => (i < 0 || i >= length ? 0 : (L[i] + R[i]) / 65536);
@@ -642,6 +710,13 @@ function makeVoice(L, R, phrases, pitch, semis, progress) {
     return best;
   };
   const fade = Math.round(0.025 * SR);
+  // The correction at sample i, in semitones (between frames: linear)
+  const corrAt = (i) => {
+    if (!corr) return 0;
+    const fr = i / DEC / HOP, f = Math.floor(fr);
+    if (f < 0 || f + 1 >= corr.length) return 0;
+    return corr[f] + (corr[f + 1] - corr[f]) * (fr - f);
+  };
   phrases.forEach((ph, pi) => {
     if (progress && (pi & 7) === 0) progress(pi / phrases.length);
     const a = Math.max(0, Math.round((ph[0].t0 - PRE) * SR)), e = Math.min(length, Math.round((ph[ph.length - 1].t1 + POST) * SR));
@@ -670,13 +745,13 @@ function makeVoice(L, R, phrases, pitch, semis, progress) {
       m = peak(next - r, next + r);
     }
     // Synthesis: grains (2 periods, Hann) from the nearest analysis mark, every period / ratio
-    // (ratio: the harmony interval plus the key change)
+    // (ratio: the harmony interval plus the key change, plus the pitch correction)
     const acc = new Float32Array(e - a);
     let ts = marks[0], k = 0;
     while (ts < e) {
       while (k + 1 < marks.length && Math.abs(marks[k + 1] - ts) <= Math.abs(marks[k] - ts)) k++;
       const ta = marks[k];
-      const ratio = Math.pow(2, (at(ts, shiftOf) + semis) / 12);
+      const ratio = Math.pow(2, (at(ts, shiftOf) + semis + corrAt(ts)) / 12);
       const P = periodAt(ta);
       const half = Math.round(P);
       const c = Math.round(ts);
@@ -740,7 +815,7 @@ export function analyze(msg, progress) {
   const phrases = joinPhrases(notes);
   const guide = makeGuide(phrases, vL.length, semis);
   // 3. Harmony voice
-  const voice = makeVoice(vL, vR, phrases, pitch, semis, (d) => report("voice", d));
+  const voice = makeVoice(vL, vR, phrases, pitch, semis, correction(pitch, notes, msg.correct), (d) => report("voice", d));
   return { key: key, chords: chords, grid: grid, bpm: bpm, frame: HOP / ASR, pitch: pitch, notes: notes, voice: voice, guide: guide };
 }
 

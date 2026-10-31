@@ -90,7 +90,7 @@ export default {
 <ol>
   <li><b>Key (all but drums)</b> – − and + move the vocals, bass, and other by a semitone, up to an octave either way. The tempo and the drums stay the same.</li>
   <li><b>Find chords &amp; make harmony</b> – Finds the tempo, the chord on every beat, and the vocal melody, and makes a harmony part. After the first time it says “Remake the harmony”.</li>
-  <li><b>The harmony part</b> – a 3rd or a 5th, above or below the melody.</li>
+  <li><b>The harmony part</b> – a 3rd or a 5th, above or below the melody, and the pitch correction of the harmony voice (off / weak / strong; weak at first).</li>
   <li><b>BPM</b> – the tempo found in the song.</li>
   <li><b>The view</b> – chord names on top (tap a beat there to change the chord), the vocal melody as a grey line, and the harmony notes as black bars. Drag it sideways to look ahead; tap it to jump there.</li>
   <li><b>Harmony (voice)</b> – the vocals moved to the harmony notes.</li>
@@ -221,7 +221,7 @@ export default {
 <ol>
   <li><b>キー（ドラム以外）</b> – − と ＋ で、ボーカル・ベース・その他を半音ずつ、上下 1 オクターブまで動かします。テンポとドラムは変わりません。</li>
   <li><b>コード推定＆ハモリ生成</b> – テンポ、拍ごとのコード、ボーカルの旋律を推定し、ハモリのパートを作ります。2 回目からは「ハモリを再生成」になります。</li>
-  <li><b>ハモリのパート</b> – 旋律の 3 度か 5 度の、上か下か。</li>
+  <li><b>ハモリのパート</b> – 旋律の 3 度か 5 度の、上か下か。横はハモリの声の音程補正（なし・弱・強。最初は弱）。</li>
   <li><b>BPM</b> – 曲から推定したテンポ。</li>
   <li><b>表示</b> – 上の段にコード名（拍をタップするとコードを変えられます）、灰色の線がボーカルの音程、黒い帯がハモリの音。横にドラッグすると先を見られ、タップするとその位置に移ります。</li>
   <li><b>ハモリ（声）</b> – ボーカルをハモリの音程に変えたもの。</li>
