@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Takes the app screenshots used in the guide page:
-//   public/bandstemmixer/images/guide/{en,ja}-{song,progress,mixer,network,phone}.png
+// Takes the app screenshots used in the guide and the harmony / chords articles:
+//   public/bandstemmixer/images/guide/{en,ja}-{song,progress,mixer,harmony,chord,network,phone}.png
 // The song is made up (scripts/guide-song.mjs), so there is no copyright issue. The AI model is not
 // used: a stand-in for separator.js returns the song's four parts, which are known exactly, after a
 // short fake progress. Everything else is the real app.
@@ -160,6 +160,26 @@ for (const lang of ["en", "ja"]) {
     [".mix-foot .vol > span", 8, "left"], ["#resetMix", 9, "corner"], ["#saveMix", 10, "corner"],
   ]);
   await shot(page, ".panel.out", `${lang}-mixer.png`);
+  // Chords and harmony (the harmony article): the key, the button, the roll, and the two added parts
+  await page.evaluate(() => document.querySelectorAll(".guide-marker").forEach((m) => m.remove()));
+  await page.click("#harmBtn");
+  await page.waitForSelector("#harmView:not([hidden])", { timeout: 60000 });
+  await page.waitForFunction(() => document.getElementById("harmProgress").hidden && document.getElementById("toast").hidden, null, { timeout: 20000 });
+  await page.evaluate(() => { document.activeElement && document.activeElement.blur(); });
+  await page.mouse.move(0, 0);
+  await addMarkers(page, [
+    ["#keyDown", 1, "corner"], ["#harmBtn", 2, "corner"], ["#harmDir", 3, "corner"], ["#bpmVal", 4, "right"],
+    ["#roll", 5, "left"], [".strip:nth-child(5) .sname", 6, "left"], [".strip:nth-child(6) .sname", 7, "left"],
+  ]);
+  await shot(page, ".panel.out", `${lang}-harmony.png`);
+  await page.evaluate(() => document.querySelectorAll(".guide-marker").forEach((m) => m.remove()));
+  // The chord editor: stop, then tap the chord row at the play position
+  await page.click("#playBtn");
+  const rb = await page.locator("#roll").boundingBox();
+  await page.mouse.click(rb.x + rb.width * 0.21, rb.y + 10);
+  await page.waitForSelector("#chordDlg[open]");
+  await page.waitForTimeout(300);
+  await shot(page, "#chordDlg", `${lang}-chord.png`, 12);
   await ctx.close();
 
   // Phone: the question before the first download, and the mixer

@@ -11,7 +11,7 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
   <title>Split a Band Song into Vocals, Drums, Bass &amp; Other – Free AI Stem Splitter – Band Stem Mixer</title>
-  <meta name="description" content="Free AI stem splitter that runs in your browser: separate a band song into 4 parts (vocals, drums, bass, and other: guitar, keys…), then mute, solo, and mix them to practice your part or make a backing track. Save each part as MP3. No upload, no sign-up." />
+  <meta name="description" content="Free AI stem splitter that runs in your browser: separate a band song into 4 parts (vocals, drums, bass, and other: guitar, keys…), then mute, solo, and mix them to practice your part or make a backing track. Find the chords and BPM, make a harmony part, change the key. Save each part as MP3. No upload, no sign-up." />
   <link rel="canonical" href="https://ktkwmr.com/bandstemmixer/" />
   <link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/" />
   <link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/" />
@@ -34,7 +34,7 @@
     "@type": "WebApplication",
     "name": "Band Stem Mixer",
     "url": "https://ktkwmr.com/bandstemmixer/",
-    "description": "A browser app that separates a band song into 4 stems (vocals, drums, bass, and other) with AI on your device, and lets you mute, solo, and mix them or save each as MP3.",
+    "description": "A browser app that separates a band song into 4 stems (vocals, drums, bass, and other) with AI on your device, and lets you mute, solo, and mix them or save each as MP3. It also finds the chords and tempo, makes a harmony part from the vocals, and changes the key.",
     "applicationCategory": "MultimediaApplication",
     "inLanguage": "en",
     "operatingSystem": "Any",
@@ -181,6 +181,20 @@
       .strip { grid-template-columns: minmax(0, 1fr) auto auto; }
       .strip .vol { grid-column: 1 / -1; grid-row: 2; }
     }
+    /* Harmony: button, chords, and the melody / harmony roll */
+    .harm { display: flex; flex-direction: column; gap: 10px; padding: 12px 16px 14px; border-bottom: 1px solid var(--line); }
+    .harm-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .sel { height: var(--ctl-h); padding: 0 8px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--paper); color: var(--ink); font-size: 13px; font-weight: 600; }
+    .sel:disabled { opacity: .4; }
+    .chords { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; font-size: 13px; color: var(--muted); }
+    .chords-note { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 8px 0; padding: 8px 10px; border-radius: var(--radius); background: var(--hover-fill); font-size: 12px; }
+    .keyrow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+    .keylabel { font-size: 12px; font-weight: 700; margin-right: 4px; }
+    .keyval { font-family: var(--mono); font-size: 14px; font-weight: 700; min-width: 3ch; text-align: center; }
+    .chord-edit { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 18px; }
+    .chord-edit label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 700; }
+    /* pan-y: a sideways drag scrolls the roll (pointer events), an up / down swipe still scrolls the page */
+    .roll { display: block; width: 100%; height: 132px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
     .mix-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 16px 16px; }
     .mix-foot .vol { flex: 1 1 220px; }
     .mix-foot .vol span:first-child { font-size: 12px; font-weight: 700; white-space: nowrap; }
@@ -290,6 +304,33 @@
               <div class="time"><span id="timeNow">0:00</span><span id="timeEnd">0:00</span></div>
             </div>
           </div>
+          <div class="keyrow">
+            <span class="keylabel" data-i18n="key.label">Key (all but drums)</span>
+            <button class="chip sq" id="keyDown" type="button" aria-label="Key down a semitone" data-i18n-attr="aria-label:key.down">−</button>
+            <span class="keyval" id="keyVal">0</span>
+            <button class="chip sq" id="keyUp" type="button" aria-label="Key up a semitone" data-i18n-attr="aria-label:key.up">+</button>
+          </div>
+          <div class="harm" id="harm">
+            <div class="harm-row">
+              <button class="chip" id="harmBtn" type="button" data-i18n="harm.run">Find chords &amp; make harmony</button>
+              <select class="sel" id="harmDir" aria-label="Harmony part" data-i18n-attr="aria-label:harm.dir">
+                <option value="3" data-i18n="harm.up">Upper (3rd above)</option>
+                <option value="-3" data-i18n="harm.down">Lower (3rd below)</option>
+                <option value="5" data-i18n="harm.up5">Upper (5th above)</option>
+                <option value="-5" data-i18n="harm.down5">Lower (5th below)</option>
+              </select>
+            </div>
+            <div class="progress" id="harmProgress" hidden>
+              <span class="detail" id="harmStage"></span>
+              <div class="bar" id="harmBar"><div></div></div>
+            </div>
+            <div id="harmView" hidden>
+              <div class="chords"><span id="bpmVal"></span></div>
+              <div class="chords-note" id="chordsNote" hidden><span id="chordsStale" data-i18n="chords.stale">The chords were changed. Press “Remake the harmony” to use them in the harmony.</span><button class="chip" id="chordsReset" type="button" data-i18n="chords.reset">Back to the estimated chords</button></div>
+              <canvas class="roll" id="roll" role="img" aria-label="Chords, the vocal melody (grey line), and the harmony notes (black bars)" data-i18n-attr="aria-label:harm.roll"></canvas>
+            </div>
+            <p class="hint" id="harmHint" data-i18n="harm.hint">Finds the key and chords, follows the vocal melody, and adds a harmony part: the vocals shifted to the harmony notes, and a guide tone. Grey line: the vocal melody; black bars: the harmony notes. Drag it sideways to scroll. Tap it to jump there, or tap a beat in the chord row to change the chord (one chord per beat). It is estimated automatically and can be wrong.</p>
+          </div>
           <div class="strips" id="strips"></div>
           <div class="mix-foot">
             <label class="vol"><span data-i18n="master">Master</span><input type="range" id="master" min="0" max="1.5" step="0.01" value="1" /><span class="val" id="masterVal">100%</span></label>
@@ -298,7 +339,7 @@
               <button class="chip save-btn" id="saveMix" type="button" data-i18n="mix.save">Save this mix (MP3)</button>
             </div>
           </div>
-          <p class="keys" data-i18n-html="keys"><kbd>Space</kbd> play / pause · <kbd>1</kbd>–<kbd>4</kbd> mute a part · <kbd>←</kbd> <kbd>→</kbd> 5 seconds back / forward</p>
+          <p class="keys" data-i18n-html="keys"><kbd>Space</kbd> play / pause · <kbd>1</kbd>–<kbd>6</kbd> mute a part · <kbd>←</kbd> <kbd>→</kbd> 5 seconds back / forward</p>
         </div>
       </section>
     </div>
@@ -310,12 +351,15 @@
         <p>Band Stem Mixer separates a song into <b>4 parts</b> with AI: vocals, drums, bass, and other (guitar, keys, and everything else). Choose an audio file such as MP3, WAV, or M4A and press “Separate into 4 parts”. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>
         <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the drums to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as an MP3 file.</p>
         <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 170 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>
+        <p>After separating, “Find chords &amp; make harmony” shows the tempo (BPM) and a chord on every beat, which you can edit, and makes a harmony part a 3rd or a 5th above or below the vocal melody — sung by the singer's own voice moved to the harmony notes, and as a guide tone. “Key” moves every part except the drums up or down by up to an octave, without changing the tempo.</p>
         <p>The model is Demucs (htdemucs), a music separation model by Meta. Like all such models it is not perfect: sounds can leak between parts. Guitar and keys are not split from each other; they come out together in “Other”. Free, with no sign-up and no ads.</p>
         <h2>Guides</h2>
         <ul>
           <li><a href="/bandstemmixer/guide/">How to use Band Stem Mixer</a></li>
           <li><a href="/bandstemmixer/minus-one/">Practicing with your part removed: making a minus-one track</a></li>
           <li><a href="/bandstemmixer/learn-by-ear/">Hearing the bass and drums clearly: learning parts by ear with solo</a></li>
+          <li><a href="/bandstemmixer/harmony/">Practicing harmonies: a harmony part made from the vocals</a></li>
+          <li><a href="/bandstemmixer/chords-and-key/">Chords, tempo, and key change</a></li>
           <li><a href="/bandstemmixer/how-it-works/">How AI music separation works, and why it is not perfect</a></li>
           <li><a href="/bandstemmixer/better-results/">How to get better separation</a></li>
           <li><a href="/bandstemmixer/faq/">Frequently asked questions</a></li>
@@ -343,6 +387,8 @@
         <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>
         <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>
         <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>
+        <li><b>Harmony</b> – “Find chords &amp; make harmony” finds the key and chords and makes a harmony a 3rd or a 5th above (or below) the vocal melody. “Harmony (voice)” is the vocals shifted to the harmony notes; “Harmony guide tone” plays the same notes as a plain tone, to practice singing the harmony. The chords and notes scroll above the parts. The tempo (BPM) and the beats are found too, and each beat (quarter note) can have its own chord: tap a beat in the chord row to change it, then press “Remake the harmony” to use your chords. Drag the chords and notes sideways to look ahead or back. It is estimated automatically and can be wrong.</li>
+        <li><b>Key</b> – − / + moves every part except the drums up or down a semitone (up to an octave), with the chords and the harmony.</li>
         <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>
         <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>
       </ol>
@@ -357,7 +403,7 @@
     <h2 id="privacyTitle" data-i18n="menu.privacy">Privacy</h2>
     <div class="help-body">
       <ul class="help-list" data-i18n-html="privacy.body">
-        <li><b>Your song stays on your device</b> – The audio file you choose is read and separated only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>
+        <li><b>Your song stays on your device</b> – The audio file you choose is read, separated, and analyzed (chords, harmony, key change) only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>
         <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>
         <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Reset the mixer with “Reset mixer”, delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>
         <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>
@@ -387,6 +433,32 @@
     <div class="dlg-actions">
       <button class="chip" id="modelCancel" type="button" data-i18n="cancel">Cancel</button>
       <button class="primary" id="modelOk" type="button" data-i18n="model.del.ok">Delete</button>
+    </div>
+  </dialog>
+
+  <dialog class="msg" id="chordDlg" tabindex="-1" aria-labelledby="chordTitle">
+    <h2 id="chordTitle" data-i18n="chord.title">Edit the chord</h2>
+    <p class="dlg-text" id="chordWhen"></p>
+    <div class="chord-edit">
+      <label><span data-i18n="chord.root">Root</span><select class="sel" id="chordRoot"></select></label>
+      <label><span data-i18n="chord.type">Type</span><select class="sel" id="chordType">
+        <option value="" data-i18n="chord.major">major</option>
+        <option value="m" data-i18n="chord.minor">minor (m)</option>
+        <option value="7">7</option>
+        <option value="maj7">maj7</option>
+        <option value="m7">m7</option>
+        <option value="add9">add9</option>
+        <option value="dim">dim</option>
+        <option value="dim7">dim7</option>
+        <option value="m7b5">m7b5</option>
+        <option value="aug">aug</option>
+        <option value="sus4">sus4</option>
+      </select></label>
+      <label><span data-i18n="chord.length">Length</span><select class="sel" id="chordLen"></select></label>
+    </div>
+    <div class="dlg-actions">
+      <button class="chip" id="chordCancel" type="button" data-i18n="cancel">Cancel</button>
+      <button class="primary" id="chordOk" type="button" data-i18n="chord.ok">Change</button>
     </div>
   </dialog>
 
@@ -470,7 +542,45 @@
           "stem.drums": "Drums",
           "stem.other": "Other (guitar, keys…)",
           "stem.mix": "Mix",
-          "keys": "<kbd>Space</kbd> play / pause · <kbd>1</kbd>–<kbd>4</kbd> mute a part · <kbd>←</kbd> <kbd>→</kbd> 5 seconds back / forward",
+          "harm.run": "Find chords & make harmony",
+          "harm.regen": "Remake the harmony",
+          "harm.dir": "Harmony part",
+          "harm.up": "Upper (3rd above)",
+          "harm.down": "Lower (3rd below)",
+          "harm.up5": "Upper (5th above)",
+          "harm.down5": "Lower (5th below)",
+          "harm.hint": "Finds the key and chords, follows the vocal melody, and adds a harmony part: the vocals shifted to the harmony notes, and a guide tone. Grey line: the vocal melody; black bars: the harmony notes. Drag it sideways to scroll. Tap it to jump there, or tap a beat in the chord row to change the chord (one chord per beat). It is estimated automatically and can be wrong.",
+          "harm.bpm": "BPM {bpm}",
+          "harm.noBeat": "No beat found (chords every 0.5 s)",
+          "key.label": "Key (all but drums)",
+          "key.up": "Key up a semitone",
+          "key.down": "Key down a semitone",
+          "key.stage": "Changing the key…",
+          "key.done": "Key changed ({n}).",
+          "key.err": "The key could not be changed ({msg}).",
+          "save.key": " (key {n})",
+          "chord.title": "Edit the chord",
+          "chord.when": "{from} – {to}",
+          "chord.root": "Root",
+          "chord.type": "Type",
+          "chord.major": "major",
+          "chord.minor": "minor (m)",
+          "chord.length": "Length",
+          "chord.beat": "1 beat",
+          "chord.beats": "{n} beats",
+          "chord.ok": "Change",
+          "chords.stale": "The chords were changed. Press “Remake the harmony” to use them in the harmony.",
+          "chords.reset": "Back to the estimated chords",
+          "harm.stage.chords": "Finding the key and chords…",
+          "harm.stage.melody": "Following the vocal melody…",
+          "harm.stage.voice": "Making the harmony voice…",
+          "harm.done": "Harmony made. Press play.",
+          "harm.none": "No vocal melody was found, so only the chords are shown.",
+          "harm.err": "The harmony could not be made ({msg}).",
+          "harm.roll": "Chords, the vocal melody (grey line), and the harmony notes (black bars)",
+          "stem.harmony": "Harmony (voice)",
+          "stem.guide": "Harmony guide tone",
+          "keys": "<kbd>Space</kbd> play / pause · <kbd>1</kbd>–<kbd>6</kbd> mute a part · <kbd>←</kbd> <kbd>→</kbd> 5 seconds back / forward",
           "foot": "Your song is separated on this device and never uploaded. No account needed.",
           "net.title.cellular": "You seem to be on mobile data",
           "net.title.saveData": "Data Saver is on",
@@ -491,7 +601,7 @@
           "err.audio": "Sound could not be played in this browser.",
           "err.save": "The file could not be saved.",
           "intro.title": "Split a band song into vocals, drums, bass, and other",
-          "intro.body": "<p>Band Stem Mixer separates a song into <b>4 parts</b> with AI: vocals, drums, bass, and other (guitar, keys, and everything else). Choose an audio file such as MP3, WAV, or M4A and press “Separate into 4 parts”. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>\n        <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the drums to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as an MP3 file.</p>\n        <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 170 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>\n        <p>The model is Demucs (htdemucs), a music separation model by Meta. Like all such models it is not perfect: sounds can leak between parts. Guitar and keys are not split from each other; they come out together in “Other”. Free, with no sign-up and no ads.</p>\n        <h2>Guides</h2>\n        <ul>\n          <li><a href=\"/bandstemmixer/guide/\">How to use Band Stem Mixer</a></li>\n          <li><a href=\"/bandstemmixer/minus-one/\">Practicing with your part removed: making a minus-one track</a></li>\n          <li><a href=\"/bandstemmixer/learn-by-ear/\">Hearing the bass and drums clearly: learning parts by ear with solo</a></li>\n          <li><a href=\"/bandstemmixer/how-it-works/\">How AI music separation works, and why it is not perfect</a></li>\n          <li><a href=\"/bandstemmixer/better-results/\">How to get better separation</a></li>\n          <li><a href=\"/bandstemmixer/faq/\">Frequently asked questions</a></li>\n        </ul>",
+          "intro.body": "<p>Band Stem Mixer separates a song into <b>4 parts</b> with AI: vocals, drums, bass, and other (guitar, keys, and everything else). Choose an audio file such as MP3, WAV, or M4A and press “Separate into 4 parts”. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>\n        <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the drums to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as an MP3 file.</p>\n        <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 170 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>\n        <p>After separating, “Find chords &amp; make harmony” shows the tempo (BPM) and a chord on every beat, which you can edit, and makes a harmony part a 3rd or a 5th above or below the vocal melody — sung by the singer's own voice moved to the harmony notes, and as a guide tone. “Key” moves every part except the drums up or down by up to an octave, without changing the tempo.</p>\n        <p>The model is Demucs (htdemucs), a music separation model by Meta. Like all such models it is not perfect: sounds can leak between parts. Guitar and keys are not split from each other; they come out together in “Other”. Free, with no sign-up and no ads.</p>\n        <h2>Guides</h2>\n        <ul>\n          <li><a href=\"/bandstemmixer/guide/\">How to use Band Stem Mixer</a></li>\n          <li><a href=\"/bandstemmixer/minus-one/\">Practicing with your part removed: making a minus-one track</a></li>\n          <li><a href=\"/bandstemmixer/learn-by-ear/\">Hearing the bass and drums clearly: learning parts by ear with solo</a></li>\n          <li><a href=\"/bandstemmixer/harmony/\">Practicing harmonies: a harmony part made from the vocals</a></li>\n          <li><a href=\"/bandstemmixer/chords-and-key/\">Chords, tempo, and key change</a></li>\n          <li><a href=\"/bandstemmixer/how-it-works/\">How AI music separation works, and why it is not perfect</a></li>\n          <li><a href=\"/bandstemmixer/better-results/\">How to get better separation</a></li>\n          <li><a href=\"/bandstemmixer/faq/\">Frequently asked questions</a></li>\n        </ul>",
           "menu.help": "How to use",
           "menu.guide": "Guides & articles",
           "guide.url": "/bandstemmixer/guide/",
@@ -499,8 +609,8 @@
           "menu.privacy": "Privacy",
           "menu.about": "About",
           "menu.model": "Delete the AI model",
-          "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
-          "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read and separated only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Reset the mixer with “Reset mixer”, delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\">privacy policy</a> and <a href=\"/bandstemmixer/about/\">about this site</a>.</li>",
+          "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Harmony</b> – “Find chords &amp; make harmony” finds the key and chords and makes a harmony a 3rd or a 5th above (or below) the vocal melody. “Harmony (voice)” is the vocals shifted to the harmony notes; “Harmony guide tone” plays the same notes as a plain tone, to practice singing the harmony. The chords and notes scroll above the parts. The tempo (BPM) and the beats are found too, and each beat (quarter note) can have its own chord: tap a beat in the chord row to change it, then press “Remake the harmony” to use your chords. Drag the chords and notes sideways to look ahead or back. It is estimated automatically and can be wrong.</li>\n        <li><b>Key</b> – − / + moves every part except the drums up or down a semitone (up to an octave), with the chords and the harmony.</li>\n        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
+          "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read, separated, and analyzed (chords, harmony, key change) only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Reset the mixer with “Reset mixer”, delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\">privacy policy</a> and <a href=\"/bandstemmixer/about/\">about this site</a>.</li>",
           "model.del.title": "Delete the AI model?",
           "model.del.body": "This deletes the AI model (about 170 MB) saved in this browser, to free up space. It is downloaded again the next time you separate a song.",
           "model.del.ok": "Delete",
@@ -575,7 +685,45 @@
           "stem.drums": "ドラム",
           "stem.other": "その他（ギター・鍵盤など）",
           "stem.mix": "ミックス",
-          "keys": "<kbd>Space</kbd> 再生・一時停止 · <kbd>1</kbd>〜<kbd>4</kbd> パートのミュート · <kbd>←</kbd> <kbd>→</kbd> 5 秒戻る・進む",
+          "harm.run": "コード推定＆ハモリ生成",
+          "harm.regen": "ハモリを再生成",
+          "harm.dir": "ハモリのパート",
+          "harm.up": "上ハモ（3 度上）",
+          "harm.down": "下ハモ（3 度下）",
+          "harm.up5": "上ハモ（5 度上）",
+          "harm.down5": "下ハモ（5 度下）",
+          "harm.hint": "キーとコードを推定し、ボーカルの音程を追って、ハモリのパート（ボーカルの音程を変えた声と、ガイド音）を作ります。灰色の線がボーカルの音程、黒い帯がハモリの音です。表示は横にドラッグしてスクロールできます。タップするとその位置に移り、上の段（コード）をタップすると、その拍からのコードを変えられます（コードは 1 拍ごと）。自動の推定なので、間違うこともあります。",
+          "harm.bpm": "BPM {bpm}",
+          "harm.noBeat": "拍を検出できませんでした（コードは 0.5 秒ごと）",
+          "key.label": "キー（ドラム以外）",
+          "key.up": "キーを半音上げる",
+          "key.down": "キーを半音下げる",
+          "key.stage": "キーを変えています…",
+          "key.done": "キーを変えました（{n}）。",
+          "key.err": "キーを変えられませんでした（{msg}）。",
+          "save.key": "（キー {n}）",
+          "chord.title": "コードを編集",
+          "chord.when": "{from} 〜 {to}",
+          "chord.root": "ルート",
+          "chord.type": "種類",
+          "chord.major": "メジャー",
+          "chord.minor": "マイナー（m）",
+          "chord.length": "長さ",
+          "chord.beat": "1 拍",
+          "chord.beats": "{n} 拍",
+          "chord.ok": "変更する",
+          "chords.stale": "コードを変更しました。ハモリに反映するには「ハモリを再生成」を押してください。",
+          "chords.reset": "推定したコードに戻す",
+          "harm.stage.chords": "キーとコードを推定しています…",
+          "harm.stage.melody": "ボーカルの音程を追っています…",
+          "harm.stage.voice": "ハモリの声を作っています…",
+          "harm.done": "ハモリを作りました。再生してください。",
+          "harm.none": "ボーカルの旋律が見つからなかったので、コードだけを表示しています。",
+          "harm.err": "ハモリを作れませんでした（{msg}）。",
+          "harm.roll": "コード、ボーカルの音程（灰色の線）、ハモリの音（黒い帯）",
+          "stem.harmony": "ハモリ（声）",
+          "stem.guide": "ハモリのガイド音",
+          "keys": "<kbd>Space</kbd> 再生・一時停止 · <kbd>1</kbd>〜<kbd>6</kbd> パートのミュート · <kbd>←</kbd> <kbd>→</kbd> 5 秒戻る・進む",
           "foot": "曲はこの端末の中で分離し、どこにもアップロードしません。登録も不要です。",
           "net.title.cellular": "モバイルデータ通信に接続しているようです",
           "net.title.saveData": "データセーバーがオンになっています",
@@ -596,7 +744,7 @@
           "err.audio": "このブラウザでは音を再生できませんでした。",
           "err.save": "ファイルを保存できませんでした。",
           "intro.title": "バンドの曲をボーカル・ドラム・ベース・その他に分離",
-          "intro.body": "<p>Band Stem Mixer は、AI で曲を <b>4 つのパート</b>（ボーカル・ドラム・ベース・その他（ギター・鍵盤など））に分離する無料の Web アプリです。MP3・WAV・M4A などの音声ファイルを選んで「4 つのパートに分離する」を押すだけ。パートごとに音量のフェーダーとミュート（M）・ソロ（S）があり、ぴったりそろって再生されます。</p>\n        <p>バンド練習に使えます。自分のパートだけミュートして残りの演奏に合わせて弾く（マイナスワン音源・カラオケ音源）、ベースやドラムだけをソロにしてフレーズを耳コピする、ボーカルを消してカラオケにする、など。各パートと、自分で作ったミックスは MP3 ファイルで保存できます。</p>\n        <p>分離は<b>ブラウザの中</b>で行い、曲はどこにもアップロードしません。初回だけ AI モデル（約 170 MB、次回のために端末に保存）をダウンロードするので、Wi-Fi でお使いください。モバイルデータ通信のときは、ダウンロードの前に確認を表示します。分離には時間がかかります。最近のパソコンで曲の長さと同じか数倍、スマホではさらにかかります。</p>\n        <p>AI モデルには、Meta の音源分離モデル Demucs（htdemucs）を使っています。ほかの分離ツールと同じく完璧ではなく、パートの間で音が混ざることがあります。ギターと鍵盤は分かれず、「その他」にまとめて入ります。無料・登録不要・広告なし。</p>\n        <h2>ガイド</h2>\n        <ul>\n          <li><a href=\"/bandstemmixer/ja/guide/\">Band Stem Mixer の使い方</a></li>\n          <li><a href=\"/bandstemmixer/ja/minus-one/\">自分のパートを消して練習する（マイナスワン音源の作り方）</a></li>\n          <li><a href=\"/bandstemmixer/ja/learn-by-ear/\">ベースとドラムを聞き取る：ソロにして耳コピする</a></li>\n          <li><a href=\"/bandstemmixer/ja/how-it-works/\">AI 音源分離の仕組みと、完璧に分かれない理由</a></li>\n          <li><a href=\"/bandstemmixer/ja/better-results/\">うまく分離するコツ</a></li>\n          <li><a href=\"/bandstemmixer/ja/faq/\">よくある質問</a></li>\n        </ul>",
+          "intro.body": "<p>Band Stem Mixer は、AI で曲を <b>4 つのパート</b>（ボーカル・ドラム・ベース・その他（ギター・鍵盤など））に分離する無料の Web アプリです。MP3・WAV・M4A などの音声ファイルを選んで「4 つのパートに分離する」を押すだけ。パートごとに音量のフェーダーとミュート（M）・ソロ（S）があり、ぴったりそろって再生されます。</p>\n        <p>バンド練習に使えます。自分のパートだけミュートして残りの演奏に合わせて弾く（マイナスワン音源・カラオケ音源）、ベースやドラムだけをソロにしてフレーズを耳コピする、ボーカルを消してカラオケにする、など。各パートと、自分で作ったミックスは MP3 ファイルで保存できます。</p>\n        <p>分離は<b>ブラウザの中</b>で行い、曲はどこにもアップロードしません。初回だけ AI モデル（約 170 MB、次回のために端末に保存）をダウンロードするので、Wi-Fi でお使いください。モバイルデータ通信のときは、ダウンロードの前に確認を表示します。分離には時間がかかります。最近のパソコンで曲の長さと同じか数倍、スマホではさらにかかります。</p>\n        <p>分離したあと「コード推定＆ハモリ生成」を押すと、テンポ（BPM）と 1 拍ごとのコード（自由に直せます）を表示し、ボーカルの旋律の 3 度か 5 度の上か下に、ハモリのパート（歌い手の声をハモリの音程に変えたものと、ガイド音）を作ります。「キー」では、テンポはそのままで、ドラム以外のパートを 1 オクターブまで上げ下げできます。</p>\n        <p>AI モデルには、Meta の音源分離モデル Demucs（htdemucs）を使っています。ほかの分離ツールと同じく完璧ではなく、パートの間で音が混ざることがあります。ギターと鍵盤は分かれず、「その他」にまとめて入ります。無料・登録不要・広告なし。</p>\n        <h2>ガイド</h2>\n        <ul>\n          <li><a href=\"/bandstemmixer/ja/guide/\">Band Stem Mixer の使い方</a></li>\n          <li><a href=\"/bandstemmixer/ja/minus-one/\">自分のパートを消して練習する（マイナスワン音源の作り方）</a></li>\n          <li><a href=\"/bandstemmixer/ja/learn-by-ear/\">ベースとドラムを聞き取る：ソロにして耳コピする</a></li>\n          <li><a href=\"/bandstemmixer/ja/harmony/\">ハモリの練習：ボーカルからハモリパートを作る</a></li>\n          <li><a href=\"/bandstemmixer/ja/chords-and-key/\">コード表示とキー変更</a></li>\n          <li><a href=\"/bandstemmixer/ja/how-it-works/\">AI 音源分離の仕組みと、完璧に分かれない理由</a></li>\n          <li><a href=\"/bandstemmixer/ja/better-results/\">うまく分離するコツ</a></li>\n          <li><a href=\"/bandstemmixer/ja/faq/\">よくある質問</a></li>\n        </ul>",
           "menu.help": "使い方",
           "menu.guide": "ガイド・記事",
           "guide.url": "/bandstemmixer/ja/guide/",
@@ -604,8 +752,8 @@
           "menu.privacy": "プライバシー",
           "menu.about": "このアプリについて",
           "menu.model": "AI モデルを削除",
-          "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – 「4 つのパートに分離する」を押します。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した MP3 ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
-          "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込みと分離は、ブラウザの中だけで行います。サーバーに送られることはありません。MP3 ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。ミキサーの設定は「ミキサーを元に戻す」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\">運営者情報</a>をご覧ください。</li>",
+          "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – 「4 つのパートに分離する」を押します。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>ハモリ</b> – 「コード推定＆ハモリ生成」を押すと、キーとコードを推定して、ボーカルの旋律の 3 度または 5 度上（下）にハモリを作ります。「ハモリ（声）」はボーカルの音程をハモリの音に変えたもの、「ハモリのガイド音」は同じ音を単純な音で鳴らすもので、ハモリを歌う練習に使えます。コードと音はパートの上に流れて表示されます。テンポ（BPM）と拍も推定し、コードは 1 拍（4 分音符）ごとに変えられます。上の段（コード）の拍をタップして変え、「ハモリを再生成」を押すとそのコードでハモリを作り直します。表示は横にドラッグして前後を見られます。自動の推定なので、間違うこともあります。</li>\n        <li><b>キー</b> – − / + で、ドラム以外のパートを半音ずつ上げ下げします（1 オクターブまで）。コードとハモリも一緒に変わります。</li>\n        <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した MP3 ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
+          "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込み・分離・解析（コード・ハモリ・キーの変更）は、ブラウザの中だけで行います。サーバーに送られることはありません。MP3 ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。ミキサーの設定は「ミキサーを元に戻す」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\">運営者情報</a>をご覧ください。</li>",
           "model.del.title": "AI モデルを削除しますか？",
           "model.del.body": "このブラウザに保存した AI モデル（約 170 MB）を削除して、容量を空けます。次に分離するときに、もう一度ダウンロードします。",
           "model.del.ok": "削除する",
@@ -684,13 +832,20 @@
         { key: "drums", idx: 0 },
         { key: "other", idx: 2 }
       ];
+      // Added by "Make a harmony" (harmony.js), after the 4 parts
+      const HARM = [
+        { key: "harmony", idx: 4 },
+        { key: "guide", idx: 5 }
+      ];
+      const ALL = PARTS.concat(HARM);
+      let tracks = PARTS.slice(); // the parts in the mixer now (with HARM once a harmony is made)
 
       // ---------- Saved state ----------
       // Mixer settings only. Solo is not restored (a part left on solo would silence the others without notice).
       const STATE_KEY = "bandstemmixer-state";
       function freshState() {
         const parts = {};
-        PARTS.forEach(function (p) { parts[p.key] = { vol: 1, mute: false }; });
+        ALL.forEach(function (p) { parts[p.key] = { vol: 1, mute: false }; });
         return { v: 1, master: 1, parts: parts };
       }
       const clampVol = (v, max) => (typeof v === "number" && isFinite(v) ? Math.max(0, Math.min(max, v)) : 1);
@@ -700,7 +855,7 @@
           const o = JSON.parse(localStorage.getItem(STATE_KEY) || "null");
           if (o && o.v === 1) {
             s.master = clampVol(o.master, 1.5);
-            PARTS.forEach(function (p) {
+            ALL.forEach(function (p) {
               const x = o.parts && o.parts[p.key];
               if (x) s.parts[p.key] = { vol: clampVol(x.vol, 1.5), mute: x.mute === true };
             });
@@ -1095,7 +1250,9 @@
           pos = m.pos;
           if (!seeking) $("seek").value = (pos / SR).toFixed(1);
           $("timeNow").textContent = fmtTime(pos / SR);
-          PARTS.forEach(function (p, i) {
+          posAt = performance.now();
+          if (!playing) drawRoll();
+          tracks.forEach(function (p, i) {
             const v = m.peaks[p.idx] || 0;
             meters[i].style.width = Math.min(100, Math.sqrt(v) * 100) + "%";
           });
@@ -1108,6 +1265,7 @@
 
       async function loadStems(s) {
         stems = s;
+        resetSong(s);
         length = s[0][0].length;
         pos = 0;
         $("empty").hidden = true;
@@ -1130,6 +1288,7 @@
       // while the model runs
       function releaseStems() {
         if (!stems) return;
+        resetSong(null);
         stems = null;
         length = 0;
         if (node) node.port.postMessage({ type: "load", stems: null });
@@ -1139,8 +1298,8 @@
       }
 
       function gainsOf() {
-        const g = new Array(PARTS.length).fill(0);
-        PARTS.forEach(function (p) {
+        const g = new Array(tracks.length).fill(0);
+        tracks.forEach(function (p) {
           const st = store.parts[p.key];
           const on = solo.size ? solo.has(p.key) : !st.mute;
           g[p.idx] = on ? st.vol * store.master : 0;
@@ -1160,6 +1319,7 @@
         $("pauseIcon").toggleAttribute("hidden", !on);
         $("playBtn").setAttribute("aria-label", t(on ? "pause" : "play"));
         if (!on) meters.forEach(function (m) { m.style.width = "0"; });
+        if (on) { posAt = performance.now(); viewStart = null; animateRoll(); } else drawRoll();
       }
       function togglePlay() {
         if (!stems) return;
@@ -1184,8 +1344,11 @@
         if (!node || !stems) return;
         pos = Math.max(0, Math.min(length - 1, Math.round(sec * SR)));
         node.port.postMessage({ type: "seek", pos: pos });
+        posAt = performance.now();
+        viewStart = null;
         $("seek").value = (pos / SR).toFixed(1);
         $("timeNow").textContent = fmtTime(pos / SR);
+        drawRoll();
       }
       $("playBtn").addEventListener("click", togglePlay);
       const seek = $("seek");
@@ -1203,62 +1366,64 @@
       const stripEls = [];
       function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
       function buildStrips() {
+        PARTS.forEach(addStrip);
+      }
+      function addStrip(p) {
         const box = $("strips");
-        PARTS.forEach(function (p, i) {
-          const name = t("stem." + p.key);
-          const row = el("div", "strip");
-          const nm = el("div", "sname");
-          nm.appendChild(el("b", null, name));
-          const meter = el("div", "meter");
-          const fill = el("div");
-          meter.appendChild(fill);
-          nm.appendChild(meter);
-          meters.push(fill);
+        const name = t("stem." + p.key);
+        const row = el("div", "strip");
+        const nm = el("div", "sname");
+        nm.appendChild(el("b", null, name));
+        const meter = el("div", "meter");
+        const fill = el("div");
+        meter.appendChild(fill);
+        nm.appendChild(meter);
+        meters.push(fill);
 
-          const ms = el("div", "ms");
-          const m = el("button", "chip", "M");
-          m.type = "button";
-          m.setAttribute("aria-label", t("mute", { name: name }));
-          m.addEventListener("click", function () {
-            store.parts[p.key].mute = !store.parts[p.key].mute;
-            saveState(); renderStrips(); sendGains();
-          });
-          const s = el("button", "chip", "S");
-          s.type = "button";
-          s.setAttribute("aria-label", t("solo", { name: name }));
-          s.addEventListener("click", function () {
-            if (solo.has(p.key)) solo.delete(p.key); else solo.add(p.key);
-            renderStrips(); sendGains();
-          });
-          ms.appendChild(m); ms.appendChild(s);
-
-          const vol = el("label", "vol");
-          const range = el("input");
-          range.type = "range"; range.min = "0"; range.max = "1.5"; range.step = "0.01";
-          range.setAttribute("aria-label", t("volume", { name: name }));
-          const val = el("span", "val");
-          range.addEventListener("input", function () {
-            store.parts[p.key].vol = Number(range.value);
-            val.textContent = Math.round(range.value * 100) + "%";
-            sendGains();
-          });
-          range.addEventListener("change", saveState);
-          vol.appendChild(range); vol.appendChild(val);
-
-          const dl = el("button", "chip sq save-btn");
-          dl.type = "button";
-          dl.setAttribute("aria-label", t("save", { name: name }));
-          dl.title = t("save", { name: name });
-          dl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="m7 10 5 5 5-5"></path><path d="M5 20h14"></path></svg>';
-          dl.addEventListener("click", function () { saveMp3(p.key); });
-
-          row.appendChild(nm); row.appendChild(ms); row.appendChild(vol); row.appendChild(dl);
-          box.appendChild(row);
-          stripEls.push({ row: row, m: m, s: s, range: range, val: val });
+        const ms = el("div", "ms");
+        const m = el("button", "chip", "M");
+        m.type = "button";
+        m.setAttribute("aria-label", t("mute", { name: name }));
+        m.addEventListener("click", function () {
+          store.parts[p.key].mute = !store.parts[p.key].mute;
+          saveState(); renderStrips(); sendGains();
         });
+        const s = el("button", "chip", "S");
+        s.type = "button";
+        s.setAttribute("aria-label", t("solo", { name: name }));
+        s.addEventListener("click", function () {
+          if (solo.has(p.key)) solo.delete(p.key); else solo.add(p.key);
+          renderStrips(); sendGains();
+        });
+        ms.appendChild(m); ms.appendChild(s);
+
+        const vol = el("label", "vol");
+        const range = el("input");
+        range.type = "range"; range.min = "0"; range.max = "1.5"; range.step = "0.01";
+        range.setAttribute("aria-label", t("volume", { name: name }));
+        const val = el("span", "val");
+        range.addEventListener("input", function () {
+          store.parts[p.key].vol = Number(range.value);
+          val.textContent = Math.round(range.value * 100) + "%";
+          sendGains();
+        });
+        range.addEventListener("change", saveState);
+        vol.appendChild(range); vol.appendChild(val);
+
+        const dl = el("button", "chip sq save-btn");
+        dl.type = "button";
+        dl.setAttribute("aria-label", t("save", { name: name }));
+        dl.title = t("save", { name: name });
+        dl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="m7 10 5 5 5-5"></path><path d="M5 20h14"></path></svg>';
+        dl.addEventListener("click", function () { saveMp3(p.key); });
+        dl.disabled = saving;
+
+        row.appendChild(nm); row.appendChild(ms); row.appendChild(vol); row.appendChild(dl);
+        box.appendChild(row);
+        stripEls.push({ row: row, m: m, s: s, range: range, val: val });
       }
       function renderStrips() {
-        PARTS.forEach(function (p, i) {
+        tracks.forEach(function (p, i) {
           const st = store.parts[p.key];
           const x = stripEls[i];
           x.m.setAttribute("aria-pressed", st.mute ? "true" : "false");
@@ -1356,16 +1521,18 @@
         toast(t("encoding", { pct: 0 }), true);
         try {
           let pcm, label;
+          // Parts moved to another key say so in the file name (the drums are never moved)
+          const keyNote = semis && key !== "drums" ? t("save.key", { n: signed(semis) }) : "";
           if (key === "mix") {
             pcm = mixPcm();
             label = t("stem.mix");
           } else {
-            const p = PARTS.find(function (x) { return x.key === key; });
+            const p = ALL.find(function (x) { return x.key === key; });
             pcm = { left: stems[p.idx][0], right: stems[p.idx][1] };
             label = t("stem." + key);
           }
           const blob = await encodeMp3(pcm.left, pcm.right, key === "mix");
-          await saveBlob((baseName() + " - " + label).replace(/[\\/:*?"<>|]+/g, "_") + ".mp3", blob);
+          await saveBlob((baseName() + " - " + label + keyNote).replace(/[\\/:*?"<>|]+/g, "_") + ".mp3", blob);
         } catch (e) {
           console.error("MP3 export failed", e);
           toast(t("err.save"));
@@ -1374,6 +1541,474 @@
         }
       }
       $("saveMix").addEventListener("click", function () { saveMp3("mix"); });
+
+      // ---------- Harmony and key change ----------
+      // harmony.js (a worker, no AI model) finds the key and chords, follows the vocal melody, and returns the
+      // harmony voice and guide tone (mono, added to the mixer as two more parts) and what to draw.
+      // keyshift.js (one worker per part, in parallel) moves every part but the drums up or down.
+      // The song's own key is kept (orig, harm.chords, harm.notes); the key change (semis) is applied to the
+      // sound, the chord names, and the roll.
+      let orig = null;      // the separated parts [drums, bass, other, vocals] (model order)
+      let semis = 0;        // key change in semitones, -12..12
+      let shifted = null;   // { semis, parts: [bass, other, vocals] } moved by semis
+      // harm: { key, grid, bpm, cells, chords, auto, edited, stale, frame, pitch, notes, dir, interval, semis, voice, guide, lo, hi }
+      // grid: the beat cells' edges (seconds); cells: one chord per beat { root, q } (what is edited);
+      // chords: the cells joined into runs { t0, t1, root, q } (what is drawn and sent to harmony.js)
+      let harm = null;
+      let wantHarm = false; // "Find chords & make harmony" was pressed and its result is not in yet
+      let jobs = [], jobId = 0, keyTimer = 0;
+      let posAt = 0;        // performance.now() of the last position from the player (to move the roll smoothly)
+      const SHARP = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      const FLAT = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+      const mod12 = (n) => ((n % 12) + 12) % 12;
+      const signed = (n) => (n > 0 ? "+" + n : n < 0 ? "−" + -n : "0");
+      // Note names in the key as it sounds now: flats in keys written with flats (F, Bb, Eb, Ab, Db, Gb
+      // major and their relative minors)
+      function noteName(pc) {
+        const tonic = mod12(harm.key.tonic + semis);
+        const major = harm.key.minor ? (tonic + 3) % 12 : tonic;
+        return ([5, 10, 3, 8, 1, 6].indexOf(major) >= 0 ? FLAT : SHARP)[mod12(pc)];
+      }
+      // No chord: blank
+      function chordName(c) {
+        return !c || c.root < 0 ? "" : noteName(c.root + semis) + c.q;
+      }
+      function harmSettings() {
+        const v = Number($("harmDir").value);
+        return { dir: v < 0 ? -1 : 1, interval: Math.abs(v) === 5 ? 5 : 3 };
+      }
+
+      function cancelJobs() {
+        jobs.forEach(function (w) { w.terminate(); });
+        jobs = [];
+        jobId++;
+        clearTimeout(keyTimer);
+        $("harmProgress").hidden = true;
+        $("harmBtn").disabled = !orig;
+        $("harmDir").disabled = false;
+      }
+      // Runs a worker and resolves with its "done" message (a canceled one never settles)
+      function runWorker(file, msg, onProgress) {
+        return new Promise(function (resolve, reject) {
+          let w;
+          try { w = new Worker(file, { type: "module" }); } catch (e) { reject(e); return; }
+          jobs.push(w);
+          const end = function () { w.terminate(); jobs = jobs.filter(function (x) { return x !== w; }); };
+          w.onmessage = function (e) {
+            const m = e.data;
+            if (m.type === "progress") onProgress(m.done, m.stage);
+            else if (m.type === "done") { end(); resolve(m); }
+            else if (m.type === "error") { end(); reject(new Error(m.message)); }
+          };
+          w.onerror = function (e) { end(); if (e && e.preventDefault) e.preventDefault(); reject(new Error((e && e.message) || "worker")); };
+          // Shared memory is passed as is; plain arrays are copied
+          w.postMessage(msg);
+        });
+      }
+
+      // Brings the sound up to the key change and the harmony settings: moves the parts not moved yet, and
+      // makes (or, for a new key, renders again) the harmony. Whatever was running is stopped first.
+      function rebuild() {
+        if (!orig) return;
+        cancelJobs();
+        const id = jobId, target = semis, makeNew = wantHarm;
+        const tasks = [], done = {};
+        let stage = null;
+        const show = function () {
+          const vals = Object.keys(done).map(function (k) { return done[k]; });
+          const frac = vals.reduce(function (a, v) { return a + v; }, 0) / vals.length;
+          $("harmProgress").hidden = false;
+          $("harmStage").textContent = stage ? t("harm.stage." + stage) : t("key.stage");
+          $("harmBar").firstElementChild.style.width = Math.round(frac * 1000) / 10 + "%";
+        };
+        if (target !== 0 && !(shifted && shifted.semis === target)) {
+          // The bass with a longer FFT: its low notes need finer frequency steps
+          [[1, 4096], [2, 2048], [3, 2048]].forEach(function (x, k) {
+            done["s" + k] = 0;
+            tasks.push(runWorker("keyshift.js", { left: orig[x[0]][0], right: orig[x[0]][1], semis: target, size: x[1] }, function (d) {
+              done["s" + k] = d; show();
+            }).then(function (m) { return { shift: k, part: [m.left, m.right] }; }));
+          });
+        }
+        if (makeNew || (harm && harm.notes.length && harm.semis !== target)) {
+          const set = makeNew ? harmSettings() : { dir: harm.dir, interval: harm.interval };
+          const msg = { type: "run", vocals: orig[3], dir: set.dir, interval: set.interval, semis: target };
+          // After the first run, the chords (maybe edited) and the melody are reused
+          if (harm) Object.assign(msg, { chords: harm.chords, key: harm.key, pitch: harm.pitch, notes: harm.notes });
+          else Object.assign(msg, { bass: orig[1], other: orig[2], drums: orig[0] });
+          const weight = harm ? { voice: [0, 1] } : { chords: [0, 0.35], melody: [0.35, 0.35], voice: [0.7, 0.3] };
+          done.h = 0;
+          stage = harm ? "voice" : "chords";
+          tasks.push(runWorker("harmony.js", msg, function (d, st) {
+            const wt = weight[st] || [0, 1];
+            stage = st; done.h = wt[0] + d * wt[1]; show();
+          }).then(function (m) { return { harm: m, set: set }; }));
+        }
+        if (!tasks.length) { applyStems(); return; }
+        $("harmBtn").disabled = true;
+        $("harmDir").disabled = true;
+        show();
+        Promise.all(tasks).then(function (results) {
+          if (id !== jobId) return;
+          cancelJobs();
+          let parts = null, made = null;
+          results.forEach(function (r) {
+            if (r.part) (parts = parts || [])[r.shift] = r.part;
+            if (r.harm) made = setHarmony(r.harm, r.set, target);
+          });
+          if (parts) shifted = { semis: target, parts: parts };
+          applyStems();
+          if (makeNew) {
+            wantHarm = false;
+            toast(made && made.notes.length ? t("harm.done") : t("harm.none"));
+          } else if (parts) {
+            toast(t("key.done", { n: signed(target) }));
+          }
+        }).catch(function (e) {
+          if (id !== jobId) return;
+          cancelJobs();
+          console.error("Harmony / key change failed", e);
+          toast(t(makeNew ? "harm.err" : "key.err", { msg: e.message }));
+          wantHarm = false;
+        });
+      }
+
+      function setHarmony(m, set, target) {
+        const prev = harm;
+        // The chords stay the page's own (they may have been edited while this ran)
+        const cells = prev ? prev.cells : cellsOf(m.chords, m.grid);
+        harm = {
+          key: prev ? prev.key : m.key, grid: prev ? prev.grid : m.grid, bpm: prev ? prev.bpm : m.bpm,
+          cells: cells, chords: prev ? prev.chords : m.chords, auto: prev ? prev.auto : copyCells(cells),
+          edited: prev ? prev.edited : false, stale: false, frame: m.frame, pitch: m.pitch, notes: m.notes,
+          dir: set.dir, interval: set.interval, semis: target, voice: m.voice, guide: m.guide, lo: 60, hi: 72
+        };
+        // Pitch range of the roll (in the song's key): the melody and harmony notes, at least an octave
+        if (m.notes.length) {
+          let lo = Infinity, hi = -Infinity;
+          m.notes.forEach(function (n) { lo = Math.min(lo, n.midi, n.harm); hi = Math.max(hi, n.midi, n.harm); });
+          const mid = (lo + hi) / 2, half = Math.max(6, (hi - lo) / 2) + 1.5;
+          harm.lo = mid - half; harm.hi = mid + half;
+        }
+        $("harmView").hidden = false;
+        renderHarm();
+        return harm;
+      }
+
+      // The playing parts: the drums as separated, the others moved to the key (when they are ready), and the
+      // harmony when it is rendered for this key. keep: same song, so the position and play state stay.
+      function applyStems() {
+        if (!orig) return;
+        if (semis === 0) shifted = null;
+        else if (!shifted || shifted.semis !== semis) return;
+        const parts = semis === 0 ? [orig[1], orig[2], orig[3]] : shifted.parts;
+        stems = [orig[0], parts[0], parts[1], parts[2]];
+        if (harm && harm.notes.length && harm.semis === semis) {
+          stems.push([harm.voice, harm.voice], [harm.guide, harm.guide]);
+          if (tracks.length === PARTS.length) { HARM.forEach(addStrip); tracks = ALL.slice(); }
+        }
+        renderStrips();
+        // Gains first, so added parts start at their own level
+        sendGains();
+        if (node) node.port.postMessage({ type: "load", stems: stems, keep: true });
+      }
+
+      function renderKey() {
+        $("keyVal").textContent = signed(semis);
+        $("keyDown").disabled = !orig || semis <= -12;
+        $("keyUp").disabled = !orig || semis >= 12;
+        renderHarm();
+      }
+      function renderHarm() {
+        // Once made, the button remakes the harmony from the chords on screen (estimated or edited)
+        $("harmBtn").textContent = t(harm ? "harm.regen" : "harm.run");
+        if (!harm) return;
+        $("bpmVal").textContent = harm.bpm ? t("harm.bpm", { bpm: Math.round(harm.bpm) }) : t("harm.noBeat");
+        $("chordsNote").hidden = !harm.stale && !harm.edited;
+        $("chordsStale").hidden = !harm.stale;
+        $("chordsReset").hidden = !harm.edited;
+        drawRoll();
+      }
+      // The key buttons can be pressed several times in a row: the work starts 0.6 s after the last press
+      function changeKey(next) {
+        next = Math.max(-12, Math.min(12, next));
+        if (!orig || next === semis) return;
+        semis = next;
+        cancelJobs();
+        renderKey();
+        keyTimer = setTimeout(rebuild, 600);
+      }
+      $("keyDown").addEventListener("click", function () { changeKey(semis - 1); });
+      $("keyUp").addEventListener("click", function () { changeKey(semis + 1); });
+      $("harmBtn").addEventListener("click", function () {
+        if (!orig) return;
+        wantHarm = true;
+        rebuild();
+      });
+
+      // A new song (from loadStems) or none (before a new separation): start from the original key, no harmony
+      function resetSong(s) {
+        orig = s;
+        cancelJobs();
+        semis = 0;
+        shifted = null;
+        harm = null;
+        wantHarm = false;
+        $("harmView").hidden = true;
+        if (tracks.length > PARTS.length) {
+          stripEls.splice(PARTS.length).forEach(function (x) { x.row.remove(); });
+          meters.splice(PARTS.length);
+          tracks = PARTS.slice();
+          solo.delete("harmony"); solo.delete("guide");
+        }
+        renderKey();
+      }
+
+      // ---------- Editing the chords ----------
+      // One chord per beat (quarter note). Tap a beat in the chord row of the roll; the change can cover several
+      // beats from there. The chords are kept in the song's key; the editor shows them
+      // in the key as it sounds. "Remake the harmony" then uses the edited chords.
+      const chordDlg = $("chordDlg");
+      let editing = -1;
+      function copyCells(cells) { return cells.map(function (c) { return { root: c.root, q: c.q }; }); }
+      // Runs of chords → one chord per cell (the chord covering the cell's middle)
+      function cellsOf(chords, grid) {
+        const out = [];
+        let k = 0;
+        for (let i = 0; i + 1 < grid.length; i++) {
+          const mid = (grid[i] + grid[i + 1]) / 2;
+          while (k + 1 < chords.length && chords[k + 1].t0 <= mid) k++;
+          out.push({ root: chords[k] ? chords[k].root : -1, q: chords[k] ? chords[k].q : "" });
+        }
+        return out;
+      }
+      // Cells → runs: neighbours with the same chord become one
+      function joinCells() {
+        const out = [];
+        harm.cells.forEach(function (c, i) {
+          const last = out[out.length - 1];
+          if (last && last.root === c.root && (last.q === c.q || c.root < 0)) last.t1 = harm.grid[i + 1];
+          else out.push({ t0: harm.grid[i], t1: harm.grid[i + 1], root: c.root, q: c.q });
+        });
+        harm.chords = out;
+      }
+      function cellIndex(sec) {
+        const g = harm.grid;
+        let lo = 0, hi = g.length - 2;
+        while (lo < hi) {
+          const mid = (lo + hi + 1) >> 1;
+          if (g[mid] <= sec) lo = mid; else hi = mid - 1;
+        }
+        return lo;
+      }
+      const sameChord = (a, b) => a.root === b.root && (a.q === b.q || a.root < 0);
+      function renderChordWhen() {
+        const n = Number($("chordLen").value);
+        $("chordWhen").textContent = t("chord.when", { from: fmtTime(harm.grid[editing]), to: fmtTime(harm.grid[editing + n]) });
+      }
+      function openChordEditor(i) {
+        if (!harm || !harm.cells[i]) return;
+        editing = i;
+        const c = harm.cells[i];
+        const root = $("chordRoot");
+        root.textContent = "";
+        // No chord: a blank choice
+        const nc = el("option", null, "");
+        nc.value = "-1";
+        root.appendChild(nc);
+        for (let k = 0; k < 12; k++) {
+          const o = el("option", null, noteName(k));
+          o.value = String(k);
+          root.appendChild(o);
+        }
+        root.value = c.root < 0 ? "-1" : String(mod12(c.root + semis));
+        $("chordType").value = c.root < 0 ? "" : c.q;
+        $("chordType").disabled = c.root < 0;
+        // Length: 1 to 16 beats from here; at first, up to where this chord ends
+        let run = 1;
+        while (i + run < harm.cells.length && run < 16 && sameChord(harm.cells[i + run], c)) run++;
+        const len = $("chordLen");
+        len.textContent = "";
+        for (let n = 1; n <= Math.min(16, harm.cells.length - i); n++) {
+          const o = el("option", null, t(n === 1 ? "chord.beat" : "chord.beats", { n: n }));
+          o.value = String(n);
+          len.appendChild(o);
+        }
+        len.value = String(run);
+        renderChordWhen();
+        openDlg(chordDlg);
+      }
+      $("chordRoot").addEventListener("change", function () { $("chordType").disabled = $("chordRoot").value === "-1"; });
+      $("chordLen").addEventListener("change", renderChordWhen);
+      $("chordOk").addEventListener("click", function () {
+        const root = Number($("chordRoot").value), n = Number($("chordLen").value);
+        const next = { root: root < 0 ? -1 : mod12(root - semis), q: root < 0 ? "" : $("chordType").value };
+        let changed = false;
+        for (let k = editing; k < editing + n && k < harm.cells.length; k++) {
+          if (!sameChord(harm.cells[k], next)) { harm.cells[k] = { root: next.root, q: next.q }; changed = true; }
+        }
+        if (changed) {
+          joinCells();
+          harm.edited = true;
+          harm.stale = true;
+        }
+        chordDlg.close();
+      });
+      $("chordCancel").addEventListener("click", function () { chordDlg.close(); });
+      chordDlg.addEventListener("close", function () { if (harm) renderHarm(); });
+      $("chordsReset").addEventListener("click", function () {
+        if (!harm) return;
+        harm.cells = copyCells(harm.auto);
+        joinCells();
+        harm.edited = false;
+        harm.stale = true;
+        renderHarm();
+      });
+
+      // The roll: chords on top (a thin line at every beat), the vocal melody (grey line), and the harmony notes
+      // (black bars). It follows the playback position (2 s behind, the rest ahead) until it is dragged sideways
+      // (finger or mouse) or scrolled with a sideways wheel; then it stays where it was put, and follows again
+      // when playback starts, after a jump, or 3 s after the last scroll while playing.
+      const roll = $("roll");
+      let rollRaf = 0;
+      let viewStart = null, followTimer = 0;
+      function nowSec() {
+        let p = pos;
+        if (playing) p += ((performance.now() - posAt) / 1000) * SR;
+        return Math.min(length, p) / SR;
+      }
+      function chordIndex(sec) {
+        const cs = harm.chords;
+        let lo = 0, hi = cs.length - 1;
+        while (lo < hi) {
+          const mid = (lo + hi + 1) >> 1;
+          if (cs[mid].t0 <= sec) lo = mid; else hi = mid - 1;
+        }
+        return lo;
+      }
+      function rollSpan(w) { return w < 480 ? 6 : 10; }
+      function drawRoll() {
+        if (!harm || $("harmView").hidden) return;
+        const dpr = window.devicePixelRatio || 1;
+        const w = roll.clientWidth, h = roll.clientHeight;
+        if (!w || !h) return;
+        if (roll.width !== Math.round(w * dpr) || roll.height !== Math.round(h * dpr)) {
+          roll.width = Math.round(w * dpr);
+          roll.height = Math.round(h * dpr);
+        }
+        const g = roll.getContext("2d");
+        g.setTransform(dpr, 0, 0, dpr, 0, 0);
+        g.clearRect(0, 0, w, h);
+        const now = nowSec(), span = rollSpan(w), t0 = viewFrom(now, span), t1 = t0 + span;
+        const x = function (sec) { return ((sec - t0) / span) * w; };
+        const lane = 22, top = lane + 4, bottom = h - 4;
+        // Pitches are kept in the song's key: drawn moved by the key change
+        const y = function (midi) { return top + ((harm.hi - (midi - semis)) / (harm.hi - harm.lo)) * (bottom - top); };
+        const row = (bottom - top) / (harm.hi - harm.lo);
+        // Lines at every C
+        g.strokeStyle = "#f0f0f0"; g.lineWidth = 1;
+        for (let c = Math.ceil((harm.lo + semis) / 12) * 12; c <= harm.hi + semis; c += 12) {
+          g.beginPath(); g.moveTo(0, Math.round(y(c)) + 0.5); g.lineTo(w, Math.round(y(c)) + 0.5); g.stroke();
+        }
+        // Beats (short ticks in the chord row), then each chord's name where it starts
+        g.fillStyle = "#e5e5e5";
+        for (let i = cellIndex(t0); i < harm.grid.length && harm.grid[i] <= t1; i++) g.fillRect(Math.round(x(harm.grid[i])), lane - 6, 1, 6);
+        g.font = "600 12px " + getComputedStyle(document.body).getPropertyValue("--mono");
+        g.textBaseline = "middle";
+        for (let i = chordIndex(t0); i < harm.chords.length && harm.chords[i].t0 < t1; i++) {
+          const c = harm.chords[i];
+          if (c.t1 < t0) continue;
+          const a = Math.max(0, x(c.t0));
+          g.fillStyle = "#000";
+          g.fillText(chordName(c), a + 5, lane / 2 - 2);
+        }
+        g.fillStyle = "#e5e5e5";
+        g.fillRect(0, lane, w, 1);
+        // Harmony notes
+        g.fillStyle = "#000";
+        harm.notes.forEach(function (n) {
+          if (n.t1 < t0 || n.t0 > t1) return;
+          const a = x(n.t0), b = x(n.t1);
+          g.fillRect(a, y(n.harm + semis) - row * 0.4, Math.max(2, b - a - 1), Math.max(3, row * 0.8));
+        });
+        // Vocal melody
+        g.strokeStyle = "#a3a3a3"; g.lineWidth = 2; g.lineJoin = "round";
+        g.beginPath();
+        let pen = false, prev = 0;
+        const f0 = Math.max(0, Math.floor(t0 / harm.frame)), f1 = Math.min(harm.pitch.length - 1, Math.ceil(t1 / harm.frame));
+        for (let f = f0; f <= f1; f++) {
+          const v = harm.pitch[f];
+          if (v !== v) { pen = false; continue; } // NaN: no voice
+          const px = x(f * harm.frame), py = y(v + semis);
+          // A jump of more than 2.5 semitones in 23 ms is a stray frame or a new phrase: no line across it
+          if (pen && Math.abs(v - prev) <= 2.5) g.lineTo(px, py); else g.moveTo(px, py);
+          pen = true;
+          prev = v;
+        }
+        g.stroke();
+        // Now
+        g.fillStyle = "#000";
+        g.fillRect(Math.round(x(now)) - 1, 0, 2, h);
+      }
+      function animateRoll() {
+        if (rollRaf) return;
+        const step = function () {
+          rollRaf = 0;
+          drawRoll();
+          if (playing && harm) rollRaf = requestAnimationFrame(step);
+        };
+        rollRaf = requestAnimationFrame(step);
+      }
+      function viewFrom(now, span) {
+        if (viewStart === null) return now - 2;
+        return Math.max(-2, Math.min(length / SR - span + 2, viewStart));
+      }
+      function scrollRoll(sec) {
+        const span = rollSpan(roll.clientWidth);
+        viewStart = viewFrom(nowSec(), span) + sec;
+        clearTimeout(followTimer);
+        if (playing) followTimer = setTimeout(followRoll, 3000);
+        drawRoll();
+      }
+      function followRoll() {
+        clearTimeout(followTimer);
+        viewStart = null;
+        drawRoll();
+      }
+      // Drag sideways to scroll; a tap (no drag) on the chord row edits that beat's chord, anywhere else jumps there
+      let drag = null;
+      roll.addEventListener("pointerdown", function (e) {
+        if (!harm || (e.pointerType === "mouse" && e.button !== 0)) return;
+        drag = { id: e.pointerId, x: e.clientX, last: e.clientX, moved: false };
+        roll.setPointerCapture(e.pointerId);
+      });
+      roll.addEventListener("pointermove", function (e) {
+        if (!drag || e.pointerId !== drag.id) return;
+        if (!drag.moved && Math.abs(e.clientX - drag.x) < 6) return;
+        drag.moved = true;
+        scrollRoll(-((e.clientX - drag.last) / roll.clientWidth) * rollSpan(roll.clientWidth));
+        drag.last = e.clientX;
+      });
+      roll.addEventListener("pointerup", function (e) {
+        if (!drag || e.pointerId !== drag.id) return;
+        const moved = drag.moved;
+        drag = null;
+        if (moved || !harm) return;
+        const r = roll.getBoundingClientRect();
+        const sec = viewFrom(nowSec(), rollSpan(r.width)) + ((e.clientX - r.left) / r.width) * rollSpan(r.width);
+        if (e.clientY - r.top < 24) openChordEditor(cellIndex(sec));
+        else seekTo(sec);
+      });
+      roll.addEventListener("pointercancel", function () { drag = null; });
+      // A sideways wheel or trackpad swipe (or Shift + wheel) scrolls; an up / down wheel still scrolls the page
+      roll.addEventListener("wheel", function (e) {
+        if (!harm) return;
+        const dx = e.shiftKey && !e.deltaX ? e.deltaY : e.deltaX;
+        if (!dx || Math.abs(dx) < Math.abs(e.deltaY) && !e.shiftKey) return;
+        e.preventDefault();
+        scrollRoll((dx / roll.clientWidth) * rollSpan(roll.clientWidth));
+      }, { passive: false });
+      window.addEventListener("resize", drawRoll);
 
       // ---------- Keyboard ----------
       document.addEventListener("keydown", function (e) {
@@ -1385,8 +2020,8 @@
         if (e.key === " " && tag !== "BUTTON") {
           e.preventDefault();
           togglePlay();
-        } else if (/^[1-4]$/.test(e.key)) {
-          const p = PARTS[Number(e.key) - 1];
+        } else if (/^[1-9]$/.test(e.key) && tracks[Number(e.key) - 1]) {
+          const p = tracks[Number(e.key) - 1];
           store.parts[p.key].mute = !store.parts[p.key].mute;
           saveState(); renderStrips(); sendGains();
         } else if ((e.key === "ArrowLeft" || e.key === "ArrowRight") && tag !== "INPUT") {
@@ -1492,7 +2127,7 @@
         $(pair[1]).addEventListener("click", function () { dlg.close(); });
         dlg.addEventListener("close", function () { settingsBtn.focus(); });
       });
-      [helpDlg, privacyDlg, aboutDlg, modelDlg, $("netDlg")].forEach(function (dlg) {
+      [helpDlg, privacyDlg, aboutDlg, modelDlg, $("netDlg"), chordDlg].forEach(function (dlg) {
         dlg.addEventListener("click", function (e) {
           const r = dlg.getBoundingClientRect();
           if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
@@ -1503,6 +2138,7 @@
       applyI18n();
       buildStrips();
       renderStrips();
+      renderKey();
       checkModel();
       reportCrash();
       // iPhone / iPad: the model can need more memory than Safari gives a tab (an iPhone 17e could not

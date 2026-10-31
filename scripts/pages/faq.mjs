@@ -46,7 +46,23 @@ const EN = [
   },
   {
     q: "Are the separated parts saved?",
-    a: `Not in the app: they are gone when you reload or choose another song. Save the ones you want as MP3 files (${KBPS} kbps) with the ↓ buttons or “Save this mix (MP3)”. The mixer settings (faders, mute, master volume) are remembered.`,
+    a: `Not in the app: they are gone when you reload or choose another song, and so are the chords and the harmony. Save the ones you want as MP3 files (${KBPS} kbps) with the ↓ buttons or “Save this mix (MP3)”. The mixer settings (faders, mute, master volume) are remembered.`,
+  },
+  {
+    q: "Can it find the chords of a song?",
+    a: 'Yes. After separating, press “Find chords & make harmony”: it finds the tempo (BPM) and a chord on every beat. Only major and minor chords are found automatically, and they can be wrong, so each beat can be edited by hand (including 7, maj7, m7, add9, dim7, m7b5, aug, and sus4). See <a href="../chords-and-key/">chords and key change</a>.',
+  },
+  {
+    q: "Can it make a harmony part?",
+    a: 'Yes: a 3rd or a 5th above or below the vocal melody, as the singer\'s voice moved to the harmony notes and as a plain guide tone, each with its own fader. It is chosen to fit the key and the chords, and it is an estimate. See <a href="../harmony/">practicing harmonies</a>.',
+  },
+  {
+    q: "Can I change the key?",
+    a: 'Yes, up to 12 semitones up or down, without changing the tempo. The vocals, bass, and other move; the drums do not. The chord names and the harmony follow. See <a href="../chords-and-key/#key">changing the key</a>.',
+  },
+  {
+    q: "The chords or the harmony are wrong after a key change partway through the song.",
+    a: "The app treats a song as one key and one tempo. After a key change or a tempo change, the harmony and the beats can be off; fix the chords by hand where needed and press “Remake the harmony”.",
   },
   {
     q: "Can I publish the parts or a karaoke version I made?",
@@ -102,7 +118,23 @@ const JA = [
   },
   {
     q: "分離したパートは保存されますか？",
-    a: `アプリには残りません。ページを読み込み直したり別の曲を選んだりすると消えます。残したいものは ↓ ボタンや「このミックスを保存（MP3）」で MP3（${KBPS} kbps）にしてください。ミキサーの設定（音量・ミュート・全体の音量）は次回も残ります。`,
+    a: `アプリには残りません。ページを読み込み直したり別の曲を選んだりすると、コードやハモリと一緒に消えます。残したいものは ↓ ボタンや「このミックスを保存（MP3）」で MP3（${KBPS} kbps）にしてください。ミキサーの設定（音量・ミュート・全体の音量）は次回も残ります。`,
+  },
+  {
+    q: "曲のコードを調べられますか？",
+    a: '調べられます。分離したあと「コード推定＆ハモリ生成」を押すと、テンポ（BPM）と 1 拍ごとのコードを推定します。自動で推定するのはメジャーとマイナーだけで、間違うこともあるので、拍ごとに手で直せます（7・maj7・m7・add9・dim7・m7b5・aug・sus4 も選べます）。<a href="../chords-and-key/">コード表示とキー変更</a>をご覧ください。',
+  },
+  {
+    q: "ハモリのパートを作れますか？",
+    a: '作れます。ボーカルの旋律の 3 度か 5 度の上か下に、歌い手の声をハモリの音程に変えたものと、単純なガイド音の 2 つを作り、それぞれ音量を変えられます。キーとコードに合うように選びますが、推定なので外れることもあります。<a href="../harmony/">ハモリの練習</a>をご覧ください。',
+  },
+  {
+    q: "キーを変えられますか？",
+    a: 'テンポはそのままで、上下 12 半音まで変えられます。ボーカル・ベース・その他が動き、ドラムは動きません。コード名とハモリも一緒に変わります。<a href="../chords-and-key/#key">キーを変える</a>をご覧ください。',
+  },
+  {
+    q: "転調する曲で、途中からコードやハモリが合いません。",
+    a: "アプリは曲全体を 1 つのキー・1 つのテンポとして扱います。転調やテンポの変化のあとは、ハモリや拍がずれることがあります。必要なところのコードを手で直して「ハモリを再生成」を押してください。",
   },
   {
     q: "作ったパートやカラオケ音源を公開してもいいですか？",
@@ -124,7 +156,7 @@ export default {
     heading: "Frequently asked questions",
     nav: "FAQ",
     description:
-      "Answers to common questions about Band Stem Mixer: privacy, which parts it separates, supported files, how long it takes, the AI model download, iPhone, leftover sounds, saving MP3 files, and offline use.",
+      "Answers to common questions about Band Stem Mixer: privacy, which parts it separates, supported files, how long it takes, the AI model download, iPhone, leftover sounds, chords, harmony, key change, saving MP3 files, and offline use.",
     faq: EN,
     body: () => `<p class="lead">Short answers to common questions. For step-by-step instructions, see the <a href="../guide/">guide</a>.</p>\n${list(EN)}`,
   },
@@ -133,7 +165,7 @@ export default {
     heading: "よくある質問",
     nav: "よくある質問",
     description:
-      "Band Stem Mixer についてのよくある質問。プライバシー、分離するパート、開けるファイル、かかる時間、AI モデルのダウンロード、iPhone、残る音、MP3 の保存、オフライン。",
+      "Band Stem Mixer についてのよくある質問。プライバシー、分離するパート、開けるファイル、かかる時間、AI モデルのダウンロード、iPhone、残る音、コード、ハモリ、キーの変更、MP3 の保存、オフライン。",
     faq: JA,
     body: () => `<p class="lead">よくある質問への短い回答です。詳しい手順は<a href="../guide/">使い方ガイド</a>をご覧ください。</p>\n${list(JA)}`,
   },

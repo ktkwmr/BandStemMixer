@@ -12,6 +12,10 @@ Split a band song into 4 parts with AI — vocals, drums, bass, and other (guita
   4 パート分離（Demucs htdemucs を ONNX Runtime Web でブラウザ内実行。STFT は demucs-web の JavaScript）
 - **Mixer**: fader, mute (M), and solo (S) per part, master volume, level meters, seek, keyboard shortcuts; the parts play in sample-accurate sync (AudioWorklet)
   パートごとのフェーダー・ミュート・ソロ、全体の音量、レベルメーター、シーク、キーボード操作。AudioWorklet でぴったりそろえて再生
+- **Harmony**: “Find chords & make harmony” estimates the key and chords (from bass + other), follows the vocal melody, and adds two parts: the vocals pitch-shifted to a harmony a 3rd or a 5th above or below (TD-PSOLA) and a guide tone of the same notes. The chords, the melody, and the harmony notes scroll above the faders. The tempo (BPM) and the beats are found with Loop Trainer's beat detection, and there is one chord per beat (quarter note). Once made, the button becomes “Remake the harmony”. Chords can be edited per beat (tap a beat in the chord row; root, type including add9 / dim7 / m7b5 / aug, and how many beats); “Remake the harmony” then uses them. Drag the roll sideways (or a sideways wheel) to look ahead or back. Plain JavaScript in a worker (`harmony.js`), no AI model or download
+  「コード推定＆ハモリ生成」で、キーとコード（ベースとその他から）を推定し、ボーカルの旋律を追って、3 度または 5 度上（下）のハモリを 2 パート（ピッチシフトしたボーカルの声と、同じ音のガイド音）として足す。コード・旋律・ハモリの音はフェーダーの上に流れて表示。テンポ（BPM）と拍は Loop Trainer の拍推定で求め、コードは 1 拍（4 分音符）ごと。一度作るとボタンは「ハモリを再生成」になる。コードは拍ごとに編集でき（上の段の拍をタップ。ルート・種類（add9・dim7・m7b5・aug も）・何拍分か）、「ハモリを再生成」でそのコードを使う。表示は横にドラッグ（または横ホイール）でスクロールできる。ワーカー（`harmony.js`）の JavaScript だけで、AI モデルもダウンロードも使わない
+- **Key change**: ±12 semitones for every part except the drums, with the chords and the harmony; same tempo. A phase vocoder in workers (`keyshift.js`, one per part, in parallel). Saved MP3 files of moved parts say the key in the name
+  ドラム以外のキーを ±12 半音まで変える（テンポはそのまま）。コード表示とハモリも一緒に変わる。ワーカー（`keyshift.js`、パートごとに並行）のフェーズボコーダー。キーを変えたパートの MP3 はファイル名にキーが入る
 - **Save**: each part, or the current mix, as a 192 kbps MP3 (44.1 kHz stereo), encoded in a worker (`encoder.js`) with [lamejs](https://github.com/shijinyu/lamejs) (LAME, LGPL-3.0)
   各パートと現在のミックスを MP3（192 kbps・44.1 kHz ステレオ）で保存。変換はワーカー（`encoder.js`）で lamejs（LAME、LGPL-3.0）を使う
 - **Large-download warning**: the first separation downloads the model (about 172 MB) plus the engine (about 14 MB, or 27 MB with WebGPU). If the browser reports mobile data or Data Saver (`navigator.connection`, Chrome on Android), or cannot tell the connection type on a phone or tablet (iPhone, iPad, Firefox), the app asks before downloading. Once the model is saved, it does not ask again
@@ -47,8 +51,8 @@ Full policy: `/bandstemmixer/privacy/` (`/bandstemmixer/ja/privacy/`). Operator:
 
 ## Guides / ガイド記事
 
-`/bandstemmixer/<slug>/` (`/bandstemmixer/ja/<slug>/`): `guide` (how to use), `minus-one` (practicing with your part removed), `learn-by-ear` (hearing the bass and drums), `how-it-works` (how AI separation works), `better-results` (tips), `faq`. Written in `scripts/pages/<slug>.mjs`; values shared with the app (model size, song length limit, fader range, MP3 bitrate) are read from the app's files by `scripts/pages/app.mjs`. Before an article change is merged, a person reads it on the PR preview (`docs/article-review.md`).
-使い方・マイナスワン・耳コピ・仕組み・コツ・FAQ の 6 本。記事を変えたら、マージ前に PR のプレビューで人間が内容を確認します。
+`/bandstemmixer/<slug>/` (`/bandstemmixer/ja/<slug>/`): `guide` (how to use), `minus-one` (practicing with your part removed), `learn-by-ear` (hearing the bass and drums), `harmony` (practicing harmonies), `chords-and-key` (chords, tempo, and key change), `how-it-works` (how AI separation works), `better-results` (tips), `faq`. Written in `scripts/pages/<slug>.mjs`; values shared with the app (model size, song length limit, fader range, MP3 bitrate) are read from the app's files by `scripts/pages/app.mjs`. Before an article change is merged, a person reads it on the PR preview (`docs/article-review.md`).
+使い方・マイナスワン・耳コピ・ハモリの練習・コードとキー変更・仕組み・コツ・FAQ の 8 本。記事を変えたら、マージ前に PR のプレビューで人間が内容を確認します。
 
 ## Project structure / 構成
 
@@ -60,7 +64,9 @@ public/
     index.html                  # the app (HTML / CSS / JS, English and Japanese text)
     separator.js                # module worker: downloads / caches the model, runs the separation
     dsp.js                      # STFT / inverse STFT for each chunk (buffers reused)
-    mixer.js                    # AudioWorklet: plays and mixes the 4 parts
+    mixer.js                    # AudioWorklet: plays and mixes the 4 parts (6 with the harmony)
+    harmony.js                  # worker: key, chords, vocal melody, harmony voice and guide tone
+    keyshift.js                 # worker: key change of one part (phase vocoder)
     encoder.js                  # worker: makes the MP3 files (lamejs)
     ja/index.html               # Japanese page, generated from index.html (do not edit)
     about/ privacy/ guide/ … ja/…  # info pages and guides, generated from scripts/pages/ (do not edit)
@@ -97,7 +103,7 @@ Cloudflare Workers static assets. With Workers Builds connected, a push to `main
 
 ## Generated files / 生成ファイル
 
-Edit only `public/bandstemmixer/index.html`, `separator.js`, `dsp.js`, `mixer.js`, `encoder.js`, `sw.js`, and `scripts/`. `ja/index.html`, the info pages, and `sitemap.xml` are generated by `wrangler deploy` / `wrangler dev` and by the **Build generated pages** workflow on push to `main`:
+Edit only `public/bandstemmixer/index.html`, `separator.js`, `dsp.js`, `mixer.js`, `encoder.js`, `harmony.js`, `keyshift.js`, `sw.js`, and `scripts/`. `ja/index.html`, the info pages, and `sitemap.xml` are generated by `wrangler deploy` / `wrangler dev` and by the **Build generated pages** workflow on push to `main`:
 
 ```sh
 node scripts/build-ja.mjs             # regenerate ja/index.html

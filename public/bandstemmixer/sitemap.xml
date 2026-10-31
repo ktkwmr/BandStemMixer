@@ -51,6 +51,30 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://ktkwmr.com/bandstemmixer/learn-by-ear/" />
   </url>
   <url>
+    <loc>https://ktkwmr.com/bandstemmixer/harmony/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/harmony/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/harmony/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ktkwmr.com/bandstemmixer/harmony/" />
+  </url>
+  <url>
+    <loc>https://ktkwmr.com/bandstemmixer/ja/harmony/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/harmony/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/harmony/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ktkwmr.com/bandstemmixer/harmony/" />
+  </url>
+  <url>
+    <loc>https://ktkwmr.com/bandstemmixer/chords-and-key/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/chords-and-key/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/chords-and-key/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ktkwmr.com/bandstemmixer/chords-and-key/" />
+  </url>
+  <url>
+    <loc>https://ktkwmr.com/bandstemmixer/ja/chords-and-key/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/chords-and-key/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/chords-and-key/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ktkwmr.com/bandstemmixer/chords-and-key/" />
+  </url>
+  <url>
     <loc>https://ktkwmr.com/bandstemmixer/how-it-works/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/how-it-works/" />
     <xhtml:link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/how-it-works/" />

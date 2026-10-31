@@ -41,7 +41,7 @@ export default {
   <table class="text stack">
     <thead><tr><th scope="col">You play</th><th scope="col">Mute</th><th scope="col">Tips</th></tr></thead>
     <tbody>
-      <tr><th scope="row">Vocals</th><td data-label="Mute:">Vocals</td><td data-label="Tips:">A karaoke track. Backing vocals and harmonies usually go with the vocals, so they disappear too.</td></tr>
+      <tr><th scope="row">Vocals</th><td data-label="Mute:">Vocals</td><td data-label="Tips:">A karaoke track. Backing vocals and harmonies usually go with the vocals, so they disappear too. If the song is too high or low for you, move the key (all parts but the drums move).</td></tr>
       <tr><th scope="row">Bass</th><td data-label="Mute:">Bass</td><td data-label="Tips:">Turn the drums up a little (110–120%) to lock in with the kick drum.</td></tr>
       <tr><th scope="row">Drums</th><td data-label="Mute:">Drums</td><td data-label="Tips:">Turn the bass up so you can follow the groove. Without a click, the band's tempo is now your job.</td></tr>
       <tr><th scope="row">Guitar or keys</th><td data-label="Mute:">Other</td><td data-label="Tips:">Guitar and keys are in the same part, so muting “Other” removes both. If the song has both, turn “Other” down to about 30% instead and play over it.</td></tr>
@@ -53,6 +53,7 @@ export default {
 <h2 id="guide">Keep a little of your part as a guide</h2>
 <p>Muting your part completely is the goal, but not always the best start. While you are still learning the song, turn your part down to about 20–30% instead of muting it. You can still hear where it goes, but your own playing is louder. Lower it each time you practice, and mute it when you no longer need it.</p>
 <p>When you need to hear a passage clearly first, solo it: see <a href="../learn-by-ear/">hearing the bass and drums clearly</a>.</p>
+<p>Singers who sing the harmony in the band can make one from the vocals and practice it the same way: see <a href="../harmony/">practicing harmonies</a>. To play in your band's key or with a song tuned down, see <a href="../chords-and-key/#key">changing the key</a>.</p>
 
 <h2 id="limits">What to expect from the separation</h2>
 <ul>
@@ -104,7 +105,7 @@ export default {
   <table class="text stack">
     <thead><tr><th scope="col">担当</th><th scope="col">ミュート</th><th scope="col">コツ</th></tr></thead>
     <tbody>
-      <tr><th scope="row">ボーカル</th><td data-label="ミュート：">ボーカル</td><td data-label="コツ：">カラオケ音源になります。コーラス・ハモリもふつうはボーカルに入るので、一緒に消えます。</td></tr>
+      <tr><th scope="row">ボーカル</th><td data-label="ミュート：">ボーカル</td><td data-label="コツ：">カラオケ音源になります。コーラス・ハモリもふつうはボーカルに入るので、一緒に消えます。高さが合わないときはキーを動かします（ドラム以外が動きます）。</td></tr>
       <tr><th scope="row">ベース</th><td data-label="ミュート：">ベース</td><td data-label="コツ：">ドラムを少し上げる（110〜120%）と、キックに合わせやすくなります。</td></tr>
       <tr><th scope="row">ドラム</th><td data-label="ミュート：">ドラム</td><td data-label="コツ：">ベースを上げるとグルーヴをつかみやすくなります。クリックがないので、テンポを保つのは自分の役目です。</td></tr>
       <tr><th scope="row">ギター・鍵盤</th><td data-label="ミュート：">その他</td><td data-label="コツ：">ギターと鍵盤は同じパートに入るので、「その他」をミュートすると両方消えます。両方入っている曲では、ミュートせずに 30% くらいに下げて、その上で弾くのも手です。</td></tr>
@@ -116,6 +117,7 @@ export default {
 <h2 id="guide">自分のパートを少し残す</h2>
 <p>最終的には完全にミュートするのが目標ですが、最初からそうする必要はありません。曲を覚えている途中なら、ミュートせずに 20〜30% くらいに下げておくと、どこで何を弾くかが分かりつつ、自分の音のほうが大きく聞こえます。練習のたびに少しずつ下げ、要らなくなったらミュートします。</p>
 <p>聞き取りにくいフレーズは、先にソロで確かめましょう。<a href="../learn-by-ear/">ベースとドラムを聞き取る</a>で説明しています。</p>
+<p>バンドでハモリを歌う人は、ボーカルからハモリを作って同じように練習できます。<a href="../harmony/">ハモリの練習</a>をご覧ください。バンドのキーや、半音下げチューニングの曲に合わせたいときは、<a href="../chords-and-key/#key">キーを変える</a>を見てください。</p>
 
 <h2 id="limits">分離の仕上がりについて</h2>
 <ul>
