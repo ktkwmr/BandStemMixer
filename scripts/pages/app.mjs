@@ -24,7 +24,7 @@ export const KBPS = num(encoder, /const KBPS = (\d+);/, "encoder.js");
 const CHUNK = num(separator, /const N = (\d+);/, "separator.js");
 export const SR = 44100;
 export const CHUNK_SEC = Math.round((CHUNK / SR) * 10) / 10; // 7.8
-// Number of chunks for a song (they overlap by a quarter), as the progress bar counts them
+// Number of chunks for a song (they overlap by a quarter)
 export const chunksFor = (sec) => Math.ceil((sec * SR) / (CHUNK - Math.floor(CHUNK / 4)));
 // MP3 size in MB for a song of `sec` seconds
 export const mp3Mb = (sec) => (sec * KBPS * 1000) / 8 / 1e6;

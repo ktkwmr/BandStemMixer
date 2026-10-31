@@ -62,7 +62,7 @@ export default {
 <ul>
   <li>The browser downloads the model (about ${MODEL_MB} MB, converted to the ONNX format) once and keeps it.</li>
   <li><b>ONNX Runtime Web</b> runs the model, on the graphics chip (GPU) through WebGPU when the browser supports it, otherwise on the processor (CPU).</li>
-  <li>This model takes ${CHUNK_SEC} seconds of sound at a time, so the song is cut into sections that overlap by a quarter, and the overlaps are cross-faded so no seams can be heard. A 4-minute song is ${chunksFor(EXAMPLE_SEC)} sections — the count you see on the progress bar.</li>
+  <li>This model takes ${CHUNK_SEC} seconds of sound at a time, so the song is cut into sections that overlap by a quarter, and the overlaps are cross-faded so no seams can be heard. A 4-minute song is ${chunksFor(EXAMPLE_SEC)} sections.</li>
   <li>Each section needs a lot of memory — about 1 GB while the model runs. That is why computers are much faster, and why some phones cannot finish.</li>
 </ul>
 <p>Once separated, the four parts are played together in sync, and the mixer only changes their volumes, so moving a fader is instant.</p>
@@ -73,7 +73,7 @@ export default {
   <li><b>Beats and tempo</b> – the moments where new sounds start, the interval between them that repeats most (autocorrelation), and the chain of beats that fits both best (dynamic programming, after D. Ellis, 2007).</li>
   <li><b>Chords</b> – for each beat, the strength of each of the 12 notes (a “chroma”) in the bass and “Other” parts, compared with the 24 major and minor chords; a hidden Markov model keeps the chords from changing on every beat without reason. Without guitar and vocals mixed in, the bass part makes the root of each chord much clearer.</li>
   <li><b>Melody</b> – the pitch of the separated vocals, found with the YIN method and cut into notes.</li>
-  <li><b>Harmony voice</b> – the vocals moved to the harmony notes with TD-PSOLA, which repeats or skips single cycles of the voice, so the voice keeps its character.</li>
+  <li><b>Harmony voice</b> – the vocals moved to the harmony notes with TD-PSOLA, which repeats or skips single cycles of the voice, so the voice keeps its character. Pitch correction (like Auto-Tune) then pulls it onto the exact harmony notes.</li>
   <li><b>Key change</b> – a phase vocoder that stretches each part in time by the pitch ratio and plays it back at the original length.</li>
 </ul>
 <p>Like the separation, these are estimates. See <a href="../chords-and-key/#limits">what to expect from the chords</a> and <a href="../harmony/#limits">from the harmony</a>.</p>
@@ -134,7 +134,7 @@ export default {
 <ul>
   <li>ブラウザがモデル（ONNX 形式に変換したもの、約 ${MODEL_MB} MB）を 1 回だけダウンロードして保存します。</li>
   <li><b>ONNX Runtime Web</b> がモデルを動かします。ブラウザが WebGPU に対応していればグラフィックス（GPU）で、そうでなければプロセッサ（CPU）で処理します。</li>
-  <li>このモデルは一度に ${CHUNK_SEC} 秒ずつしか扱えないので、曲を 4 分の 1 ずつ重ねた区間に分け、重なりをクロスフェードしてつなぎ目が聞こえないようにします。4 分の曲なら ${chunksFor(EXAMPLE_SEC)} 区間で、進み具合のバーに出る数です。</li>
+  <li>このモデルは一度に ${CHUNK_SEC} 秒ずつしか扱えないので、曲を 4 分の 1 ずつ重ねた区間に分け、重なりをクロスフェードしてつなぎ目が聞こえないようにします。4 分の曲なら ${chunksFor(EXAMPLE_SEC)} 区間です。</li>
   <li>1 区間の処理に約 1 GB のメモリを使います。パソコンのほうがずっと速く、スマホでは最後まで分離できない機種があるのはこのためです。</li>
 </ul>
 <p>分離が終わると 4 つのパートをそろえて再生し、ミキサーは音量だけを変えるので、フェーダーを動かすとすぐに反映されます。</p>
@@ -145,7 +145,7 @@ export default {
   <li><b>拍とテンポ</b> – 新しい音が鳴り始める位置と、その間隔でいちばん繰り返されるもの（自己相関）を調べ、両方にいちばん合う拍の並びを決めます（動的計画法。D. Ellis、2007 年の方法）。</li>
   <li><b>コード</b> – 拍ごとに、ベースと「その他」のパートで 12 の音それぞれがどれだけ鳴っているか（クロマ）を調べ、24 のメジャー・マイナーのコードと比べます。隠れマルコフモデルで、理由なく 1 拍ごとにコードが変わらないようにします。ギターや歌が混ざっていないベースのパートは、コードのルートを見つける大きな手がかりになります。</li>
   <li><b>旋律</b> – 分離したボーカルの音程を YIN という方法で調べ、音符に区切ります。</li>
-  <li><b>ハモリ（声）</b> – TD-PSOLA という方法で、ボーカルの波の 1 周期ずつを重ねたり間引いたりして音程を変えるので、声の感じが残ります。</li>
+  <li><b>ハモリ（声）</b> – TD-PSOLA という方法で、ボーカルの波の 1 周期ずつを重ねたり間引いたりして音程を変えるので、声の感じが残ります。さらに音程補正（Auto-Tune のような処理）で、正しいハモリの音に寄せます。</li>
   <li><b>キーの変更</b> – フェーズボコーダーで、各パートを音程の比率だけ時間方向に伸ばし、元の長さで再生し直します。</li>
 </ul>
 <p>分離と同じく、これらも推定です。<a href="../chords-and-key/#limits">コードの仕上がり</a>と<a href="../harmony/#limits">ハモリの仕上がり</a>もご覧ください。</p>

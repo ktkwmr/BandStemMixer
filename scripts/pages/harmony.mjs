@@ -58,6 +58,7 @@ export default {
   </table>
 </div>
 <p>The app does not simply add a fixed interval. For each note it picks a note in the song's key, and when that note would clash with the chord at that moment, it moves to a chord tone instead — so a “3rd above” is sometimes a 4th, and a “5th” sometimes a 6th, as a singer would do. Short gaps between notes are joined, so the harmony moves smoothly through a phrase instead of stopping and starting.</p>
+<p><b>Pitch correction:</b> the harmony voice is pitch-corrected, like Auto-Tune. Without it, the voice would copy the lead singer's pitch: if the singer were a little flat or slid up into a note, so would the harmony. The correction pulls each note onto the exact harmony note and evens out most of the vibrato, so the harmony stays steady, with a slight “corrected” sound. Notes too short to be notes of their own, such as the slide into a note, are joined to the note next to them, so the harmony does not jump for a moment.</p>
 
 <h2 id="practice">A practice plan in four steps</h2>
 <ol>
@@ -80,7 +81,7 @@ export default {
 <ul>
   <li><b>It is an estimate.</b> The chords, the melody, and the choice of harmony notes are worked out automatically and can be wrong, especially with backing vocals in the vocal part, fast runs, or songs with unusual chords.</li>
   <li><b>One key for the whole song.</b> A song that changes key partway (for example a last chorus a step up) is harmonized in one key, so notes after the change can be off.</li>
-  <li><b>The harmony voice is processed sound.</b> Moving a voice a 3rd or more changes its character a little, and anything that leaked into the vocal part moves with it. For an exact pitch, use the guide tone.</li>
+  <li><b>The harmony voice is processed sound.</b> Moving a voice a 3rd or more changes its character a little, and anything that leaked into the vocal part moves with it. Pitch correction keeps it steady; for a pure, exact pitch, use the guide tone.</li>
   <li><b>A harmony is a suggestion, not the record.</b> If the song has its own harmony part, learn that one by ear; the app's harmony is a starting point or a practice tool.</li>
 </ul>
 <p>Use songs you have the rights to use; see <a href="../minus-one/#rights">which songs you can use</a>.</p>
@@ -140,6 +141,7 @@ export default {
   </table>
 </div>
 <p>アプリは、決まった音程をそのまま足しているわけではありません。音ごとに曲のキーの中の音を選び、そのときのコードとぶつかる場合はコードの音に寄せます。そのため「3 度上」がところどころ 4 度に、「5 度」が 6 度になることがあります。歌い手が実際にハモるときと同じ考え方です。音と音の短いすき間はつなぐので、フレーズの途中で途切れず、なめらかに動きます。</p>
+<p><b>音程補正：</b>ハモリ（声）には、Auto-Tune のような音程補正をかけています。補正しないと、ハモリの声は歌い手の音程をそのまま写すので、歌い手が少し低かったり、音にしゃくり上げて入ったりすると、ハモリも同じようになってしまいます。補正では、音ごとに正しいハモリの音へ寄せ、ビブラートの大部分もならすので、ハモリは安定し、少し「補正した」感じの声になります。しゃくりのように、1 つの音と呼ぶには短すぎる音は隣の音にまとめるので、ハモリが一瞬跳ねることもありません。</p>
 
 <h2 id="practice">4 ステップの練習法</h2>
 <ol>
@@ -162,7 +164,7 @@ export default {
 <ul>
   <li><b>自動の推定です。</b>コード・旋律・ハモリの音の選び方は自動で決めるので、間違うことがあります。ボーカルのパートにコーラスが入っている曲、速い動きの多い曲、珍しいコードの曲は特に外れやすくなります。</li>
   <li><b>キーは曲全体で 1 つです。</b>途中で転調する曲（最後のサビで 1 音上がるなど）も 1 つのキーで考えるので、転調のあとはハモリが外れることがあります。</li>
-  <li><b>ハモリ（声）は加工した音です。</b>声の音程を 3 度以上動かすと声の感じが少し変わり、ボーカルのパートに残っているほかの音も一緒に動きます。正確な音程はガイド音で確かめてください。</li>
+  <li><b>ハモリ（声）は加工した音です。</b>声の音程を 3 度以上動かすと声の感じが少し変わり、ボーカルのパートに残っているほかの音も一緒に動きます。音程補正で安定させていますが、混じりけのない正確な音程はガイド音で確かめてください。</li>
   <li><b>原曲のハモリとは限りません。</b>曲にハモリのパートがあるなら、それは耳で覚えてください。アプリのハモリは、練習のきっかけや練習用の素材です。</li>
 </ul>
 <p>使う曲は、使う権利のあるものにしてください。<a href="../minus-one/#rights">使える曲</a>もご覧ください。</p>

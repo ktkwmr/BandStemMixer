@@ -386,7 +386,7 @@
         <li><b>分離する</b> – 「4 つのパートに分離する」を押します。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>
         <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>
         <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>
-        <li><b>ハモリ</b> – 「コード推定＆ハモリ生成」を押すと、キーとコードを推定して、ボーカルの旋律の 3 度または 5 度上（下）にハモリを作ります。「ハモリ（声）」はボーカルの音程をハモリの音に変えたもの、「ハモリのガイド音」は同じ音を単純な音で鳴らすもので、ハモリを歌う練習に使えます。コードと音はパートの上に流れて表示されます。テンポ（BPM）と拍も推定し、コードは 1 拍（4 分音符）ごとに変えられます。上の段（コード）の拍をタップして変え、「ハモリを再生成」を押すとそのコードでハモリを作り直します。表示は横にドラッグして前後を見られます。自動の推定なので、間違うこともあります。</li>
+        <li><b>ハモリ</b> – 「コード推定＆ハモリ生成」を押すと、キーとコードを推定して、ボーカルの旋律の 3 度または 5 度上（下）にハモリを作ります。「ハモリ（声）」はボーカルの音程をハモリの音に変えたもの、「ハモリのガイド音」は同じ音を単純な音で鳴らすもので、ハモリを歌う練習に使えます。コードと音はパートの上に流れて表示されます。テンポ（BPM）と拍も推定し、コードは 1 拍（4 分音符）ごとに変えられます。上の段（コード）の拍をタップして変え、「ハモリを再生成」を押すとそのコードでハモリを作り直します。表示は横にドラッグして前後を見られます。ハモリの声は、ハモリの音に合うよう音程補正（Auto-Tune のような処理）をかけています。自動の推定なので、間違うこともあります。</li>
         <li><b>キー</b> – − / + で、ドラム以外のパートを半音ずつ上げ下げします（1 オクターブまで）。コードとハモリも一緒に変わります。</li>
         <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した MP3 ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>
         <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li></ol>
@@ -496,7 +496,7 @@
           "stage.separate": "Separating into 4 parts…",
           "stage.retry": "That did not work. Trying again with settings that use less memory…",
           "crash": "The last separation stopped partway ({where}{progress}) and the page was reloaded. The device most likely ran out of memory. Close other apps and tabs and try again, try a shorter song, or use a computer.",
-          "crash.progress": ", {done} of {chunks} sections done",
+          "crash.progress": ", {pct}% done",
           "crash.song": " · song: {time}",
           "crash.next": " Next time, this device separates with different settings: choose the song again and press “Separate into 4 parts”.",
           "ios.note": "On iPhone and iPad, separating may not work: the device can run out of memory and the page reloads. We recommend separating on a computer. Saved MP3 files can be played on any device.",
@@ -506,8 +506,8 @@
           "where.separate": "while separating",
           "detail.download": "{loaded} / {total} MB",
           "detail.downloadNoTotal": "{loaded} MB",
-          "detail.separate": "{done} / {chunks} ({pct}%)",
-          "detail.eta": "{done} / {chunks} ({pct}%) · about {eta} left",
+          "detail.separate": "{pct}%",
+          "detail.eta": "{pct}% · about {eta} left",
           "eta.min": "{n} min",
           "eta.sec": "{n} s",
           "backend.wasm": "CPU · {n} threads",
@@ -605,7 +605,7 @@
           "menu.privacy": "Privacy",
           "menu.about": "About",
           "menu.model": "Delete the AI model",
-          "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Harmony</b> – “Find chords &amp; make harmony” finds the key and chords and makes a harmony a 3rd or a 5th above (or below) the vocal melody. “Harmony (voice)” is the vocals shifted to the harmony notes; “Harmony guide tone” plays the same notes as a plain tone, to practice singing the harmony. The chords and notes scroll above the parts. The tempo (BPM) and the beats are found too, and each beat (quarter note) can have its own chord: tap a beat in the chord row to change it, then press “Remake the harmony” to use your chords. Drag the chords and notes sideways to look ahead or back. It is estimated automatically and can be wrong.</li>\n        <li><b>Key</b> – − / + moves every part except the drums up or down a semitone (up to an octave), with the chords and the harmony.</li>\n        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
+          "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Harmony</b> – “Find chords &amp; make harmony” finds the key and chords and makes a harmony a 3rd or a 5th above (or below) the vocal melody. “Harmony (voice)” is the vocals shifted to the harmony notes; “Harmony guide tone” plays the same notes as a plain tone, to practice singing the harmony. The chords and notes scroll above the parts. The tempo (BPM) and the beats are found too, and each beat (quarter note) can have its own chord: tap a beat in the chord row to change it, then press “Remake the harmony” to use your chords. Drag the chords and notes sideways to look ahead or back. The harmony voice is pitch-corrected (like Auto-Tune) to stay on the harmony notes. It is estimated automatically and can be wrong.</li>\n        <li><b>Key</b> – − / + moves every part except the drums up or down a semitone (up to an octave), with the chords and the harmony.</li>\n        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
           "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read, separated, and analyzed (chords, harmony, key change) only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Reset the mixer with “Reset mixer”, delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\">privacy policy</a> and <a href=\"/bandstemmixer/about/\">about this site</a>.</li>",
           "model.del.title": "Delete the AI model?",
           "model.del.body": "This deletes the AI model (about 170 MB) saved in this browser, to free up space. It is downloaded again the next time you separate a song.",
@@ -639,7 +639,7 @@
           "stage.separate": "4 つのパートに分離しています…",
           "stage.retry": "うまくいかなかったので、メモリを節約する設定でやり直しています…",
           "crash": "前回の分離は途中で止まり、ページが読み込み直されました（{where}{progress}）。端末のメモリが足りなくなった可能性が高いです。ほかのアプリやタブを閉じてもう一度試すか、短い曲にするか、パソコンでお試しください。",
-          "crash.progress": "、{chunks} 区間のうち {done} 区間まで完了",
+          "crash.progress": "、{pct}% まで完了",
           "crash.song": " · 曲の長さ {time}",
           "crash.next": "次からは、この端末では別の設定で分離します。曲を選び直して、もう一度「4 つのパートに分離する」を押してください。",
           "ios.note": "iPhone・iPad では、メモリが足りずに分離できない（ページが読み込み直される）可能性があります。分離はパソコンでのご利用をおすすめします。保存した MP3 は、どの端末でも再生できます。",
@@ -649,8 +649,8 @@
           "where.separate": "分離の途中",
           "detail.download": "{loaded} / {total} MB",
           "detail.downloadNoTotal": "{loaded} MB",
-          "detail.separate": "{done} / {chunks}（{pct}%）",
-          "detail.eta": "{done} / {chunks}（{pct}%）· 残り約 {eta}",
+          "detail.separate": "{pct}%",
+          "detail.eta": "{pct}% · 残り約 {eta}",
           "eta.min": "{n} 分",
           "eta.sec": "{n} 秒",
           "backend.wasm": "CPU · {n} スレッド",
@@ -748,7 +748,7 @@
           "menu.privacy": "プライバシー",
           "menu.about": "このアプリについて",
           "menu.model": "AI モデルを削除",
-          "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – 「4 つのパートに分離する」を押します。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>ハモリ</b> – 「コード推定＆ハモリ生成」を押すと、キーとコードを推定して、ボーカルの旋律の 3 度または 5 度上（下）にハモリを作ります。「ハモリ（声）」はボーカルの音程をハモリの音に変えたもの、「ハモリのガイド音」は同じ音を単純な音で鳴らすもので、ハモリを歌う練習に使えます。コードと音はパートの上に流れて表示されます。テンポ（BPM）と拍も推定し、コードは 1 拍（4 分音符）ごとに変えられます。上の段（コード）の拍をタップして変え、「ハモリを再生成」を押すとそのコードでハモリを作り直します。表示は横にドラッグして前後を見られます。自動の推定なので、間違うこともあります。</li>\n        <li><b>キー</b> – − / + で、ドラム以外のパートを半音ずつ上げ下げします（1 オクターブまで）。コードとハモリも一緒に変わります。</li>\n        <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した MP3 ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
+          "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – 「4 つのパートに分離する」を押します。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>ハモリ</b> – 「コード推定＆ハモリ生成」を押すと、キーとコードを推定して、ボーカルの旋律の 3 度または 5 度上（下）にハモリを作ります。「ハモリ（声）」はボーカルの音程をハモリの音に変えたもの、「ハモリのガイド音」は同じ音を単純な音で鳴らすもので、ハモリを歌う練習に使えます。コードと音はパートの上に流れて表示されます。テンポ（BPM）と拍も推定し、コードは 1 拍（4 分音符）ごとに変えられます。上の段（コード）の拍をタップして変え、「ハモリを再生成」を押すとそのコードでハモリを作り直します。表示は横にドラッグして前後を見られます。ハモリの声は、ハモリの音に合うよう音程補正（Auto-Tune のような処理）をかけています。自動の推定なので、間違うこともあります。</li>\n        <li><b>キー</b> – − / + で、ドラム以外のパートを半音ずつ上げ下げします（1 オクターブまで）。コードとハモリも一緒に変わります。</li>\n        <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した MP3 ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
           "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込み・分離・解析（コード・ハモリ・キーの変更）は、ブラウザの中だけで行います。サーバーに送られることはありません。MP3 ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。ミキサーの設定は「ミキサーを元に戻す」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\">運営者情報</a>をご覧ください。</li>",
           "model.del.title": "AI モデルを削除しますか？",
           "model.del.body": "このブラウザに保存した AI モデル（約 170 MB）を削除して、容量を空けます。次に分離するときに、もう一度ダウンロードします。",
@@ -1037,7 +1037,7 @@
         // Only a recent run (a reload right after the crash), not one from days ago
         if (!r || typeof r.at !== "number" || Date.now() - r.at > 60 * 60 * 1000) return;
         const stage = r.stage === "download" || r.stage === "separate" ? r.stage : "init";
-        const progress = stage === "separate" && r.chunks ? t("crash.progress", { done: r.done || 0, chunks: r.chunks }) : "";
+        const progress = stage === "separate" && r.chunks ? t("crash.progress", { pct: Math.floor(((r.done || 0) / r.chunks) * 100) }) : "";
         const song = r.sec ? t("crash.song", { time: fmtTime(r.sec) }) : "";
         // Remember the setting that crashed, so the next run uses the next one (only for a crash while the
         // model was loading or running; a download that stopped is not about memory)
@@ -1087,11 +1087,11 @@
           setProgress(t("stage." + m.stage), "", null);
         } else if (m.stage === "separate") {
           const pct = Math.floor((m.done / m.chunks) * 100);
-          let detail = t("detail.separate", { done: m.done, chunks: m.chunks, pct: pct });
+          let detail = t("detail.separate", { pct: pct });
           if (m.done > 0 && m.done < m.chunks) {
             const left = (m.elapsed / m.done) * (m.chunks - m.done) / 1000;
             const eta = left >= 90 ? t("eta.min", { n: Math.round(left / 60) }) : t("eta.sec", { n: Math.max(5, Math.round(left / 5) * 5) });
-            detail = t("detail.eta", { done: m.done, chunks: m.chunks, pct: pct, eta: eta });
+            detail = t("detail.eta", { pct: pct, eta: eta });
           }
           setProgress(t("stage.separate"), detail, m.done / m.chunks);
         }
@@ -1631,7 +1631,8 @@
         }
         if (makeNew || (harm && harm.notes.length && harm.semis !== target)) {
           const set = makeNew ? harmSettings() : { dir: harm.dir, interval: harm.interval };
-          const msg = { type: "run", vocals: orig[3], dir: set.dir, interval: set.interval, semis: target };
+          // Pitch correction of the harmony voice: always strong (2)
+          const msg = { type: "run", vocals: orig[3], dir: set.dir, interval: set.interval, correct: 2, semis: target };
           // After the first run, the chords (maybe edited) and the melody are reused
           if (harm) Object.assign(msg, { chords: harm.chords, key: harm.key, pitch: harm.pitch, notes: harm.notes });
           else Object.assign(msg, { bass: orig[1], other: orig[2], drums: orig[0] });
@@ -1722,9 +1723,10 @@
         // Once made, the button remakes the harmony from the chords on screen (estimated or edited)
         $("harmBtn").textContent = t(harm ? "harm.regen" : "harm.run");
         // Black (like the other main buttons) when the harmony no longer matches what is on screen: the chords
-        // were edited, or another part (3rd / 5th, above / below) was chosen
+        // were edited, or another part (3rd / 5th, above / below) was chosen. Also black before the first harmony,
+        // right after separating, as the next step to take
         const set = harmSettings();
-        const regen = !!harm && (harm.stale || set.dir !== harm.dir || set.interval !== harm.interval);
+        const regen = !harm || harm.stale || set.dir !== harm.dir || set.interval !== harm.interval;
         $("harmBtn").className = regen ? "primary" : "chip";
         if (!harm) return;
         $("bpmVal").textContent = harm.bpm ? t("harm.bpm", { bpm: Math.round(harm.bpm) }) : t("harm.noBeat");

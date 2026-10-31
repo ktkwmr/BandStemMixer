@@ -46,10 +46,10 @@ export default {
   <li><b>The AI model</b> – Whether the AI model is already saved on this device. If not, it is downloaded when you press the button.</li>
 </ol>
 <figure class="shot">
-  ${img("en", "progress", "Separation in progress: the bar shows 4 of 11 sections done, about 40 seconds left, with a Cancel button, a note to keep the screen open, and the line Separating with: GPU (WebGPU).")}
-  <figcaption>While it separates. The song is cut into short sections (about 7.8 seconds each) and the bar counts them.</figcaption>
+  ${img("en", "progress", "Separation in progress: the bar shows 36% done, about 40 seconds left, with a Cancel button, a note to keep the screen open, and the line Separating with: GPU (WebGPU).")}
+  <figcaption>While it separates.</figcaption>
 </figure>
-<p>The bar shows how many sections are done and about how long is left. How long it takes depends on the device: on a recent computer, about the length of the song or a few times longer; on a phone, longer. The line under the bar shows how the separation runs: on the <b>GPU (WebGPU)</b> when the browser supports it, otherwise on the CPU.</p>
+<p>The bar shows how far it is (in %) and about how long is left. How long it takes depends on the device: on a recent computer, about the length of the song or a few times longer; on a phone, longer. The line under the bar shows how the separation runs: on the <b>GPU (WebGPU)</b> when the browser supports it, otherwise on the CPU.</p>
 <div class="note"><p>Keep the screen open until it finishes. On a phone, separation stops when the screen turns off or you switch to another app. If it stops with a memory error, the app tries again with settings that use less memory.</p></div>
 
 <h2 id="first">The first time: downloading the AI model</h2>
@@ -177,10 +177,10 @@ export default {
   <li><b>AI モデル</b> – AI モデルがこの端末に保存済みかどうか。まだなら、ボタンを押したときにダウンロードします。</li>
 </ol>
 <figure class="shot">
-  ${img("ja", "progress", "分離中の画面。バーは 11 区間のうち 4 区間が完了、残り約 40 秒、キャンセルボタン、画面を開いたままにする案内、「分離に使っている設定：GPU（WebGPU）」の表示。")}
-  <figcaption>分離中の画面。曲を約 7.8 秒ずつの区間に分けて処理し、バーはその数を数えます。</figcaption>
+  ${img("ja", "progress", "分離中の画面。バーは 36% まで完了、残り約 40 秒、キャンセルボタン、画面を開いたままにする案内、「分離に使っている設定：GPU（WebGPU）」の表示。")}
+  <figcaption>分離中の画面。</figcaption>
 </figure>
-<p>バーには、終わった区間の数と残り時間の目安が出ます。かかる時間は端末によって違い、最近のパソコンで曲の長さと同じくらいから数倍、スマホではさらにかかります。バーの下には分離の方法が出ます。ブラウザが対応していれば <b>GPU（WebGPU）</b>、そうでなければ CPU で処理します。</p>
+<p>バーには、進み具合（%）と残り時間の目安が出ます。かかる時間は端末によって違い、最近のパソコンで曲の長さと同じくらいから数倍、スマホではさらにかかります。バーの下には分離の方法が出ます。ブラウザが対応していれば <b>GPU（WebGPU）</b>、そうでなければ CPU で処理します。</p>
 <div class="note"><p>終わるまで画面を開いたままにしてください。スマホでは、画面が消えたりほかのアプリに切り替えたりすると分離が止まります。メモリ不足で止まったときは、メモリを節約する設定で自動的にやり直します。</p></div>
 
 <h2 id="first">初回は AI モデルをダウンロード</h2>
