@@ -4,23 +4,30 @@
 //      major / minor triads and smoothed with an HMM (Viterbi). The key is the Krumhansl–Schmuckler
 //      profile that fits the whole song best.
 //   2. melody and guide tone: the pitch of the vocals (YIN), cut into notes. Each note gets a harmony
-//      note a 3rd above (or below) in the key, moved to a chord tone where the 3rd would clash. Notes
+//      note a 3rd or a 5th above (or below) in the key, moved to a chord tone where it would clash. Notes
 //      close together are joined into phrases, so the harmony is legato. The guide tone plays the
 //      harmony notes as a plain synth tone.
 //   3. harmony voice: the vocals shifted to the harmony notes with TD-PSOLA (grains cut one pitch
 //      period apart and laid down at the new period), which keeps the singer's vibrato and voice. Each
 //      phrase is shifted as one piece, consonants included, with the shift gliding between notes.
 // The analysis runs at 11025 Hz (the song decimated by 4); the outputs are 44.1 kHz.
+// Everything is in the song's own key; with a key change (semis), only the voice and guide tone are
+// rendered that many semitones higher or lower.
 //
 // Messages from the page:
-//   { type: "run", vocals: [L, R], bass: [L, R], other: [L, R], dir: 1 | -1 }  (Int16Array, 44.1 kHz)
+//   { type: "run", vocals: [L, R], dir: 1 | -1, interval: 3 | 5, semis,
+//     bass?: [L, R], other?: [L, R],   (Int16Array, 44.1 kHz; bass / other only to find the chords)
+//     chords?, key?,                   (from an earlier run, maybe edited: used instead of finding them)
+//     pitch?, notes? }                 (from an earlier run: the melody is not tracked again)
 // Messages to the page:
 //   { type: "progress", stage: "chords" | "melody" | "voice", done }  (0–1, a few times a second)
-//   { type: "done", key: { tonic, minor }, chords: [{ t0, t1, root, minor }], frame, pitch: Float32Array,
+//   { type: "done", key: { tonic, minor }, chords: [{ t0, t1, root, q }], frame, pitch: Float32Array,
 //     notes: [{ t0, t1, midi, harm }] (contiguous within a phrase), voice: Int16Array, guide: Int16Array }
-//     (root -1 = no chord; pitch: MIDI note number per frame of `frame` seconds, NaN = no voice;
-//     voice / guide: mono at 44.1 kHz, shared memory when the page is cross-origin isolated)
+//     (root -1 = no chord; q: chord type, a key of CHORD_TYPES; pitch: MIDI note number per frame of
+//     `frame` seconds, NaN = no voice; voice / guide: mono at 44.1 kHz, shared memory when the page is
+//     cross-origin isolated)
 //   { type: "error", message }
+// makeFft is also used by keyshift.js.
 
 const SR = 44100;
 const DEC = 4;
@@ -40,12 +47,15 @@ const MINOR = [0, 2, 3, 5, 7, 8, 10];
 const PROFILE_MAJOR = [6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88];
 const PROFILE_MINOR = [6.33, 2.68, 3.52, 5.38, 2.6, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17];
 
+// Chord types (semitones above the root). Found chords are "" (major) or "m"; the others come from editing.
+const CHORD_TYPES = { "": [0, 4, 7], m: [0, 3, 7], "7": [0, 4, 7, 10], maj7: [0, 4, 7, 11], m7: [0, 3, 7, 10], dim: [0, 3, 6], sus4: [0, 5, 7] };
+
 const mod12 = (n) => ((n % 12) + 12) % 12;
 const hzOf = (midi) => 440 * Math.pow(2, (midi - 69) / 12);
 
 // ---------- Building blocks ----------
 // In-place complex FFT (radix 2, forward)
-function makeFft(n) {
+export function makeFft(n) {
   const bits = Math.round(Math.log2(n));
   const rev = new Uint32Array(n);
   for (let i = 0; i < n; i++) {
@@ -214,7 +224,7 @@ function findChords(other, bass) {
     const t0 = Math.max(0, (f - 0.5) * step), t1 = (f + 0.5) * step;
     const last = chords[chords.length - 1];
     if (last && last.state === st) last.t1 = t1;
-    else chords.push({ t0: t0, t1: t1, state: st, root: st === 24 ? -1 : st >> 1, minor: st !== 24 && (st & 1) === 1 });
+    else chords.push({ t0: t0, t1: t1, state: st, root: st === 24 ? -1 : st >> 1, q: st !== 24 && (st & 1) === 1 ? "m" : "" });
   }
   chords.forEach((ch) => delete ch.state);
   return { chords: chords, key: majorOrMinor(findKey(keySum), chords) };
@@ -228,14 +238,14 @@ function majorOrMinor(key, chords) {
   for (const c of chords) {
     if (c.root < 0) continue;
     if (!first) first = c;
-    if (c.root === major && !c.minor) dMajor += c.t1 - c.t0;
-    if (c.root === minor && c.minor) dMinor += c.t1 - c.t0;
+    if (c.root === major && c.q === "") dMajor += c.t1 - c.t0;
+    if (c.root === minor && c.q === "m") dMinor += c.t1 - c.t0;
   }
   let isMinor = key.minor;
   if (dMinor > dMajor * 1.15) isMinor = true;
   else if (dMajor > dMinor * 1.15) isMinor = false;
-  else if (first && first.root === minor && first.minor) isMinor = true;
-  else if (first && first.root === major && !first.minor) isMinor = false;
+  else if (first && first.root === minor && first.q === "m") isMinor = true;
+  else if (first && first.root === major && first.q === "") isMinor = false;
   return { tonic: isMinor ? minor : major, minor: isMinor };
 }
 
@@ -387,20 +397,24 @@ function chordAt(chords, t) {
   return c && c.root >= 0 ? c : null;
 }
 
-// The harmony note for a melody note: a 3rd (or 4th) above / below, scored by being in the key, being a
-// chord tone, and not a semitone against a chord tone; a 3rd beats a 4th, and the last interval wins ties
-function pickHarmony(midi, key, chord, dir, lastIv) {
+// The harmony note for a melody note, above (dir 1) or below (-1): a 3rd (3 or 4 semitones, or a 4th when
+// neither fits) or a 5th (7 semitones, or 6 / 8 when 7 does not fit). Each is scored by being in the key,
+// being a chord tone, and not a semitone against a chord tone; the main interval beats the fallback, and
+// the last interval wins ties.
+const STEPS = { 3: { steps: [3, 4, 5], main: [3, 4] }, 5: { steps: [7, 6, 8], main: [7] } };
+function pickHarmony(midi, key, chord, dir, interval, lastIv) {
   const scale = (key.minor ? MINOR : MAJOR).map((s) => (s + key.tonic) % 12);
-  const tones = chord ? [chord.root, (chord.root + (chord.minor ? 3 : 4)) % 12, (chord.root + 7) % 12] : [];
+  const tones = chord ? (CHORD_TYPES[chord.q] || CHORD_TYPES[""]).map((s) => (chord.root + s) % 12) : [];
+  const { steps, main } = STEPS[interval] || STEPS[3];
   let best = null, bestScore = -Infinity;
-  for (const step of [3, 4, 5]) {
+  for (const step of steps) {
     const iv = step * dir;
     const pc = mod12(midi + iv);
     let score = 0;
     if (scale.indexOf(pc) >= 0) score += 2;
     if (tones.indexOf(pc) >= 0) score += 3;
     else if (tones.some((tn) => mod12(pc - tn) === 1 || mod12(tn - pc) === 1)) score -= 1.5;
-    if (step !== 5) score += 1.5;
+    if (main.indexOf(step) >= 0) score += 1.5;
     if (iv === lastIv) score += 0.3;
     if (score > bestScore) { bestScore = score; best = iv; }
   }
@@ -455,7 +469,7 @@ const shiftOf = (n) => n.harm - n.midi;
 
 // Guide tone: the harmony notes as a soft synth tone, legato within a phrase (one oscillator that glides
 // from note to note, with a small accent at each new note so the notes can still be told apart)
-function makeGuide(phrases, length) {
+function makeGuide(phrases, length, semis) {
   const out = makeArray(length);
   const fadeIn = 0.015 * SR, fadeOut = 0.04 * SR;
   for (const ph of phrases) {
@@ -464,7 +478,7 @@ function makeGuide(phrases, length) {
     for (let i = a; i < e; i++) {
       const t = i / SR;
       while (k + 1 < ph.length && ph[k + 1].t0 <= t) k++;
-      phase += (2 * Math.PI * hzOf(glideAt(ph, k, harmOf, t))) / SR;
+      phase += (2 * Math.PI * hzOf(glideAt(ph, k, harmOf, t) + semis)) / SR;
       const accent = k > 0 && ph[k].harm === ph[k - 1].harm ? 0.8 : 0.8 + 0.2 * Math.exp(-(t - ph[k].t0) / 0.12);
       const env = Math.min(1, (i - a) / fadeIn, (e - i) / fadeOut) * accent;
       const v = 0.16 * env * (Math.sin(phase) + 0.3 * Math.sin(2 * phase) + 0.12 * Math.sin(3 * phase));
@@ -478,7 +492,7 @@ function makeGuide(phrases, length) {
 // One phrase at a time, from a little before its first note (to keep the first consonant) to a little after
 // its last. Consonants and breaths inside the phrase go through too, so the words stay and nothing drops out.
 const PRE = 0.06, POST = 0.06;
-function makeVoice(L, R, phrases, pitch, progress) {
+function makeVoice(L, R, phrases, pitch, semis, progress) {
   const length = L.length;
   const out = makeArray(length);
   const x = (i) => (i < 0 || i >= length ? 0 : (L[i] + R[i]) / 65536);
@@ -516,12 +530,13 @@ function makeVoice(L, R, phrases, pitch, progress) {
       m = peak(next - r, next + r);
     }
     // Synthesis: grains (2 periods, Hann) from the nearest analysis mark, every period / ratio
+    // (ratio: the harmony interval plus the key change)
     const acc = new Float32Array(e - a);
     let ts = marks[0], k = 0;
     while (ts < e) {
       while (k + 1 < marks.length && Math.abs(marks[k + 1] - ts) <= Math.abs(marks[k] - ts)) k++;
       const ta = marks[k];
-      const ratio = Math.pow(2, at(ts, shiftOf) / 12);
+      const ratio = Math.pow(2, (at(ts, shiftOf) + semis) / 12);
       const P = periodAt(ta);
       const half = Math.round(P);
       const c = Math.round(ts);
@@ -544,30 +559,42 @@ function makeVoice(L, R, phrases, pitch, progress) {
 // ---------- All three ----------
 export function analyze(msg, progress) {
   const report = progress || (() => {});
-  const [vL, vR] = msg.vocals, [bL, bR] = msg.bass, [oL, oR] = msg.other;
+  const [vL, vR] = msg.vocals;
   const dir = msg.dir < 0 ? -1 : 1;
-  // 1. Key and chords
-  const other = chroma(decimate(oL, oR, (d) => report("chords", d * 0.3)), 40, 95, (d) => report("chords", 0.3 + d * 0.3));
-  const bass = chroma(decimate(bL, bR, (d) => report("chords", 0.6 + d * 0.2)), 28, 64, (d) => report("chords", 0.8 + d * 0.2));
-  const { chords, key } = findChords(other, bass);
-  // 2. Melody, harmony notes, guide tone
-  const vox = decimate(vL, vR, (d) => report("melody", d * 0.2));
-  const pitch = trackPitch(vox, (d) => report("melody", 0.2 + d * 0.8));
-  const notes = findNotes(pitch);
-  let lastIv = 3 * dir;
+  const interval = msg.interval === 5 ? 5 : 3;
+  const semis = msg.semis || 0;
+  // 1. Key and chords (or the ones from an earlier run, maybe edited)
+  let chords = msg.chords, key = msg.key;
+  if (!chords || !key) {
+    const [bL, bR] = msg.bass, [oL, oR] = msg.other;
+    const other = chroma(decimate(oL, oR, (d) => report("chords", d * 0.3)), 40, 95, (d) => report("chords", 0.3 + d * 0.3));
+    const bass = chroma(decimate(bL, bR, (d) => report("chords", 0.6 + d * 0.2)), 28, 64, (d) => report("chords", 0.8 + d * 0.2));
+    ({ chords, key } = findChords(other, bass));
+  }
+  // 2. Melody (or the one from an earlier run), harmony notes, guide tone
+  let pitch = msg.pitch, notes;
+  if (pitch && msg.notes) {
+    notes = msg.notes.map((n) => ({ t0: n.t0, t1: n.t1, midi: n.midi }));
+  } else {
+    const vox = decimate(vL, vR, (d) => report("melody", d * 0.2));
+    pitch = trackPitch(vox, (d) => report("melody", 0.2 + d * 0.8));
+    notes = findNotes(pitch);
+  }
+  let lastIv = (interval === 5 ? 7 : 3) * dir;
   for (const n of notes) {
     const chord = chordAt(chords, (n.t0 + n.t1) / 2);
-    n.harm = pickHarmony(n.midi, key, chord, dir, lastIv);
+    n.harm = pickHarmony(n.midi, key, chord, dir, interval, lastIv);
     lastIv = n.harm - n.midi;
   }
   const phrases = joinPhrases(notes);
-  const guide = makeGuide(phrases, vL.length);
+  const guide = makeGuide(phrases, vL.length, semis);
   // 3. Harmony voice
-  const voice = makeVoice(vL, vR, phrases, pitch, (d) => report("voice", d));
+  const voice = makeVoice(vL, vR, phrases, pitch, semis, (d) => report("voice", d));
   return { key: key, chords: chords, frame: HOP / ASR, pitch: pitch, notes: notes, voice: voice, guide: guide };
 }
 
-if (typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope) {
+// Only when started as its own worker (keyshift.js imports makeFft from this file)
+if (typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope && import.meta.url === self.location.href) {
   self.onmessage = (e) => {
     const msg = e.data;
     if (!msg || msg.type !== "run") return;

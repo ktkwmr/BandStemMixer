@@ -2,7 +2,7 @@
 // Older caches of this app (e.g. "bandstemmixer-<build>") are removed on activate.
 const PREFIX = "bandstemmixer-";
 const CACHE = PREFIX + "cache";
-const CORE = ["./", "index.html", "separator.js", "dsp.js", "mixer.js", "encoder.js", "harmony.js", "ja/", "manifest.json", "THIRD_PARTY_LICENSES.md", "icons/icon.svg"];
+const CORE = ["./", "index.html", "separator.js", "dsp.js", "mixer.js", "encoder.js", "harmony.js", "keyshift.js", "ja/", "manifest.json", "THIRD_PARTY_LICENSES.md", "icons/icon.svg"];
 // The AI model is kept by separator.js in its own cache (bandstemmixer-model-v2), which activate below leaves alone.
 // Older model caches (-v1: the 6-part model used at first) are removed on activate.
 const KEEP = ["bandstemmixer-model-v2"];
