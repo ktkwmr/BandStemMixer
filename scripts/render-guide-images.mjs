@@ -114,15 +114,18 @@ async function open(page, lang) {
   await page.setInputFiles("#fileInput", SONG[lang]);
   await page.waitForFunction(() => !document.getElementById("runBtn").disabled);
 }
-// Separate, then set up the mixer like a bass player's practice: the bass muted, the vocals a little lower
+// Separate (the chords and the harmony follow on their own), then set up the mixer like a bass player's practice: the bass muted, the vocals a little lower
 async function separate(page, { progressShot, started } = {}) {
   if (!started) await page.click("#runBtn");
   if (progressShot) {
     await page.waitForFunction(() => /^36%/.test(document.getElementById("detail").textContent));
     await progressShot();
   }
-  await page.waitForSelector("#mixer:not([hidden])", { timeout: 60000 });
+  // Before separating, the mixer is shown greyed out (.ghost)
+  await page.waitForSelector("#mixer:not(.ghost)", { timeout: 60000 });
   await page.waitForFunction(() => !document.getElementById("progress").offsetParent);
+  await page.waitForSelector("#harmView:not([hidden])", { timeout: 60000 });
+  await page.waitForFunction(() => document.getElementById("harmProgress").hidden, null, { timeout: 60000 });
   await page.locator(".strip").nth(1).locator(".ms .chip").first().click();
   await page.locator(".strip").nth(0).locator("input[type=range]").fill("0.8");
   // From 0:20, where every part plays (the vocals start at 0:16)
@@ -162,9 +165,6 @@ for (const lang of ["en", "ja"]) {
   await shot(page, ".panel.out", `${lang}-mixer.png`);
   // Chords and harmony (the harmony article): the key, the button, the roll, and the two added parts
   await page.evaluate(() => document.querySelectorAll(".guide-marker").forEach((m) => m.remove()));
-  await page.click("#harmBtn");
-  await page.waitForSelector("#harmView:not([hidden])", { timeout: 60000 });
-  await page.waitForFunction(() => document.getElementById("harmProgress").hidden && document.getElementById("toast").hidden, null, { timeout: 20000 });
   await page.evaluate(() => { document.activeElement && document.activeElement.blur(); });
   await page.mouse.move(0, 0);
   await addMarkers(page, [

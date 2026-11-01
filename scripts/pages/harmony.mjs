@@ -25,10 +25,10 @@ export default {
 <h2 id="make">Making the harmony</h2>
 <ol>
   <li><b>Separate the song</b> into four parts (see <a href="../guide/">how to use</a>).</li>
-  <li><b>Choose the part</b> next to the button: upper (a 3rd above), lower (a 3rd below), or a 5th above or below.</li>
-  <li><b>Press “Find chords &amp; make harmony”.</b> It takes from a few seconds to about a minute, depending on the song and the device. Playback goes on while it works.</li>
+  <li><b>Wait a little more.</b> Right after separating, the app finds the chords and makes the harmony on its own, with the part chosen next to the button (upper, a 3rd above, at first). It takes from a few seconds to about a minute, depending on the song and the device. You can already play the song while it works.</li>
+  <li><b>To use another part</b>, choose it next to the button – upper (a 3rd above), lower (a 3rd below), or a 5th above or below – and press <b>“Remake the harmony”</b>.</li>
 </ol>
-<p>Everything is worked out in your browser, without the AI model or any download. After the first time the button becomes <b>“Remake the harmony”</b>: it reuses the chords and the melody it already found, so it is quicker. Use it after you change the part or the chords: the button turns black when the harmony no longer matches them.</p>
+<p>Everything is worked out in your browser, without the AI model or any download. “Remake the harmony” reuses the chords and the melody already found, so it is quicker. Use it after you change the part or the chords: the button turns black when the harmony no longer matches them. If the harmony could not be made, the button says “Find chords &amp; make harmony”; press it to try again.</p>
 
 <h2 id="screen">Reading the screen</h2>
 <figure class="shot">
@@ -37,7 +37,7 @@ export default {
 </figure>
 <ol>
   <li><b>Key</b> – Moves every part except the drums, and the harmony with them, by semitones. See <a href="../chords-and-key/">chords and key change</a>.</li>
-  <li><b>Find chords &amp; make harmony / Remake the harmony</b></li>
+  <li><b>Remake the harmony</b> – Makes the harmony again with the part (3) or the chords you changed.</li>
   <li><b>The harmony part</b> – 3rd or 5th, above or below.</li>
   <li><b>BPM</b> – The tempo found in the song. The chords change on its beats.</li>
   <li><b>The roll</b> – The chord names on top, with a small tick at every beat; the vocal melody as a <b>grey line</b>; the harmony notes as <b>black bars</b>; the black vertical line is the play position. Drag it sideways (or use a sideways swipe or Shift + wheel) to look ahead or back; tap it to jump there. It follows the playback again when you press play.</li>
@@ -108,10 +108,10 @@ export default {
 <h2 id="make">ハモリを作る</h2>
 <ol>
   <li><b>曲を分離します</b>（<a href="../guide/">使い方</a>をご覧ください）。</li>
-  <li>ボタンの横で<b>パートを選びます</b>。上ハモ（3 度上）・下ハモ（3 度下）・5 度上・5 度下から選べます。</li>
-  <li><b>「コード推定＆ハモリ生成」を押します。</b>曲と端末によって、数秒から 1 分ほどかかります。その間も再生は止まりません。</li>
+  <li><b>少し待ちます。</b>分離が終わると続けて、ボタンの横で選んでいるパート（最初は上ハモ（3 度上））で、コードの推定とハモリの生成を自動で行います。曲と端末によって、数秒から 1 分ほどかかります。その間も再生できます。</li>
+  <li><b>ほかのパートにするとき</b>は、ボタンの横で上ハモ（3 度上）・下ハモ（3 度下）・5 度上・5 度下から選び、<b>「ハモリを再生成」</b>を押します。</li>
 </ol>
-<p>処理はすべてブラウザの中で行い、AI モデルもダウンロードも使いません。一度作るとボタンは<b>「ハモリを再生成」</b>に変わり、推定したコードと旋律を使い回すので、2 回目からは速く終わります。パートやコードを変えたあとに押してください。作り直しが必要なときは、ボタンが黒くなります。</p>
+<p>処理はすべてブラウザの中で行い、AI モデルもダウンロードも使いません。「ハモリを再生成」は、推定したコードと旋律を使い回すので速く終わります。パートやコードを変えたあとに押してください。作り直しが必要なときは、ボタンが黒くなります。ハモリを作れなかったときは、ボタンが「コード推定＆ハモリ生成」になるので、押してやり直してください。</p>
 
 <h2 id="screen">画面の見方</h2>
 <figure class="shot">
@@ -120,7 +120,7 @@ export default {
 </figure>
 <ol>
   <li><b>キー</b> – ドラム以外のパートと、ハモリを、半音ずつ上げ下げします。<a href="../chords-and-key/">コード表示とキー変更</a>をご覧ください。</li>
-  <li><b>コード推定＆ハモリ生成／ハモリを再生成</b></li>
+  <li><b>ハモリを再生成</b> – 変えたパート（3）やコードで、ハモリを作り直します。</li>
   <li><b>ハモリのパート</b> – 3 度か 5 度、上か下か。</li>
   <li><b>BPM</b> – 曲から推定したテンポ。コードはこの拍の上で切り替わります。</li>
   <li><b>表示</b> – 上の段にコード名（拍ごとに小さな目盛り）、<b>灰色の線</b>がボーカルの音程、<b>黒い帯</b>がハモリの音、黒い縦線が再生位置です。横にドラッグ（または横スワイプ・Shift＋ホイール）すると前後を見られ、タップするとその位置に移ります。再生を始めると、再生位置に戻ります。</li>
