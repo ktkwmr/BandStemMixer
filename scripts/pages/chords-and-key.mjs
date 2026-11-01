@@ -22,7 +22,7 @@ export default {
 </ol></nav>
 
 <h2 id="find">Finding the chords and the tempo</h2>
-<p>Press <b>“Find chords &amp; make harmony”</b> above the parts. The app first finds the beats and the tempo of the song, then a chord for each beat (quarter note). They appear above the parts: <b>BPM</b> next to the button, and the chord names along the top of the scrolling view, with a small tick at every beat. Drag the view sideways to read ahead. The same button also makes a <a href="../harmony/">harmony part</a>; if you only want the chords, mute the two harmony parts.</p>
+<p>Right after separating, the app finds the chords on its own (if it could not, press <b>“Find chords &amp; make harmony”</b> above the parts). It first finds the beats and the tempo of the song, then a chord for each beat (quarter note). They appear above the parts: <b>BPM</b> next to the button, and the chord names along the top of the scrolling view, with a small tick at every beat. Drag the view sideways to read ahead. At the same time it makes a <a href="../harmony/">harmony part</a>; if you only want the chords, mute the two harmony parts.</p>
 <p>How it works, briefly:</p>
 <ul>
   <li><b>Beats</b> – where new sounds start (attacks) in the whole song, the time between them that repeats most, and then the beats that best fit both. The same method as the beat detection in <a href="/looptrainer/">Loop Trainer</a>, this site's practice player.</li>
@@ -94,7 +94,7 @@ export default {
 </ol></nav>
 
 <h2 id="find">コードとテンポを推定する</h2>
-<p>パートの上にある<b>「コード推定＆ハモリ生成」</b>を押します。アプリはまず曲の拍とテンポを推定し、次に 1 拍（4 分音符）ごとのコードを推定します。結果はパートの上に出ます。ボタンの下に <b>BPM</b>、流れる表示の上の段にコード名（拍ごとに小さな目盛り）です。表示を横にドラッグすると先を読めます。同じボタンで<a href="../harmony/">ハモリのパート</a>も作られます。コードだけを見たいときは、ハモリの 2 つのパートをミュートしてください。</p>
+<p>分離が終わると、アプリが続けて自動でコードを推定します（推定できなかったときは、パートの上の<b>「コード推定＆ハモリ生成」</b>を押します）。アプリはまず曲の拍とテンポを推定し、次に 1 拍（4 分音符）ごとのコードを推定します。結果はパートの上に出ます。ボタンの下に <b>BPM</b>、流れる表示の上の段にコード名（拍ごとに小さな目盛り）です。表示を横にドラッグすると先を読めます。同時に<a href="../harmony/">ハモリのパート</a>も作られます。コードだけを見たいときは、ハモリの 2 つのパートをミュートしてください。</p>
 <p>仕組みは次のとおりです。</p>
 <ul>
   <li><b>拍</b> – 曲全体で新しい音が鳴り始める位置（アタック）と、その間隔でいちばん繰り返されるものを調べ、両方にいちばん合う拍の並びを決めます。このサイトの練習用プレーヤー <a href="/looptrainer/ja/">Loop Trainer</a> の拍の検出と同じ方法です。</li>

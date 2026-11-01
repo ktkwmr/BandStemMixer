@@ -50,7 +50,7 @@ const EN = [
   },
   {
     q: "Can it find the chords of a song?",
-    a: 'Yes. After separating, press “Find chords & make harmony”: it finds the tempo (BPM) and a chord on every beat. Only major and minor chords are found automatically, and they can be wrong, so each beat can be edited by hand (including 7, maj7, m7, add9, dim7, m7b5, aug, and sus4). See <a href="../chords-and-key/">chords and key change</a>.',
+    a: 'Yes. Right after separating, the app finds the tempo (BPM) and a chord on every beat. Only major and minor chords are found automatically, and they can be wrong, so each beat can be edited by hand (including 7, maj7, m7, add9, dim7, m7b5, aug, and sus4). See <a href="../chords-and-key/">chords and key change</a>.',
   },
   {
     q: "Can it make a harmony part?",
@@ -122,7 +122,7 @@ const JA = [
   },
   {
     q: "曲のコードを調べられますか？",
-    a: '調べられます。分離したあと「コード推定＆ハモリ生成」を押すと、テンポ（BPM）と 1 拍ごとのコードを推定します。自動で推定するのはメジャーとマイナーだけで、間違うこともあるので、拍ごとに手で直せます（7・maj7・m7・add9・dim7・m7b5・aug・sus4 も選べます）。<a href="../chords-and-key/">コード表示とキー変更</a>をご覧ください。',
+    a: '調べられます。分離が終わると続けて、テンポ（BPM）と 1 拍ごとのコードを自動で推定します。自動で推定するのはメジャーとマイナーだけで、間違うこともあるので、拍ごとに手で直せます（7・maj7・m7・add9・dim7・m7b5・aug・sus4 も選べます）。<a href="../chords-and-key/">コード表示とキー変更</a>をご覧ください。',
   },
   {
     q: "ハモリのパートを作れますか？",

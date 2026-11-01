@@ -63,7 +63,7 @@ export default {
 
 <h2 id="mixer">The mixer</h2>
 <figure class="shot">
-  ${img("en", "mixer", "The mixer while playing: the stop button and the position bar at 0:21 of 1:00, the key control and the Find chords & make harmony button, four rows for Vocals (at 80%), Bass (muted), Drums, and Other (guitar, keys…), each with a level meter, M and S buttons, a fader, and a save button, and under them the Master fader, Reset mixer, and Save this mix (MP3). Numbers 1 to 10 mark the controls.")}
+  ${img("en", "mixer", "The mixer while playing: the stop button and the position bar at 0:21 of 1:00, the key control, the Remake the harmony button and the chords and notes, six rows for Vocals (at 80%), Bass (muted), Drums, Other (guitar, keys…), Harmony (voice), and Harmony guide tone (muted), each with a level meter, M and S buttons, a fader, and a save button, and under them the Master fader, Reset mixer, and Save this mix (MP3). Numbers 1 to 10 mark the controls.")}
   <figcaption>Here the bass is muted (M), as a bass player would for practice, and the vocals are turned down to 80%.</figcaption>
 </figure>
 <ol>
@@ -79,17 +79,17 @@ export default {
   <li><b>Save this mix (MP3)</b> – Saves what you hear now as one MP3 file.</li>
 </ol>
 <p>The faders, M, and the master volume are remembered for next time; S is not, so you never start in solo by mistake.</p>
-<p>Between the play button and the parts are the key control and “Find chords &amp; make harmony”, explained in the next section.</p>
+<p>Right after separating, the app also finds the chords and makes a harmony part, so two harmony rows are added under the four parts. They, and the key control, are explained in the next section.</p>
 <p>For practice ideas, see <a href="../minus-one/">practicing with your part removed</a> and <a href="../learn-by-ear/">hearing the bass and drums clearly</a>.</p>
 
 <h2 id="harmony">Key, chords, and harmony</h2>
 <figure class="shot">
   ${img("en", "harmony", "The mixer after making a harmony: the key control, the Remake the harmony button and the part, BPM 120, a scrolling view of the chords, the vocal melody, and the harmony notes, and two added rows, Harmony (voice) and Harmony guide tone. Numbers 1 to 7 mark them.")}
-  <figcaption>After “Find chords &amp; make harmony”. The numbers match the list below.</figcaption>
+  <figcaption>The chords and the harmony, made right after separating. The numbers match the list below.</figcaption>
 </figure>
 <ol>
   <li><b>Key (all but drums)</b> – − and + move the vocals, bass, and other by a semitone, up to an octave either way. The tempo and the drums stay the same.</li>
-  <li><b>Find chords &amp; make harmony</b> – Finds the tempo, the chord on every beat, and the vocal melody, and makes a harmony part. After the first time it says “Remake the harmony”.</li>
+  <li><b>Remake the harmony</b> – Right after separating, the app finds the tempo, the chord on every beat, and the vocal melody, and makes a harmony part (the one chosen in 3; a 3rd above at first). Press this after you change the part or the chords. If the harmony could not be made, it says “Find chords &amp; make harmony”: press it to try again.</li>
   <li><b>The harmony part</b> – a 3rd or a 5th, above or below the melody.</li>
   <li><b>BPM</b> – the tempo found in the song.</li>
   <li><b>The view</b> – chord names on top (tap a beat there to change the chord), the vocal melody as a grey line, and the harmony notes as black bars. Drag it sideways to look ahead; tap it to jump there.</li>
@@ -110,7 +110,7 @@ export default {
 
 <h2 id="phone">On a phone or tablet</h2>
 <figure class="shot phone">
-  ${img("en", "phone", "Band Stem Mixer on a phone: the mixer with the play button, the position, and the four parts, each with M, S, save, and a fader below the name.", { half: true })}
+  ${img("en", "phone", "Band Stem Mixer on a phone: the mixer with the play button and the position, the key control, the Remake the harmony button, BPM 120 and the chords and notes, and the parts, each with M, S, save, and a fader below the name.", { half: true })}
   <figcaption>On a narrow screen, each part's fader is under its name.</figcaption>
 </figure>
 <p>The mixer works the same on a phone. Separation needs a lot of memory, though: phones and tablets take longer, take songs up to ${MAX_MIN_LOW_MEM} minutes, and some cannot finish at all.</p>
@@ -194,7 +194,7 @@ export default {
 
 <h2 id="mixer">ミキサー</h2>
 <figure class="shot">
-  ${img("ja", "mixer", "再生中のミキサー。停止ボタンと再生位置（1:00 のうち 0:21）、キーの − ＋ と「コード推定＆ハモリ生成」ボタン、ボーカル（80%）・ベース（ミュート）・ドラム・その他（ギター・鍵盤など）の 4 行に、それぞれレベルメーター、M と S のボタン、フェーダー、保存ボタン。下に全体の音量、「ミキサーを元に戻す」「このミックスを保存（MP3）」。1〜10 の番号付き。")}
+  ${img("ja", "mixer", "再生中のミキサー。停止ボタンと再生位置（1:00 のうち 0:21）、キーの − ＋、「ハモリを再生成」ボタンとコード・音の表示、ボーカル（80%）・ベース（ミュート）・ドラム・その他（ギター・鍵盤など）・ハモリ（声）・ハモリのガイド音（ミュート）の 6 行に、それぞれレベルメーター、M と S のボタン、フェーダー、保存ボタン。下に全体の音量、「ミキサーを元に戻す」「このミックスを保存（MP3）」。1〜10 の番号付き。")}
   <figcaption>ベーシストの練習のように、ベースをミュート（M）し、ボーカルを 80% に下げたところ。</figcaption>
 </figure>
 <ol>
@@ -210,17 +210,17 @@ export default {
   <li><b>このミックスを保存（MP3）</b> – いま聞こえている音を 1 つの MP3 ファイルで保存します。</li>
 </ol>
 <p>フェーダー・M・全体の音量は次回も残ります。S は残らないので、うっかりソロのまま始まることはありません。</p>
-<p>再生ボタンとパートの間にある「キー」と「コード推定＆ハモリ生成」は、次の節で説明します。</p>
+<p>分離が終わると続けて、コードの推定とハモリの生成も自動で行い、4 つのパートの下にハモリの 2 行が増えます。これと「キー」は、次の節で説明します。</p>
 <p>練習のしかたは、<a href="../minus-one/">自分のパートを消して練習する</a>と<a href="../learn-by-ear/">ベースとドラムを聞き取る</a>を見てください。</p>
 
 <h2 id="harmony">キー・コード・ハモリ</h2>
 <figure class="shot">
   ${img("ja", "harmony", "ハモリを作ったあとのミキサー。キーの − と ＋、「ハモリを再生成」ボタンとパート、BPM 120、コード・ボーカルの音程・ハモリの音が流れる表示、増えた 2 行「ハモリ（声）」「ハモリのガイド音」。1〜7 の番号付き。")}
-  <figcaption>「コード推定＆ハモリ生成」を押したあと。番号は下の説明と対応しています。</figcaption>
+  <figcaption>分離のあと自動で作ったコードとハモリ。番号は下の説明と対応しています。</figcaption>
 </figure>
 <ol>
   <li><b>キー（ドラム以外）</b> – − と ＋ で、ボーカル・ベース・その他を半音ずつ、上下 1 オクターブまで動かします。テンポとドラムは変わりません。</li>
-  <li><b>コード推定＆ハモリ生成</b> – テンポ、拍ごとのコード、ボーカルの旋律を推定し、ハモリのパートを作ります。2 回目からは「ハモリを再生成」になります。</li>
+  <li><b>ハモリを再生成</b> – 分離が終わると続けて、テンポ、拍ごとのコード、ボーカルの旋律を推定し、ハモリのパート（3 で選んだもの。最初は 3 度上）を作ります。パートやコードを変えたら押してください。ハモリを作れなかったときは「コード推定＆ハモリ生成」になるので、押してやり直してください。</li>
   <li><b>ハモリのパート</b> – 旋律の 3 度か 5 度の、上か下か。</li>
   <li><b>BPM</b> – 曲から推定したテンポ。</li>
   <li><b>表示</b> – 上の段にコード名（拍をタップするとコードを変えられます）、灰色の線がボーカルの音程、黒い帯がハモリの音。横にドラッグすると先を見られ、タップするとその位置に移ります。</li>
@@ -241,7 +241,7 @@ export default {
 
 <h2 id="phone">スマホ・タブレットで使う</h2>
 <figure class="shot phone">
-  ${img("ja", "phone", "スマホでの Band Stem Mixer。再生ボタンと再生位置、4 つのパートの行に M・S・保存ボタン、名前の下にフェーダー。", { half: true })}
+  ${img("ja", "phone", "スマホでの Band Stem Mixer。再生ボタンと再生位置、キー、「ハモリを再生成」ボタン、BPM 120 とコード・音の表示、パートの行に M・S・保存ボタン、名前の下にフェーダー。", { half: true })}
   <figcaption>幅の狭い画面では、各パートのフェーダーが名前の下に並びます。</figcaption>
 </figure>
 <p>ミキサーはスマホでも同じように使えます。ただし分離にはメモリをたくさん使うので、スマホ・タブレットでは時間がかかり、曲の長さは ${MAX_MIN_LOW_MEM} 分までで、端末によっては最後まで分離できません。</p>
