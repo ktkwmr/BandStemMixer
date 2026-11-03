@@ -202,15 +202,24 @@
 
 <h2 id="edit">コードを編集する</h2>
 <figure class="shot">
-  <a href="/bandstemmixer/images/guide/ja-chord.png"><img src="/bandstemmixer/images/guide/ja-chord.png" alt="「コードを編集」の画面。0:29 〜 0:30、ルート C、種類 メジャー、長さ 2 拍、「キャンセル」と「変更する」のボタン。" width="888" height="484" loading="lazy" decoding="async"></a>
-  <figcaption>1 拍ごとに、自由にコードを入れられます。</figcaption>
+  <a href="/bandstemmixer/images/guide/ja-chord.png"><img src="/bandstemmixer/images/guide/ja-chord.png" alt="「コードを編集」の画面。「0:23 から」、「| F | G7 | Em7 Am |」と入力した入力欄、書き方の説明、「キャンセル」と「変更する」のボタン。" width="888" height="728" loading="lazy" decoding="async"></a>
+  <figcaption>コードを 1 つ、または何小節分かをまとめて入力できます。</figcaption>
 </figure>
 <ol>
   <li>表示の上の段（コード）で、コードが違っている拍をタップします。</li>
-  <li><b>ルート</b>（C〜B。ノーコードは空白）・<b>種類</b>・<b>長さ</b>（その拍から何拍分か、1〜16 拍）を選びます。長さは最初「そのコードが終わるまで」になっているので、違うコードを直すときは「変更する」を押すだけです。1 拍だけ変えるときは「1 拍」を選びます。</li>
-  <li>「変更する」を押します。直したコードをハモリに使うには、<b>「ハモリを再生成」</b>を押します。</li>
+  <li><code>Am7</code> のようにコード名を入力し、「変更する」（または Enter）を押します。タップした拍から<b>次のコードまで</b>そのコードになるので、拍を数える必要はありません。空欄（または <code>N.C.</code>）にするとノーコードです。</li>
+  <li>直したコードをハモリに使うには、<b>「ハモリを再生成」</b>を押します。</li>
 </ol>
-<p>種類は、メジャー・マイナー（m）・7・maj7・m7・add9・dim・dim7・m7b5・aug・sus4 です。「推定したコードに戻す」で、編集をすべて取り消せます。コードはページを読み込み直すと消えるので、必要なものは書き留めておいてください。</p>
+<p>たいていのコード名が使えます：<code>C</code>・<code>Cm</code>・<code>C7</code>・<code>Cmaj7</code>（<code>CM7</code>）・<code>Cm7</code>・<code>Cm7b5</code>・<code>Cdim7</code>・<code>Caug</code>・<code>Csus4</code>・<code>C7sus4</code>・<code>C6</code>・<code>C9</code>・<code>Cadd9</code>・<code>C7(b9)</code>、<code>C/E</code> のような分数コード。聞こえているキーで入力します（キーを変えたあとは、変えたあとのキーで）。</p>
+<h3>何小節分かをまとめて入力する</h3>
+<p>このサイトの伴奏づくりアプリ <a href="/demotrackmaker/ja/">Demo Track Maker</a> のテキスト入力と同じように、小節を <code>|</code> で区切って書きます。タップした拍から、<b>4 拍を 1 小節</b>として流し込みます。</p>
+<pre><code>| C | G | Am | F G |</code></pre>
+<ul>
+  <li>小節にコードが 1 つなら小節全体、2 つなら 1 拍目と 3 拍目、それ以外は 1 拍ずつです。</li>
+  <li><code>.</code> はその拍も前のコードのまま、<code>%</code> は新しいコードのない小節です。</li>
+  <li>変わるのは書いた小節の分だけで、そのあとのコードはそのままです。</li>
+</ul>
+<p>アプリは小節の頭を推定しないので、1 小節目の頭の拍をタップしてください。「推定したコードに戻す」で、編集をすべて取り消せます。コードはページを読み込み直すと消えるので、必要なものは書き留めておいてください。</p>
 
 <h2 id="key">キーを変える</h2>
 <p>パートの上の「キー（ドラム以外）」の <b>− と ＋</b> を使います。1 回押すごとに半音ずつ、上下それぞれ 12 半音（1 オクターブ）まで動かせます。</p>

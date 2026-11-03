@@ -202,15 +202,24 @@
 
 <h2 id="edit">Editing the chords</h2>
 <figure class="shot">
-  <a href="/bandstemmixer/images/guide/en-chord.png"><img src="/bandstemmixer/images/guide/en-chord.png" alt="The Edit the chord dialog: the time 0:29 – 0:30, Root C, Type major, Length 2 beats, and Cancel and Change buttons." width="888" height="484" loading="lazy" decoding="async"></a>
-  <figcaption>Each beat can have its own chord.</figcaption>
+  <a href="/bandstemmixer/images/guide/en-chord.png"><img src="/bandstemmixer/images/guide/en-chord.png" alt="The Edit the chord dialog: “From 0:23”, a text box with “| F | G7 | Em7 Am |” typed in, a short explanation of how to write chords, and Cancel and Change buttons." width="888" height="728" loading="lazy" decoding="async"></a>
+  <figcaption>Type one chord, or several bars at once.</figcaption>
 </figure>
 <ol>
   <li>Tap the beat where the chord is wrong, in the chord row at the top of the view.</li>
-  <li>Choose the <b>root</b> (C to B; blank for no chord), the <b>type</b>, and the <b>length</b>: how many beats from there, 1 to 16. The length starts at “until this chord ends”, so fixing a wrong chord is one tap on “Change”; choose 1 beat to change just that beat.</li>
-  <li>Press “Change”. To use the new chords in the harmony, press <b>“Remake the harmony”</b>.</li>
+  <li>Type the chord name, such as <code>Am7</code>, and press “Change” (or Enter). It starts at the beat you tapped and lasts <b>until the next chord</b>, so you do not count beats. Leave it blank (or type <code>N.C.</code>) for no chord.</li>
+  <li>To use the new chords in the harmony, press <b>“Remake the harmony”</b>.</li>
 </ol>
-<p>Types: major, minor (m), 7, maj7, m7, add9, dim, dim7, m7b5, aug, sus4. “Back to the estimated chords” undoes all your edits. The chords are not kept after you reload the page; write down the ones you need.</p>
+<p>Most chord names work: <code>C</code>, <code>Cm</code>, <code>C7</code>, <code>Cmaj7</code> (or <code>CM7</code>), <code>Cm7</code>, <code>Cm7b5</code>, <code>Cdim7</code>, <code>Caug</code>, <code>Csus4</code>, <code>C7sus4</code>, <code>C6</code>, <code>C9</code>, <code>Cadd9</code>, <code>C7(b9)</code>, and slash chords such as <code>C/E</code>. Type them in the key you hear (after a key change, in the new key).</p>
+<h3>Several bars at once</h3>
+<p>Write bars separated by <code>|</code>, the same way as the text input of <a href="/demotrackmaker/">Demo Track Maker</a>, this site's backing track maker. They are poured in from the beat you tapped, <b>4 beats to a bar</b>:</p>
+<pre><code>| C | G | Am | F G |</code></pre>
+<ul>
+  <li>One chord in a bar: the whole bar. Two: beats 1 and 3. Otherwise one per beat.</li>
+  <li><code>.</code> keeps the chord before it going for that beat; <code>%</code> is a bar with no new chord.</li>
+  <li>Only the bars you write change; the chords after them stay as they were.</li>
+</ul>
+<p>The app does not find where bars start, so tap the beat where bar 1 starts. “Back to the estimated chords” undoes all your edits. The chords are not kept after you reload the page; write down the ones you need.</p>
 
 <h2 id="key">Changing the key</h2>
 <p>Use <b>− and +</b> next to “Key (all but drums)” above the parts. Each press moves the song a semitone, up to 12 semitones (an octave) either way.</p>

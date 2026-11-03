@@ -72,10 +72,10 @@ export default {
 
 <h2 id="chords">When a chord is wrong: edit it and remake</h2>
 <figure class="shot">
-  ${img("en", "chord", "The Edit the chord dialog: the time 0:29 – 0:30, Root C, Type major, Length 2 beats, and Cancel and Change buttons.")}
+  ${img("en", "chord", "The Edit the chord dialog: “From 0:23”, a text box with “| F | G7 | Em7 Am |” typed in, a short explanation of how to write chords, and Cancel and Change buttons.")}
   <figcaption>Tap a beat in the chord row to open the editor.</figcaption>
 </figure>
-<p>The harmony is chosen to fit the chords, so a wrong chord can give a wrong harmony note. Tap the beat in the chord row (the top of the roll) where the chord is wrong, choose the root, the type, and how many beats it lasts, and press “Change”. Then press <b>“Remake the harmony”</b>. Details are in <a href="../chords-and-key/#edit">editing the chords</a>.</p>
+<p>The harmony is chosen to fit the chords, so a wrong chord can give a wrong harmony note. Tap the beat in the chord row (the top of the roll) where the chord is wrong, type the chord (it lasts until the next chord; bars like <code>| C | G |</code> fill the beats from there), and press “Change”. Then press <b>“Remake the harmony”</b>. Details are in <a href="../chords-and-key/#edit">editing the chords</a>.</p>
 
 <h2 id="limits">What to expect</h2>
 <ul>
@@ -155,10 +155,10 @@ export default {
 
 <h2 id="chords">コードが違うとき：直して再生成</h2>
 <figure class="shot">
-  ${img("ja", "chord", "「コードを編集」の画面。0:29 〜 0:30、ルート C、種類 メジャー、長さ 2 拍、「キャンセル」と「変更する」のボタン。")}
+  ${img("ja", "chord", "「コードを編集」の画面。「0:23 から」、「| F | G7 | Em7 Am |」と入力した入力欄、書き方の説明、「キャンセル」と「変更する」のボタン。")}
   <figcaption>上の段（コード）の拍をタップすると開きます。</figcaption>
 </figure>
-<p>ハモリの音はコードに合わせて選ぶので、コードが違っていると、ハモリの音も外れることがあります。表示の上の段（コード）で、違っている拍をタップし、ルート・種類・何拍分かを選んで「変更する」を押します。そのあと<b>「ハモリを再生成」</b>を押してください。詳しくは<a href="../chords-and-key/#edit">コードの編集</a>をご覧ください。</p>
+<p>ハモリの音はコードに合わせて選ぶので、コードが違っていると、ハモリの音も外れることがあります。表示の上の段（コード）で、違っている拍をタップし、コード名を入力して（次のコードまで続きます。<code>| C | G |</code> のように小節で書くと、その拍から流し込みます）「変更する」を押します。そのあと<b>「ハモリを再生成」</b>を押してください。詳しくは<a href="../chords-and-key/#edit">コードの編集</a>をご覧ください。</p>
 
 <h2 id="limits">仕上がりについて</h2>
 <ul>
