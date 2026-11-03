@@ -178,6 +178,9 @@ for (const lang of ["en", "ja"]) {
   const rb = await page.locator("#roll").boundingBox();
   await page.mouse.click(rb.x + rb.width * 0.21, rb.y + 10);
   await page.waitForSelector("#chordDlg[open]");
+  // Bars typed as text, poured in from the tapped beat
+  await page.fill("#chordInput", "| F | G7 | Em7 Am |");
+  await page.evaluate(() => document.activeElement && document.activeElement.blur());
   await page.waitForTimeout(300);
   await shot(page, "#chordDlg", `${lang}-chord.png`, 12);
   await ctx.close();

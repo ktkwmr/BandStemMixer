@@ -28,7 +28,8 @@
 //     notes: [{ t0, t1, midi, harm }] (contiguous within a phrase), voice: Int16Array, guide: Int16Array }
 //     (grid: the beat cells' edges in seconds, 0 to the end, and bpm (0 = no beat found), only when the chords
 //     were found in this run; the chords change only on the grid. root -1 = no chord; q: chord type, a key of
-//     CHORD_TYPES; pitch: MIDI note number per frame of
+//     CHORD_TYPES ("" or "m" when found here; a chord edited on the page may carry any name in q and its notes
+//     in tones: semitones above the root, used instead of CHORD_TYPES); pitch: MIDI note number per frame of
 //     `frame` seconds, NaN = no voice; voice / guide: mono at 44.1 kHz, shared memory when the page is
 //     cross-origin isolated)
 //   { type: "error", message }
@@ -570,7 +571,7 @@ function chordAt(chords, t) {
 const STEPS = { 3: { steps: [3, 4, 5], main: [3, 4] }, 5: { steps: [7, 6, 8], main: [7] } };
 function pickHarmony(midi, key, chord, dir, interval, lastIv) {
   const scale = (key.minor ? MINOR : MAJOR).map((s) => (s + key.tonic) % 12);
-  const tones = chord ? (CHORD_TYPES[chord.q] || CHORD_TYPES[""]).map((s) => (chord.root + s) % 12) : [];
+  const tones = chord ? (chord.tones || CHORD_TYPES[chord.q] || CHORD_TYPES[""]).map((s) => (chord.root + s) % 12) : [];
   const { steps, main } = STEPS[interval] || STEPS[3];
   let best = null, bestScore = -Infinity;
   for (const step of steps) {

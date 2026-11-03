@@ -32,15 +32,24 @@ export default {
 
 <h2 id="edit">Editing the chords</h2>
 <figure class="shot">
-  ${img("en", "chord", "The Edit the chord dialog: the time 0:29 – 0:30, Root C, Type major, Length 2 beats, and Cancel and Change buttons.")}
-  <figcaption>Each beat can have its own chord.</figcaption>
+  ${img("en", "chord", "The Edit the chord dialog: “From 0:23”, a text box with “| F | G7 | Em7 Am |” typed in, a short explanation of how to write chords, and Cancel and Change buttons.")}
+  <figcaption>Type one chord, or several bars at once.</figcaption>
 </figure>
 <ol>
   <li>Tap the beat where the chord is wrong, in the chord row at the top of the view.</li>
-  <li>Choose the <b>root</b> (C to B; blank for no chord), the <b>type</b>, and the <b>length</b>: how many beats from there, 1 to 16. The length starts at “until this chord ends”, so fixing a wrong chord is one tap on “Change”; choose 1 beat to change just that beat.</li>
-  <li>Press “Change”. To use the new chords in the harmony, press <b>“Remake the harmony”</b>.</li>
+  <li>Type the chord name, such as <code>Am7</code>, and press “Change” (or Enter). It starts at the beat you tapped and lasts <b>until the next chord</b>, so you do not count beats. Leave it blank (or type <code>N.C.</code>) for no chord.</li>
+  <li>To use the new chords in the harmony, press <b>“Remake the harmony”</b>.</li>
 </ol>
-<p>Types: major, minor (m), 7, maj7, m7, add9, dim, dim7, m7b5, aug, sus4. “Back to the estimated chords” undoes all your edits. The chords are not kept after you reload the page; write down the ones you need.</p>
+<p>Most chord names work: <code>C</code>, <code>Cm</code>, <code>C7</code>, <code>Cmaj7</code> (or <code>CM7</code>), <code>Cm7</code>, <code>Cm7b5</code>, <code>Cdim7</code>, <code>Caug</code>, <code>Csus4</code>, <code>C7sus4</code>, <code>C6</code>, <code>C9</code>, <code>Cadd9</code>, <code>C7(b9)</code>, and slash chords such as <code>C/E</code>. Type them in the key you hear (after a key change, in the new key).</p>
+<h3>Several bars at once</h3>
+<p>Write bars separated by <code>|</code>, the same way as the text input of <a href="/demotrackmaker/">Demo Track Maker</a>, this site's backing track maker. They are poured in from the beat you tapped, <b>4 beats to a bar</b>:</p>
+<pre><code>| C | G | Am | F G |</code></pre>
+<ul>
+  <li>One chord in a bar: the whole bar. Two: beats 1 and 3. Otherwise one per beat.</li>
+  <li><code>.</code> keeps the chord before it going for that beat; <code>%</code> is a bar with no new chord.</li>
+  <li>Only the bars you write change; the chords after them stay as they were.</li>
+</ul>
+<p>The app does not find where bars start, so tap the beat where bar 1 starts. “Back to the estimated chords” undoes all your edits. The chords are not kept after you reload the page; write down the ones you need.</p>
 
 <h2 id="key">Changing the key</h2>
 <p>Use <b>− and +</b> next to “Key (all but drums)” above the parts. Each press moves the song a semitone, up to 12 semitones (an octave) either way.</p>
@@ -104,15 +113,24 @@ export default {
 
 <h2 id="edit">コードを編集する</h2>
 <figure class="shot">
-  ${img("ja", "chord", "「コードを編集」の画面。0:29 〜 0:30、ルート C、種類 メジャー、長さ 2 拍、「キャンセル」と「変更する」のボタン。")}
-  <figcaption>1 拍ごとに、自由にコードを入れられます。</figcaption>
+  ${img("ja", "chord", "「コードを編集」の画面。「0:23 から」、「| F | G7 | Em7 Am |」と入力した入力欄、書き方の説明、「キャンセル」と「変更する」のボタン。")}
+  <figcaption>コードを 1 つ、または何小節分かをまとめて入力できます。</figcaption>
 </figure>
 <ol>
   <li>表示の上の段（コード）で、コードが違っている拍をタップします。</li>
-  <li><b>ルート</b>（C〜B。ノーコードは空白）・<b>種類</b>・<b>長さ</b>（その拍から何拍分か、1〜16 拍）を選びます。長さは最初「そのコードが終わるまで」になっているので、違うコードを直すときは「変更する」を押すだけです。1 拍だけ変えるときは「1 拍」を選びます。</li>
-  <li>「変更する」を押します。直したコードをハモリに使うには、<b>「ハモリを再生成」</b>を押します。</li>
+  <li><code>Am7</code> のようにコード名を入力し、「変更する」（または Enter）を押します。タップした拍から<b>次のコードまで</b>そのコードになるので、拍を数える必要はありません。空欄（または <code>N.C.</code>）にするとノーコードです。</li>
+  <li>直したコードをハモリに使うには、<b>「ハモリを再生成」</b>を押します。</li>
 </ol>
-<p>種類は、メジャー・マイナー（m）・7・maj7・m7・add9・dim・dim7・m7b5・aug・sus4 です。「推定したコードに戻す」で、編集をすべて取り消せます。コードはページを読み込み直すと消えるので、必要なものは書き留めておいてください。</p>
+<p>たいていのコード名が使えます：<code>C</code>・<code>Cm</code>・<code>C7</code>・<code>Cmaj7</code>（<code>CM7</code>）・<code>Cm7</code>・<code>Cm7b5</code>・<code>Cdim7</code>・<code>Caug</code>・<code>Csus4</code>・<code>C7sus4</code>・<code>C6</code>・<code>C9</code>・<code>Cadd9</code>・<code>C7(b9)</code>、<code>C/E</code> のような分数コード。聞こえているキーで入力します（キーを変えたあとは、変えたあとのキーで）。</p>
+<h3>何小節分かをまとめて入力する</h3>
+<p>このサイトの伴奏づくりアプリ <a href="/demotrackmaker/ja/">Demo Track Maker</a> のテキスト入力と同じように、小節を <code>|</code> で区切って書きます。タップした拍から、<b>4 拍を 1 小節</b>として流し込みます。</p>
+<pre><code>| C | G | Am | F G |</code></pre>
+<ul>
+  <li>小節にコードが 1 つなら小節全体、2 つなら 1 拍目と 3 拍目、それ以外は 1 拍ずつです。</li>
+  <li><code>.</code> はその拍も前のコードのまま、<code>%</code> は新しいコードのない小節です。</li>
+  <li>変わるのは書いた小節の分だけで、そのあとのコードはそのままです。</li>
+</ul>
+<p>アプリは小節の頭を推定しないので、1 小節目の頭の拍をタップしてください。「推定したコードに戻す」で、編集をすべて取り消せます。コードはページを読み込み直すと消えるので、必要なものは書き留めておいてください。</p>
 
 <h2 id="key">キーを変える</h2>
 <p>パートの上の「キー（ドラム以外）」の <b>− と ＋</b> を使います。1 回押すごとに半音ずつ、上下それぞれ 12 半音（1 オクターブ）まで動かせます。</p>
