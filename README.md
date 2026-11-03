@@ -22,6 +22,8 @@ Split a band song into 4 parts with AI — vocals, drums, bass, and other (guita
   初回は AI モデル（約 172 MB）と分離のプログラム（約 14 MB、WebGPU 版は約 27 MB）をダウンロード。モバイルデータ通信・データセーバーのとき、またはスマホ・タブレットで接続の種類が分からないとき（iPhone・iPad・Firefox）は、ダウンロード前にダイアログで確認。モデルを保存したあとは確認しない
 - The model is kept in Cache Storage (`bandstemmixer-model-v2`), so it is downloaded once. ⚙ → “Delete the AI model” removes it; “Reset mixer” resets the mixer settings
   モデルは Cache Storage に保存し、ダウンロードは 1 回だけ。⚙ →「AI モデルを削除」で消せる。「ミキサーを元に戻す」でミキサーの設定を初期状態に戻す
+- **The last song is kept**: after the harmony is made, the separated parts (16-bit, before any key change), the chords (with edits), and the melody are written to IndexedDB (`bandstemmixer-song`) in 2 MB chunks, so a reload opens the song again (the harmony voice and guide tone are made again from the kept chords and melody). Only one song; a new separation replaces it. Skipped when the browser has too little space. ⚙ → “Delete the saved song” removes it. About 42 MB per minute
+  分離とハモリのあと、分離したパート（16 bit、キーを変える前）・コード（編集も）・旋律を IndexedDB（`bandstemmixer-song`）に 2 MB ずつ書き、再読み込みしても開けるようにする（ハモリの声とガイド音は保存したコードと旋律から作り直す）。保存は 1 曲だけで、新しく分離すると置き換わる。空き容量が足りなければ保存しない。⚙ →「保存した曲を削除」で消せる。1 分あたり約 42 MB
 - Uses the **GPU (WebGPU)** when the browser has it; on the CPU it uses several threads when the page is cross-origin isolated
   WebGPU があれば GPU で処理。CPU ではクロスオリジン分離により複数スレッドで処理
 - Songs up to 12 minutes; most formats the browser can decode (MP3, WAV, M4A/AAC, FLAC, Ogg…)
@@ -40,11 +42,11 @@ The page is cross-origin isolated (`Cross-Origin-Opener-Policy: same-origin`, `C
 
 - The song is read, separated, and played only in your browser. It is never uploaded. Saving MP3 files only saves them on your device. No accounts, cookies, ads, or microphone.
 - To separate, the browser downloads the AI model from **Hugging Face** and ONNX Runtime Web, demucs-web, and (when saving) lamejs from **jsDelivr** (they receive the IP address and browser information, as with any download; nothing about the song).
-- Saved in the browser: the model, mixer settings, and the app files for offline use.
+- Saved in the browser: the model, mixer settings, the app files for offline use, and the last separated song (parts, chords, melody; not the audio file you chose).
 - The site is hosted on Cloudflare (standard access logs). Page views are counted with Cloudflare Web Analytics, which uses no cookies.
 - 曲の読み込み・分離・再生はブラウザ内だけで行い、アップロードしません。MP3 の保存も端末に保存するだけです。アカウント・Cookie・広告・マイクはありません。
 - 分離のため、ブラウザが **Hugging Face** から AI モデルを、**jsDelivr** から ONNX Runtime Web・demucs-web・（保存するときは）lamejs をダウンロードします（通常のダウンロードと同じく IP アドレス等が届きます。曲の情報は送りません）。
-- ブラウザに保存するもの: AI モデル、ミキサーの設定、オフライン用のアプリのファイル。
+- ブラウザに保存するもの: AI モデル、ミキサーの設定、オフライン用のアプリのファイル、最後に分離した曲（パート・コード・旋律。選んだ音声ファイルそのものは保存しない）。
 - サイトは Cloudflare で配信しています（標準的なアクセスログ）。閲覧数は Cookie を使わない Cloudflare Web Analytics で集計しています。
 
 Full policy: `/bandstemmixer/privacy/` (`/bandstemmixer/ja/privacy/`). Operator: `/bandstemmixer/about/`.

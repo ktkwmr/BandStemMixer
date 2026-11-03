@@ -68,7 +68,7 @@ export default {
   <li><b>Sing it alone.</b> Mute the guide tone and the harmony voice and sing the harmony against the lead and the band. To check yourself, unmute the harmony voice for a moment.</li>
 </ol>
 <div class="note"><p>Want to sing the melody against a harmony instead? Mute the vocals and keep the harmony voice on. To fit your range, move the key (−/+); the harmony follows.</p></div>
-<p>Save what you made with ↓ or “Save this mix (MP3)” to practice on your phone. The harmony is not kept in the app after you reload.</p>
+<p>Save what you made with ↓ or “Save this mix (MP3)” to practice on your phone. The chords and the harmony of the last song you separated stay in the app after a reload.</p>
 
 <h2 id="chords">When a chord is wrong: edit it and remake</h2>
 <figure class="shot">
@@ -151,7 +151,7 @@ export default {
   <li><b>一人で歌う</b> – ガイド音とハモリ（声）をミュートし、主旋律とバンドに対してハモリを歌います。確かめたいときは、ハモリ（声）を少しだけ戻します。</li>
 </ol>
 <div class="note"><p>逆に、ハモリに対して主旋律を歌う練習もできます。ボーカルをミュートして、ハモリ（声）を鳴らします。声の高さが合わないときは、キー（− / ＋）を動かすと、ハモリも一緒に移ります。</p></div>
-<p>作ったものは ↓ や「このミックスを保存（MP3）」で保存すると、スマホでも練習できます。ハモリはページを読み込み直すと消えます。</p>
+<p>作ったものは ↓ や「このミックスを保存（MP3）」で保存すると、スマホでも練習できます。最後に分離した曲のコードとハモリは、ページを読み込み直しても残ります。</p>
 
 <h2 id="chords">コードが違うとき：直して再生成</h2>
 <figure class="shot">

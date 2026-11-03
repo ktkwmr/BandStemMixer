@@ -104,7 +104,7 @@ export default {
   <li><b>Your mix</b> – “Save this mix (MP3)” saves what you hear now: the faders, M, S, and the master volume.</li>
   <li><b>Harmony</b> – The two harmony parts have ↓ buttons too.</li>
   <li>The files are ${KBPS} kbps MP3 (44.1 kHz stereo), named after the song, for example <code>practice-song - Bass.mp3</code>. When the key is changed, the name says so: <code>practice-song - Bass (key +2).mp3</code>.</li>
-  <li>The separated parts, the chords, and the harmony are not kept in the app. When you reload the page or choose another song, they are gone: save the files you want to keep, or separate the song again.</li>
+  <li>The last song you separated stays in the app after a reload, with its chords, but only one song is kept: separating another replaces it. Save the files you want to keep for good.</li>
 </ul>
 <p>Saved MP3 files play on any device. You can separate a song on a computer and practice with the files on your phone.</p>
 
@@ -133,8 +133,9 @@ export default {
   <li>The AI model and the separation engine (so they are downloaded once).</li>
   <li>The mixer settings: each part's fader and mute, and the master volume.</li>
   <li>The app itself, so it opens without a connection. You can add it to your home screen.</li>
+  <li>The last song you separated (its parts, chords, and melody), so it opens again after a reload. It shows “The song you separated last time (saved in this browser)” under the file name. Delete it with ⚙ → “Delete the saved song”.</li>
 </ul>
-<p>Your song, the separated parts, the chords, and the harmony are not saved and are never uploaded. See the <a href="../privacy/">privacy policy</a>.</p>
+<p>Nothing is ever uploaded. See the <a href="../privacy/">privacy policy</a>.</p>
 `,
   },
   ja: {
@@ -235,7 +236,7 @@ export default {
   <li><b>自分のミックス</b> – 「このミックスを保存（MP3）」で、いま聞こえている音（フェーダー・M・S・全体の音量）を保存します。</li>
   <li><b>ハモリ</b> – ハモリの 2 つのパートにも ↓ ボタンがあります。</li>
   <li>ファイルは ${KBPS} kbps の MP3（44.1 kHz ステレオ）で、名前は曲名から付けます（例：<code>練習曲 - ベース.mp3</code>）。キーを変えたときは名前に入ります（例：<code>練習曲 - ベース（キー +2）.mp3</code>）。</li>
-  <li>分離したパート・コード・ハモリはアプリに残りません。ページを読み込み直したり別の曲を選んだりすると消えるので、残したいものは保存するか、もう一度分離してください。</li>
+  <li>最後に分離した曲は、コードと一緒に、ページを読み込み直してもアプリに残ります。ただし残るのは 1 曲だけで、別の曲を分離すると置き換わります。ずっと残したいものはファイルに保存してください。</li>
 </ul>
 <p>保存した MP3 はどの端末でも再生できます。パソコンで分離して、スマホでそのファイルを使って練習することもできます。</p>
 
@@ -264,8 +265,9 @@ export default {
   <li>AI モデルと分離のプログラム（ダウンロードは 1 回だけ）。</li>
   <li>ミキサーの設定（各パートの音量とミュート、全体の音量）。</li>
   <li>アプリ本体（通信がなくても開けるように）。ホーム画面に追加できます。</li>
+  <li>最後に分離した曲（パート・コード・旋律）。再読み込みしても開けるようにするためで、ファイル名の下に「前回分離した曲（このブラウザに保存）」と出ます。⚙ →「保存した曲を削除」で消せます。</li>
 </ul>
-<p>曲・分離したパート・コード・ハモリは保存せず、アップロードもしません。<a href="../privacy/">プライバシーポリシー</a>もご覧ください。</p>
+<p>どれもアップロードはしません。<a href="../privacy/">プライバシーポリシー</a>もご覧ください。</p>
 `,
   },
 };

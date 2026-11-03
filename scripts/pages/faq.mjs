@@ -46,7 +46,7 @@ const EN = [
   },
   {
     q: "Are the separated parts saved?",
-    a: `Not in the app: they are gone when you reload or choose another song, and so are the chords and the harmony. Save the ones you want as MP3 files (${KBPS} kbps) with the ↓ buttons or “Save this mix (MP3)”. The mixer settings (faders, mute, master volume) are remembered.`,
+    a: `The last song you separated is kept in your browser, with its chords (and your edits), so it is still there after a reload or the next time you open the app. Only one song is kept: separating another replaces it. To free up the space (about 210 MB for a 5-minute song), use ⚙ → “Delete the saved song”. On iPhone and iPad, Safari may delete it after some days without use. To keep parts for good, save them as MP3 files (${KBPS} kbps) with the ↓ buttons or “Save this mix (MP3)”. The mixer settings (faders, mute, master volume) are remembered too.`,
   },
   {
     q: "Can it find the chords of a song?",
@@ -118,7 +118,7 @@ const JA = [
   },
   {
     q: "分離したパートは保存されますか？",
-    a: `アプリには残りません。ページを読み込み直したり別の曲を選んだりすると、コードやハモリと一緒に消えます。残したいものは ↓ ボタンや「このミックスを保存（MP3）」で MP3（${KBPS} kbps）にしてください。ミキサーの設定（音量・ミュート・全体の音量）は次回も残ります。`,
+    a: `最後に分離した曲は、コード（編集したものも）と一緒にブラウザに保存するので、ページを読み込み直しても、次に開いたときも残っています。保存するのは 1 曲だけで、別の曲を分離すると置き換わります。容量（5 分の曲で約 210 MB）を空けたいときは ⚙ →「保存した曲を削除」を使ってください。iPhone・iPad の Safari では、しばらく使わないと消されることがあります。ずっと残したいものは ↓ ボタンや「このミックスを保存（MP3）」で MP3（${KBPS} kbps）にしてください。ミキサーの設定（音量・ミュート・全体の音量）も次回まで残ります。`,
   },
   {
     q: "曲のコードを調べられますか？",

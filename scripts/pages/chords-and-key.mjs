@@ -49,7 +49,7 @@ export default {
   <li><code>.</code> keeps the chord before it going for that beat; <code>%</code> is a bar with no new chord.</li>
   <li>Only the bars you write change; the chords after them stay as they were.</li>
 </ul>
-<p>The app does not find where bars start, so tap the beat where bar 1 starts. “Back to the estimated chords” undoes all your edits. The chords are not kept after you reload the page; write down the ones you need.</p>
+<p>The app does not find where bars start, so tap the beat where bar 1 starts. “Back to the estimated chords” undoes all your edits. The chords (with your edits) of the last song you separated are kept after a reload; when you separate another song, they are replaced, so write down the ones you need.</p>
 
 <h2 id="key">Changing the key</h2>
 <p>Use <b>− and +</b> next to “Key (all but drums)” above the parts. Each press moves the song a semitone, up to 12 semitones (an octave) either way.</p>
@@ -130,7 +130,7 @@ export default {
   <li><code>.</code> はその拍も前のコードのまま、<code>%</code> は新しいコードのない小節です。</li>
   <li>変わるのは書いた小節の分だけで、そのあとのコードはそのままです。</li>
 </ul>
-<p>アプリは小節の頭を推定しないので、1 小節目の頭の拍をタップしてください。「推定したコードに戻す」で、編集をすべて取り消せます。コードはページを読み込み直すと消えるので、必要なものは書き留めておいてください。</p>
+<p>アプリは小節の頭を推定しないので、1 小節目の頭の拍をタップしてください。「推定したコードに戻す」で、編集をすべて取り消せます。最後に分離した曲のコード（編集したものも）は、ページを読み込み直しても残ります。別の曲を分離すると置き換わるので、必要なものは書き留めておいてください。</p>
 
 <h2 id="key">キーを変える</h2>
 <p>パートの上の「キー（ドラム以外）」の <b>− と ＋</b> を使います。1 回押すごとに半音ずつ、上下それぞれ 12 半音（1 オクターブ）まで動かせます。</p>

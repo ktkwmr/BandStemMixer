@@ -39,8 +39,9 @@ export default {
   <li><b>The AI model:</b> the model file (about 170 MB) downloaded the first time you separate a song, so it is not downloaded again.</li>
   <li><b>Mixer settings:</b> the level and mute of each part, the master volume, and whether the GPU is used.</li>
   <li><b>App files:</b> the pages and files of this site and the ONNX Runtime library, so the app works offline.</li>
+  <li><b>The last separated song:</b> the separated parts (vocals, drums, bass, other), the file name and length, the chords (with your edits), and the vocal melody of the last song you separated, so it is still there after a reload. Only one song is kept; separating another replaces it. A 5-minute song takes about 210 MB. The audio file you chose and the harmony sound are not saved (the harmony is made again from the chords and melody when the page opens).</li>
 </ul>
-<p>Your songs, the separated parts, the chords, and the harmony are not saved in the browser; they are gone when you close or reload the page. To delete the data above, use “Reset mixer” and ⚙ → “Delete the AI model” in the app, or clear this site's data (site data, cookies, and storage for ktkwmr.com) in your browser settings.</p>
+<p>To delete the data above, use “Reset mixer”, ⚙ → “Delete the saved song”, and ⚙ → “Delete the AI model” in the app, or clear this site's data (site data, cookies, and storage for ktkwmr.com) in your browser settings.</p>
 
 <h2 id="external">3. Information sent to external services</h2>
 <p>When you use this site, your browser sends information to the following services. This list also serves as the notice of external transmission required under Japan's Telecommunications Business Act.</p>
@@ -102,8 +103,9 @@ export default {
   <li><b>AI モデル：</b>次から再びダウンロードしなくて済むよう、初めて分離したときにダウンロードしたモデルのファイル（約 170 MB）を保存します。</li>
   <li><b>ミキサーの設定：</b>各パートの音量とミュート、全体の音量、GPU を使うかどうか。</li>
   <li><b>アプリのファイル：</b>オフラインでも使えるよう、本サイトのページやファイルと ONNX Runtime のライブラリを保存します。</li>
+  <li><b>最後に分離した曲：</b>再読み込みしても残るように、最後に分離した曲の、分離したパート（ボーカル・ドラム・ベース・その他）、ファイル名と長さ、コード（編集したものも）、ボーカルの旋律を保存します。保存するのは 1 曲だけで、別の曲を分離すると置き換わります。5 分の曲で約 210 MB です。選んだ音声ファイルそのものとハモリの音は保存しません（ハモリは、ページを開いたときにコードと旋律から作り直します）。</li>
 </ul>
-<p>曲・分離したパート・コード・ハモリはブラウザに保存しません。ページを閉じたり再読み込みしたりすると消えます。上のデータを消したいときは、アプリの「ミキサーを元に戻す」と ⚙ →「AI モデルを削除」を使うか、ブラウザの設定でこのサイト（ktkwmr.com）のデータ（サイトデータ・Cookie・ストレージ）を削除してください。</p>
+<p>上のデータを消したいときは、アプリの「ミキサーを元に戻す」・⚙ →「保存した曲を削除」・⚙ →「AI モデルを削除」を使うか、ブラウザの設定でこのサイト（ktkwmr.com）のデータ（サイトデータ・Cookie・ストレージ）を削除してください。</p>
 
 <h2 id="external">3. 外部への情報の送信</h2>
 <p>本サイトを利用すると、お使いのブラウザから次のサービスに情報が送信されます。この一覧は、電気通信事業法の外部送信規律に基づく公表を兼ねています。</p>

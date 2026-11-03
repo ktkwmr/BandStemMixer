@@ -144,6 +144,7 @@
     .song { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
     .song .name { font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
     .song .meta { font-family: var(--mono); font-size: 12px; color: var(--subtle); }
+    .song .saved { font-size: 12px; font-weight: 700; }
     .note { margin: 0; padding: 10px 12px; border-radius: var(--radius); background: var(--hover-fill); border: 1px solid var(--line-strong); color: var(--ink); font-size: 12px; line-height: 1.6; }
     .model { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: flex-start; }
     .model svg { flex: none; margin-top: 2px; }
@@ -273,6 +274,7 @@
           <div class="song" id="songInfo" hidden>
             <span class="name" id="songName"></span>
             <span class="meta" id="songMeta"></span>
+            <span class="saved" id="songSaved" hidden data-i18n="saved.label">The song you separated last time (saved in this browser)</span>
           </div>
           <p class="note" id="iosNote" hidden data-i18n="ios.note">On iPhone and iPad, separating may not work: the device can run out of memory and the page reloads. We recommend separating on a computer. Saved MP3 files can be played on any device.</p>
           <button class="primary big" id="runBtn" type="button" disabled data-i18n="run">Separate into 4 parts</button>
@@ -395,7 +397,7 @@
         <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>
         <li><b>Harmony</b> – Right after separating, the app finds the key and chords and makes a harmony a 3rd or a 5th above (or below) the vocal melody: the part chosen in the menu (3rd above at first). To change the part, choose it and press “Remake the harmony”. If it could not be made, press “Find chords &amp; make harmony”. “Harmony (voice)” is the vocals shifted to the harmony notes; “Harmony guide tone” plays the same notes as a plain tone, to practice singing the harmony. The chords and notes scroll above the parts. The tempo (BPM) and the beats are found too, and each beat (quarter note) can have its own chord: tap a beat in the chord row and type a chord (it lasts until the next chord; bars like | C | G | Am | F | fill the beats from there), then press “Remake the harmony” to use your chords. Drag the chords and notes sideways to look ahead or back. The harmony voice is pitch-corrected (like Auto-Tune) to stay on the harmony notes. It is estimated automatically and can be wrong.</li>
         <li><b>Key</b> – − / + moves every part except the drums up or down a semitone (up to an octave), with the chords and the harmony.</li>
-        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>
+        <li><b>Good to know</b> – The last song you separated stays in the app after a reload, with its chords (only one song: separating another replaces it; ⚙ → “Delete the saved song” deletes it). To keep parts for good, save them as MP3 files. A computer is much faster than a phone. Keep the screen on while separating.</li>
         <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>
       </ol>
       <p class="help-more"><a href="/bandstemmixer/guide/" data-i18n="help.more" data-i18n-attr="href:guide.url">Read the full guide →</a></p>
@@ -411,7 +413,7 @@
       <ul class="help-list" data-i18n-html="privacy.body">
         <li><b>Your song stays on your device</b> – The audio file you choose is read, separated, and analyzed (chords, harmony, key change) only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>
         <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>
-        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Reset the mixer with “Reset mixer”, delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>
+        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), the app itself (to work offline), and the last song you separated (its parts, chords, and melody, so it is still there after a reload; about 210 MB for a 5-minute song) are saved in your browser. Reset the mixer with “Reset mixer”, delete the song with ⚙ → “Delete the saved song”, delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>
         <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>
         <li><b>Contact</b> – Questions and feedback: <a href="https://github.com/ktkwmr/BandStemMixer/issues" target="_blank" rel="noopener">GitHub Issues</a>.</li>
         <li><b>Full policy</b> – See the <a href="/bandstemmixer/privacy/">privacy policy</a> and <a href="/bandstemmixer/about/">about this site</a>.</li>
@@ -430,8 +432,18 @@
     <button type="button" role="menuitem" id="menuPrivacy" data-i18n="menu.privacy">Privacy</button>
     <button type="button" role="menuitem" id="menuAbout" data-i18n="menu.about">About</button>
     <div class="menu-sep" role="separator"></div>
+    <button type="button" role="menuitem" id="menuSong" hidden data-i18n="menu.song">Delete the saved song</button>
     <button type="button" role="menuitem" id="menuModel" data-i18n="menu.model">Delete the AI model</button>
   </div>
+
+  <dialog class="msg" id="songDlg" tabindex="-1" aria-labelledby="songDlgTitle">
+    <h2 id="songDlgTitle" data-i18n="saved.del.title">Delete the saved song?</h2>
+    <p class="dlg-text" data-i18n="saved.del.body">The last song you separated (its parts, chords, and harmony) is saved in this browser so it is still there after a reload. This deletes it to free up space. The song on screen stays until you reload.</p>
+    <div class="dlg-actions">
+      <button class="chip" id="songCancel" type="button" data-i18n="cancel">Cancel</button>
+      <button class="primary" id="songOk" type="button" data-i18n="saved.del.ok">Delete</button>
+    </div>
+  </dialog>
 
   <dialog class="msg" id="modelDlg" tabindex="-1" aria-labelledby="modelTitle">
     <h2 id="modelTitle" data-i18n="model.del.title">Delete the AI model?</h2>
@@ -600,8 +612,16 @@
           "menu.privacy": "Privacy",
           "menu.about": "About",
           "menu.model": "Delete the AI model",
-          "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Harmony</b> – Right after separating, the app finds the key and chords and makes a harmony a 3rd or a 5th above (or below) the vocal melody: the part chosen in the menu (3rd above at first). To change the part, choose it and press “Remake the harmony”. If it could not be made, press “Find chords &amp; make harmony”. “Harmony (voice)” is the vocals shifted to the harmony notes; “Harmony guide tone” plays the same notes as a plain tone, to practice singing the harmony. The chords and notes scroll above the parts. The tempo (BPM) and the beats are found too, and each beat (quarter note) can have its own chord: tap a beat in the chord row and type a chord (it lasts until the next chord; bars like | C | G | Am | F | fill the beats from there), then press “Remake the harmony” to use your chords. Drag the chords and notes sideways to look ahead or back. The harmony voice is pitch-corrected (like Auto-Tune) to stay on the harmony notes. It is estimated automatically and can be wrong.</li>\n        <li><b>Key</b> – − / + moves every part except the drums up or down a semitone (up to an octave), with the chords and the harmony.</li>\n        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
-          "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read, separated, and analyzed (chords, harmony, key change) only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Reset the mixer with “Reset mixer”, delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\">privacy policy</a> and <a href=\"/bandstemmixer/about/\">about this site</a>.</li>",
+          "menu.song": "Delete the saved song",
+          "saved.label": "The song you separated last time (saved in this browser)",
+          "saved.loading": "Opening the song you separated last time…",
+          "saved.opened": "Opened the song you separated last time.",
+          "saved.del.title": "Delete the saved song?",
+          "saved.del.body": "The last song you separated (its parts, chords, and harmony) is saved in this browser so it is still there after a reload. This deletes it to free up space. The song on screen stays until you reload.",
+          "saved.del.ok": "Delete",
+          "saved.del.done": "Deleted the saved song.",
+          "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Harmony</b> – Right after separating, the app finds the key and chords and makes a harmony a 3rd or a 5th above (or below) the vocal melody: the part chosen in the menu (3rd above at first). To change the part, choose it and press “Remake the harmony”. If it could not be made, press “Find chords &amp; make harmony”. “Harmony (voice)” is the vocals shifted to the harmony notes; “Harmony guide tone” plays the same notes as a plain tone, to practice singing the harmony. The chords and notes scroll above the parts. The tempo (BPM) and the beats are found too, and each beat (quarter note) can have its own chord: tap a beat in the chord row and type a chord (it lasts until the next chord; bars like | C | G | Am | F | fill the beats from there), then press “Remake the harmony” to use your chords. Drag the chords and notes sideways to look ahead or back. The harmony voice is pitch-corrected (like Auto-Tune) to stay on the harmony notes. It is estimated automatically and can be wrong.</li>\n        <li><b>Key</b> – − / + moves every part except the drums up or down a semitone (up to an octave), with the chords and the harmony.</li>\n        <li><b>Good to know</b> – The last song you separated stays in the app after a reload, with its chords (only one song: separating another replaces it; ⚙ → “Delete the saved song” deletes it). To keep parts for good, save them as MP3 files. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
+          "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read, separated, and analyzed (chords, harmony, key change) only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), the app itself (to work offline), and the last song you separated (its parts, chords, and melody, so it is still there after a reload; about 210 MB for a 5-minute song) are saved in your browser. Reset the mixer with “Reset mixer”, delete the song with ⚙ → “Delete the saved song”, delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\">privacy policy</a> and <a href=\"/bandstemmixer/about/\">about this site</a>.</li>",
           "model.del.title": "Delete the AI model?",
           "model.del.body": "This deletes the AI model (about 170 MB) saved in this browser, to free up space. It is downloaded again the next time you separate a song.",
           "model.del.ok": "Delete",
@@ -740,8 +760,16 @@
           "menu.privacy": "プライバシー",
           "menu.about": "このアプリについて",
           "menu.model": "AI モデルを削除",
-          "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – 「4 つのパートに分離する」を押します。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>ハモリ</b> – 分離が終わると続けて、キーとコードを推定して、ボーカルの旋律の 3 度または 5 度上（下）にハモリを作ります（メニューで選んだパート。最初は 3 度上）。パートを変えるときは、選んで「ハモリを再生成」を押します。作れなかったときは「コード推定＆ハモリ生成」を押してください。「ハモリ（声）」はボーカルの音程をハモリの音に変えたもの、「ハモリのガイド音」は同じ音を単純な音で鳴らすもので、ハモリを歌う練習に使えます。コードと音はパートの上に流れて表示されます。テンポ（BPM）と拍も推定し、コードは 1 拍（4 分音符）ごとに変えられます。上の段（コード）の拍をタップしてコード名を入力し（次のコードまで続きます。| C | G | Am | F | のように小節で書くと、その拍から流し込みます）、「ハモリを再生成」を押すとそのコードでハモリを作り直します。表示は横にドラッグして前後を見られます。ハモリの声は、ハモリの音に合うよう音程補正（Auto-Tune のような処理）をかけています。自動の推定なので、間違うこともあります。</li>\n        <li><b>キー</b> – − / + で、ドラム以外のパートを半音ずつ上げ下げします（1 オクターブまで）。コードとハモリも一緒に変わります。</li>\n        <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した MP3 ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
-          "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込み・分離・解析（コード・ハモリ・キーの変更）は、ブラウザの中だけで行います。サーバーに送られることはありません。MP3 ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。ミキサーの設定は「ミキサーを元に戻す」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\">運営者情報</a>をご覧ください。</li>",
+          "menu.song": "保存した曲を削除",
+          "saved.label": "前回分離した曲（このブラウザに保存）",
+          "saved.loading": "前回分離した曲を開いています…",
+          "saved.opened": "前回分離した曲を開きました。",
+          "saved.del.title": "保存した曲を削除しますか？",
+          "saved.del.body": "最後に分離した曲（パート・コード・ハモリ）は、再読み込みしても残るように、このブラウザに保存しています。これを削除して、容量を空けます。表示中の曲は、再読み込みするまでそのまま使えます。",
+          "saved.del.ok": "削除する",
+          "saved.del.done": "保存した曲を削除しました。",
+          "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – 「4 つのパートに分離する」を押します。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>ハモリ</b> – 分離が終わると続けて、キーとコードを推定して、ボーカルの旋律の 3 度または 5 度上（下）にハモリを作ります（メニューで選んだパート。最初は 3 度上）。パートを変えるときは、選んで「ハモリを再生成」を押します。作れなかったときは「コード推定＆ハモリ生成」を押してください。「ハモリ（声）」はボーカルの音程をハモリの音に変えたもの、「ハモリのガイド音」は同じ音を単純な音で鳴らすもので、ハモリを歌う練習に使えます。コードと音はパートの上に流れて表示されます。テンポ（BPM）と拍も推定し、コードは 1 拍（4 分音符）ごとに変えられます。上の段（コード）の拍をタップしてコード名を入力し（次のコードまで続きます。| C | G | Am | F | のように小節で書くと、その拍から流し込みます）、「ハモリを再生成」を押すとそのコードでハモリを作り直します。表示は横にドラッグして前後を見られます。ハモリの声は、ハモリの音に合うよう音程補正（Auto-Tune のような処理）をかけています。自動の推定なので、間違うこともあります。</li>\n        <li><b>キー</b> – − / + で、ドラム以外のパートを半音ずつ上げ下げします（1 オクターブまで）。コードとハモリも一緒に変わります。</li>\n        <li><b>注意</b> – 最後に分離した曲は、コードと一緒に、再読み込みしてもアプリに残ります（残るのは 1 曲だけで、別の曲を分離すると置き換わります。⚙ →「保存した曲を削除」で消せます）。ずっと残したいパートは MP3 で保存してください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
+          "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込み・分離・解析（コード・ハモリ・キーの変更）は、ブラウザの中だけで行います。サーバーに送られることはありません。MP3 ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体、最後に分離した曲（再読み込みしても残るように、パート・コード・旋律。5 分の曲で約 210 MB）を、ブラウザに保存します。ミキサーの設定は「ミキサーを元に戻す」、曲は ⚙ →「保存した曲を削除」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\">運営者情報</a>をご覧ください。</li>",
           "model.del.title": "AI モデルを削除しますか？",
           "model.del.body": "このブラウザに保存した AI モデル（約 170 MB）を削除して、容量を空けます。次に分離するときに、もう一度ダウンロードします。",
           "model.del.ok": "削除する",
@@ -934,6 +962,8 @@
       let mix = null; // { left, right, duration } at 44.1 kHz; handed to the worker (and cleared) on separation
       let fileOk = false; // the chosen file was read and can be separated
       let songSec = 0;
+      let songCh = 2;
+      let keptName = ""; // the kept song's file name (opened without a file)
       async function decode(f) {
         const data = await f.arrayBuffer();
         // An OfflineAudioContext at 44.1 kHz decodes and resamples to the rate the model needs
@@ -959,6 +989,7 @@
         $("songInfo").hidden = false;
         $("songName").textContent = f.name;
         $("songMeta").textContent = t("file.reading");
+        $("songSaved").hidden = true;
         $("runBtn").disabled = true;
         $("runBtn").textContent = t("run");
         try {
@@ -972,6 +1003,7 @@
           mix = d;
           fileOk = true;
           songSec = d.duration;
+          songCh = d.channels;
           $("runBtn").disabled = false;
         } catch (e) {
           if (file !== f) return;
@@ -1166,6 +1198,8 @@
             loadStems(m.stems);
             // Then the chords and the harmony at once, with the part chosen in the menu (3rd above by default)
             makeHarmony();
+            // And the song is kept in the browser for the next visit, once the harmony is made
+            keepSong();
           } else if (m.type === "error") {
             stopWorker();
             console.error("Separation failed", mode, m);
@@ -1280,6 +1314,7 @@
       // Before a new separation: drop the previous parts (here and in the player) so they do not take memory
       // while the model runs
       function releaseStems() {
+        currentId = 0;
         if (!stems) return;
         resetSong(null);
         stems = null;
@@ -1521,7 +1556,7 @@
         });
       }
       function baseName() {
-        return ((file && file.name) || "song").replace(/\.[^.]+$/, "").replace(/[\\/:*?"<>|]+/g, "_").slice(0, 80);
+        return ((file && file.name) || keptName || "song").replace(/\.[^.]+$/, "").replace(/[\\/:*?"<>|]+/g, "_").slice(0, 80);
       }
       // In the claude.ai preview, files are saved through the downloads capability (a[download] does nothing there)
       async function saveBlob(name, blob) {
@@ -1771,6 +1806,7 @@
         const regen = !harm || harm.stale || set.dir !== harm.dir || set.interval !== harm.interval;
         $("harmBtn").className = regen ? "primary" : "chip";
         if (!harm) return;
+        saveHarmSoon();
         $("bpmVal").textContent = harm.bpm ? t("harm.bpm", { bpm: Math.round(harm.bpm) }) : t("harm.noBeat");
         $("chordsNote").hidden = !harm.stale && !harm.edited;
         $("chordsStale").hidden = !harm.stale;
@@ -2158,6 +2194,186 @@
       }, { passive: false });
       window.addEventListener("resize", drawRoll);
 
+      // ---------- Keeping the last song ----------
+      // The last separated song is kept in IndexedDB, so a reload (or the next visit) opens it again without
+      // separating: the four parts as separated (16-bit, 44.1 kHz, before any key change), and the chords
+      // (as edited) and the melody, from which the harmony voice and guide tone are made again on opening.
+      // Only one song: a new separation replaces it. ⚙ → "Delete the saved song" deletes it.
+      // The parts are written after the harmony is made, a chunk (2 MB) at a time, so little extra memory is
+      // used. "song" in the meta store is written last: parts without it (the page was closed while writing)
+      // are deleted on the next load. The chords and melody ("harm") are written again when they change.
+      // Nothing is written when the browser has too little space left; the app then works as before.
+      const SONG_DB = "bandstemmixer-song";
+      const CHUNK = 1 << 20; // samples
+      let currentId = 0;     // the song on screen (0: none, or one that is not to be kept)
+      let keptId = 0;        // the song saved in the browser
+      let harmTimer = 0;
+      const sleep = (ms) => new Promise(function (r) { setTimeout(r, ms); });
+      function songDb() {
+        return new Promise(function (resolve, reject) {
+          const r = indexedDB.open(SONG_DB, 1);
+          r.onupgradeneeded = function () {
+            r.result.createObjectStore("meta");
+            r.result.createObjectStore("pcm");
+          };
+          r.onsuccess = function () { resolve(r.result); };
+          r.onerror = function () { reject(r.error); };
+        });
+      }
+      // One transaction; fn(tx) may return a request, whose result it resolves with
+      function idb(db, stores, mode, fn) {
+        return new Promise(function (resolve, reject) {
+          const tx = db.transaction(stores, mode);
+          let req = null;
+          tx.oncomplete = function () { resolve(req ? req.result : undefined); };
+          tx.onerror = tx.onabort = function () { reject(tx.error || new Error("IndexedDB")); };
+          req = fn(tx) || null;
+        });
+      }
+      function clearSong(db) {
+        return idb(db, ["meta", "pcm"], "readwrite", function (tx) { tx.objectStore("meta").clear(); tx.objectStore("pcm").clear(); });
+      }
+      function showKept() { $("menuSong").hidden = !keptId; }
+
+      async function keepSong() {
+        const id = currentId = Date.now(), parts = orig;
+        keptId = 0;
+        if (!window.indexedDB || !parts) return;
+        // After the chords and the harmony (they use the most memory)
+        while (wantHarm || jobs.length) {
+          await sleep(1000);
+          if (currentId !== id) return;
+        }
+        let db = null;
+        try {
+          db = await songDb();
+          await clearSong(db);
+          showKept();
+          const n = parts[0][0].length, need = parts.length * 2 * n * 2;
+          if (navigator.storage && navigator.storage.estimate) {
+            const e = await navigator.storage.estimate();
+            if (e.quota && e.quota - (e.usage || 0) < need * 1.2 + 64 * 1048576) {
+              console.warn("Not enough space to keep the song", e);
+              return;
+            }
+          }
+          // Ask the browser not to clear it when space is low (Firefox asks the person, so not there)
+          if (navigator.storage && navigator.storage.persist && !/Firefox\//.test(navigator.userAgent)) navigator.storage.persist().catch(function () {});
+          for (let p = 0; p < parts.length; p++) {
+            for (let ch = 0; ch < 2; ch++) {
+              for (let i = 0; i * CHUNK < n; i++) {
+                if (currentId !== id) { await clearSong(db); return; }
+                // slice: a plain copy (shared memory cannot be stored)
+                const part = parts[p][ch].slice(i * CHUNK, (i + 1) * CHUNK);
+                await idb(db, ["pcm"], "readwrite", function (tx) { tx.objectStore("pcm").put(part, [p, ch, i]); });
+              }
+            }
+          }
+          if (currentId !== id) { await clearSong(db); return; }
+          const meta = { v: 1, id: id, name: file ? file.name : "", sec: n / SR, channels: songCh, length: n, parts: parts.length };
+          await idb(db, ["meta"], "readwrite", function (tx) { tx.objectStore("meta").put(meta, "song"); });
+          keptId = id;
+          showKept();
+          await saveHarm(db);
+        } catch (e) {
+          console.warn("Could not keep the song", e);
+          keptId = 0;
+          showKept();
+          try { if (db) await clearSong(db); } catch (e2) {}
+        } finally {
+          if (db) db.close();
+        }
+      }
+
+      function harmData() {
+        return {
+          id: keptId, key: harm.key, grid: harm.grid ? new Float64Array(harm.grid) : null, bpm: harm.bpm,
+          cells: copyCells(harm.cells), auto: copyCells(harm.auto), edited: harm.edited,
+          frame: harm.frame, pitch: new Float32Array(harm.pitch),
+          notes: harm.notes.map(function (n) { return Object.assign({}, n); }),
+          dir: harm.dir, interval: harm.interval, lo: harm.lo, hi: harm.hi
+        };
+      }
+      async function saveHarm(db) {
+        if (!harm || !keptId || keptId !== currentId) return;
+        const d = harmData();
+        await idb(db, ["meta"], "readwrite", function (tx) { tx.objectStore("meta").put(d, "harm"); });
+      }
+      function saveHarmSoon() {
+        if (!keptId || keptId !== currentId) return;
+        clearTimeout(harmTimer);
+        harmTimer = setTimeout(async function () {
+          let db = null;
+          try { db = await songDb(); await saveHarm(db); } catch (e) { console.warn("Could not keep the chords", e); }
+          if (db) db.close();
+        }, 1000);
+      }
+
+      async function forgetSong() {
+        keptId = 0;
+        currentId = 0;
+        clearTimeout(harmTimer);
+        showKept();
+        $("songSaved").hidden = true;
+        try { const db = await songDb(); await clearSong(db); db.close(); } catch (e) {}
+      }
+
+      // On load: open the kept song, unless a song was chosen in the meantime
+      async function restoreSong() {
+        if (!window.indexedDB) return;
+        let db = null;
+        const taken = function () { return busy || stems || file; };
+        try {
+          db = await songDb();
+          const meta = await idb(db, ["meta"], "readonly", function (tx) { return tx.objectStore("meta").get("song"); });
+          if (!meta || meta.v !== 1) { await clearSong(db); return; }
+          if (taken()) return;
+          toast(t("saved.loading"), true);
+          const shared = window.crossOriginIsolated && typeof SharedArrayBuffer === "function";
+          const n = meta.length, parts = [];
+          for (let p = 0; p < meta.parts; p++) {
+            const pair = [];
+            for (let ch = 0; ch < 2; ch++) {
+              const a = new Int16Array(shared ? new SharedArrayBuffer(n * 2) : n);
+              for (let i = 0; i * CHUNK < n; i++) {
+                const c = await idb(db, ["pcm"], "readonly", function (tx) { return tx.objectStore("pcm").get([p, ch, i]); });
+                if (!c) throw new Error("A part is missing");
+                a.set(c, i * CHUNK);
+              }
+              pair.push(a);
+            }
+            parts.push(pair);
+          }
+          const h = await idb(db, ["meta"], "readonly", function (tx) { return tx.objectStore("meta").get("harm"); });
+          if (taken()) { $("toast").hidden = true; return; }
+          songSec = meta.sec;
+          keptName = meta.name;
+          $("songInfo").hidden = false;
+          $("songName").textContent = meta.name;
+          $("songMeta").textContent = t("file.meta", { time: fmtTime(meta.sec), ch: t(meta.channels > 1 ? "file.stereo" : "file.mono") });
+          $("songSaved").hidden = false;
+          await loadStems(parts);
+          keptId = currentId = meta.id;
+          showKept();
+          if (h && h.id === meta.id) {
+            // The harmony voice and guide tone are made again from the kept chords and melody
+            harm = Object.assign(h, { stale: false, semis: NaN, voice: null, guide: null });
+            joinCells();
+            $("harmDir").value = String(h.dir * h.interval);
+            $("harmView").hidden = false;
+            renderHarm();
+            rebuild();
+          }
+          toast(t("saved.opened"));
+        } catch (e) {
+          console.warn("Could not open the kept song", e);
+          $("toast").hidden = true;
+          try { if (db) await clearSong(db); } catch (e2) {}
+        } finally {
+          if (db) db.close();
+        }
+      }
+
       // ---------- Keyboard ----------
       document.addEventListener("keydown", function (e) {
         if (!stems || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -2261,6 +2477,12 @@
       $("menuPrivacy").addEventListener("click", function () { closeMenu(false); openDlg(privacyDlg); });
       $("menuAbout").addEventListener("click", function () { closeMenu(false); loadLicenses(); openDlg(aboutDlg); });
       $("menuModel").addEventListener("click", function () { closeMenu(false); openDlg(modelDlg); });
+      $("menuSong").addEventListener("click", function () { closeMenu(false); openDlg($("songDlg")); });
+      $("songOk").addEventListener("click", async function () {
+        await forgetSong();
+        $("songDlg").close();
+        toast(t("saved.del.done"));
+      });
       // Delete the AI model: frees the space the model cache takes. The offline copy of the app stays.
       $("modelOk").addEventListener("click", async function () {
         try { await caches.delete(MODEL_CACHE); } catch (e) {}
@@ -2270,12 +2492,12 @@
       });
 
       // Dialogs: close with the Close button or a click outside; focus returns to the settings button
-      [[helpDlg, "helpClose"], [privacyDlg, "privacyClose"], [aboutDlg, "aboutClose"], [modelDlg, "modelCancel"]].forEach(function (pair) {
+      [[helpDlg, "helpClose"], [privacyDlg, "privacyClose"], [aboutDlg, "aboutClose"], [modelDlg, "modelCancel"], [$("songDlg"), "songCancel"]].forEach(function (pair) {
         const dlg = pair[0];
         $(pair[1]).addEventListener("click", function () { dlg.close(); });
         dlg.addEventListener("close", function () { settingsBtn.focus(); });
       });
-      [helpDlg, privacyDlg, aboutDlg, modelDlg, $("netDlg"), chordDlg].forEach(function (dlg) {
+      [helpDlg, privacyDlg, aboutDlg, modelDlg, $("songDlg"), $("netDlg"), chordDlg].forEach(function (dlg) {
         dlg.addEventListener("click", function (e) {
           const r = dlg.getBoundingClientRect();
           if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
@@ -2290,6 +2512,7 @@
       setGhost(true);
       checkModel();
       reportCrash();
+      restoreSong();
       // iPhone / iPad: the model can need more memory than Safari gives a tab (an iPhone 17e could not
       // separate with any setting), so say so before the person tries
       if (isIOS()) $("iosNote").hidden = false;
