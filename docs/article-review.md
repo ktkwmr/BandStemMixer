@@ -15,6 +15,18 @@ PR を出すと Cloudflare のプレビュー URL ができるので、そこで
 | 6 | 権利 | 著作権のある歌詞・曲・画像を使っていないか（画面写真の曲は `scripts/guide-song.mjs` で作った架空の曲） |
 | 7 | スマホ | 390px 前後の幅で読みやすいか |
 
+## 今回（2026-11-25、コードとハモリを Vocal Harmony Maker に移す）特に見てほしいところ
+
+記事 `harmony`・`chords-and-key` を外し、キーの変更だけの `key-change` を足した。`guide`・`faq`・`how-it-works`・`learn-by-ear`・`minus-one`・`privacy`・`about` からコードとハモリの説明を外し、Vocal Harmony Maker への案内に替えた。
+
+| # | 記事 | 確認してほしい点 |
+|---|---|---|
+| A | guide | 「キー」の節と、ハモリ・コードは Vocal Harmony Maker へ、という案内の置き方。画面写真はハモリの 2 本がない状態で撮り直した |
+| B | key-change | 旧 `chords-and-key` からキーの部分だけを残したもの。表の「バンドで演奏するキーで練習する」の書き方 |
+| C | faq | 新しい質問「コードを調べたり、ハモリを作ったりできますか？」 |
+| D | 旧 URL | `/bandstemmixer/harmony/` → Vocal Harmony Maker の `harmony` 記事、`/bandstemmixer/chords-and-key/` → `key-change` に 301（`public/_redirects`）。プレビュー URL で転送されるか（Vocal Harmony Maker は公開後でないと 404） |
+| E | privacy | 「2026 年 11 月 25 日改定」の書き方 |
+
 ## 今回（2026-10-29、最初の記事 6 本）特に見てほしいところ
 
 記事: `guide`（使い方）・`minus-one`（自分のパートを消して練習）・`learn-by-ear`（ベースとドラムを聞き取る）・`how-it-works`（AI 音源分離の仕組み）・`better-results`（うまく分離するコツ）・`faq`（よくある質問）。

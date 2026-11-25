@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Takes the app screenshots used in the guide and the harmony / chords articles:
-//   public/bandstemmixer/images/guide/{en,ja}-{song,progress,mixer,harmony,chord,network,phone}.png
+// Takes the app screenshots used in the guide:
+//   public/bandstemmixer/images/guide/{en,ja}-{song,progress,mixer,network,phone}.png
 // The song is made up (scripts/guide-song.mjs), so there is no copyright issue. The AI model is not
 // used: a stand-in for separator.js returns the song's four parts, which are known exactly, after a
 // short fake progress. Everything else is the real app.
@@ -56,7 +56,8 @@ const server = createServer(async (req, res) => {
   const file = normalize(join(PUBLIC, path));
   if (!file.startsWith(PUBLIC)) return res.writeHead(403).end();
   try {
-    res.writeHead(200, { "Content-Type": TYPES[extname(file)] || "application/octet-stream" }).end(await readFile(file));
+    const body = await readFile(file);
+    res.writeHead(200, { "Content-Type": TYPES[extname(file)] || "application/octet-stream" }).end(body);
   } catch {
     res.writeHead(404).end();
   }
@@ -109,12 +110,13 @@ async function addMarkers(page, targets) {
 }
 
 async function open(page, lang) {
+  page.on("pageerror", (e) => console.error("Page error:", String(e)));
   await page.route("https://static.cloudflareinsights.com/**", (r) => r.fulfill({ status: 200, contentType: "text/javascript", body: "" }));
   await page.goto(origin + PATH[lang]);
   await page.setInputFiles("#fileInput", SONG[lang]);
   await page.waitForFunction(() => !document.getElementById("runBtn").disabled);
 }
-// Separate (the chords and the harmony follow on their own), then set up the mixer like a bass player's practice: the bass muted, the vocals a little lower
+// Separate, then set up the mixer like a bass player's practice: the bass muted, the vocals a little lower
 async function separate(page, { progressShot, started } = {}) {
   if (!started) await page.click("#runBtn");
   if (progressShot) {
@@ -124,8 +126,6 @@ async function separate(page, { progressShot, started } = {}) {
   // Before separating, the mixer is shown greyed out (.ghost)
   await page.waitForSelector("#mixer:not(.ghost)", { timeout: 60000 });
   await page.waitForFunction(() => !document.getElementById("progress").offsetParent);
-  await page.waitForSelector("#harmView:not([hidden])", { timeout: 60000 });
-  await page.waitForFunction(() => document.getElementById("harmProgress").hidden, null, { timeout: 60000 });
   await page.locator(".strip").nth(1).locator(".ms .chip").first().click();
   await page.locator(".strip").nth(0).locator("input[type=range]").fill("0.8");
   // From 0:20, where every part plays (the vocals start at 0:16)
@@ -163,26 +163,6 @@ for (const lang of ["en", "ja"]) {
     [".mix-foot .vol > span", 8, "left"], ["#resetMix", 9, "corner"], ["#saveMix", 10, "corner"],
   ]);
   await shot(page, ".panel.out", `${lang}-mixer.png`);
-  // Chords and harmony (the harmony article): the key, the button, the roll, and the two added parts
-  await page.evaluate(() => document.querySelectorAll(".guide-marker").forEach((m) => m.remove()));
-  await page.evaluate(() => { document.activeElement && document.activeElement.blur(); });
-  await page.mouse.move(0, 0);
-  await addMarkers(page, [
-    ["#keyDown", 1, "corner"], ["#harmBtn", 2, "corner"], ["#harmDir", 3, "corner"], ["#bpmVal", 4, "right"],
-    ["#roll", 5, "left"], [".strip:nth-child(5) .sname", 6, "left"], [".strip:nth-child(6) .sname", 7, "left"],
-  ]);
-  await shot(page, ".panel.out", `${lang}-harmony.png`);
-  await page.evaluate(() => document.querySelectorAll(".guide-marker").forEach((m) => m.remove()));
-  // The chord editor: stop, then tap the chord row at the play position
-  await page.click("#playBtn");
-  const rb = await page.locator("#roll").boundingBox();
-  await page.mouse.click(rb.x + rb.width * 0.21, rb.y + 10);
-  await page.waitForSelector("#chordDlg[open]");
-  // Bars typed as text, poured in from the tapped beat
-  await page.fill("#chordInput", "| F | G7 | Em7 Am |");
-  await page.evaluate(() => document.activeElement && document.activeElement.blur());
-  await page.waitForTimeout(300);
-  await shot(page, "#chordDlg", `${lang}-chord.png`, 12);
   await ctx.close();
 
   // Phone: the question before the first download, and the mixer

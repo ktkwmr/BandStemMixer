@@ -11,7 +11,7 @@ export default {
     heading: "How to use Band Stem Mixer",
     nav: "How to use (guide)",
     description:
-      "Step-by-step guide to Band Stem Mixer: choose a song, separate it into vocals, drums, bass, and other with AI in your browser, mute, solo, and mix the parts, change the key, see the chords, make a harmony part, and save MP3 files.",
+      "Step-by-step guide to Band Stem Mixer: choose a song, separate it into vocals, drums, bass, and other with AI in your browser, mute, solo, and mix the parts, change the key, and save MP3 files.",
     body: () => `
 <p class="lead">Band Stem Mixer splits a song into four parts with AI — vocals, drums, bass, and other — and lets you mix them for practice. This guide walks through every part of the screen.</p>
 
@@ -20,7 +20,7 @@ export default {
   <li><a href="#song">Choosing a song and separating it</a></li>
   <li><a href="#first">The first time: downloading the AI model</a></li>
   <li><a href="#mixer">The mixer</a></li>
-  <li><a href="#harmony">Key, chords, and harmony</a></li>
+  <li><a href="#key">Changing the key</a></li>
   <li><a href="#save">Saving MP3 files</a></li>
   <li><a href="#phone">On a phone or tablet</a></li>
   <li><a href="#keys">Keyboard shortcuts</a></li>
@@ -63,7 +63,7 @@ export default {
 
 <h2 id="mixer">The mixer</h2>
 <figure class="shot">
-  ${img("en", "mixer", "The mixer while playing: the stop button and the position bar at 0:21 of 1:00, the key control, the Remake the harmony button and the chords and notes, six rows for Vocals (at 80%), Bass (muted), Drums, Other (guitar, keys…), Harmony (voice), and Harmony guide tone (muted), each with a level meter, M and S buttons, a fader, and a save button, and under them the Master fader, Reset mixer, and Save this mix (MP3). Numbers 1 to 10 mark the controls.")}
+  ${img("en", "mixer", "The mixer while playing: the stop button and the position bar at 0:21 of 1:00, the key control, four rows for Vocals (at 80%), Bass (muted), Drums, and Other (guitar, keys…), each with a level meter, M and S buttons, a fader, and a save button, and under them the Master fader, Reset mixer, and Save this mix (MP3). Numbers 1 to 10 mark the controls.")}
   <figcaption>Here the bass is muted (M), as a bass player would for practice, and the vocals are turned down to 80%.</figcaption>
 </figure>
 <ol>
@@ -75,42 +75,28 @@ export default {
   <li><b>Fader</b> – The volume of the part, from 0% to ${FADER_MAX}%.</li>
   <li><b>↓ (save the part)</b> – Saves that part alone as an MP3 file.</li>
   <li><b>Master</b> – The volume of the whole mix.</li>
-  <li><b>Reset mixer</b> – Puts every part back to 100% and unmuted (the harmony guide tone back to muted).</li>
+  <li><b>Reset mixer</b> – Puts every part back to 100% and unmuted.</li>
   <li><b>Save this mix (MP3)</b> – Saves what you hear now as one MP3 file.</li>
 </ol>
 <p>The faders, M, and the master volume are remembered for next time; S is not, so you never start in solo by mistake.</p>
-<p>Right after separating, the app also finds the chords and makes a harmony part, so two harmony rows are added under the four parts. They, and the key control, are explained in the next section.</p>
 <p>For practice ideas, see <a href="../minus-one/">practicing with your part removed</a> and <a href="../learn-by-ear/">hearing the bass and drums clearly</a>.</p>
 
-<h2 id="harmony">Key, chords, and harmony</h2>
-<figure class="shot">
-  ${img("en", "harmony", "The mixer after making a harmony: the key control, the Remake the harmony button and the part, BPM 120, a scrolling view of the chords, the vocal melody, and the harmony notes, and two added rows, Harmony (voice) and Harmony guide tone. Numbers 1 to 7 mark them.")}
-  <figcaption>The chords and the harmony, made right after separating. The numbers match the list below.</figcaption>
-</figure>
-<ol>
-  <li><b>Key (all but drums)</b> – − and + move the vocals, bass, and other by a semitone, up to an octave either way. The tempo and the drums stay the same.</li>
-  <li><b>Remake the harmony</b> – Right after separating, the app finds the tempo, the chord on every beat, and the vocal melody, and makes a harmony part (the one chosen in 3; a 3rd above at first). Press this after you change the part or the chords. If the harmony could not be made, it says “Find chords &amp; make harmony”: press it to try again.</li>
-  <li><b>The harmony part</b> – a 3rd or a 5th, above or below the melody.</li>
-  <li><b>BPM</b> – the tempo found in the song.</li>
-  <li><b>The view</b> – chord names on top (tap a beat there to change the chord), the vocal melody as a grey line, and the harmony notes as black bars. Drag it sideways to look ahead; tap it to jump there.</li>
-  <li><b>Harmony (voice)</b> – the vocals moved to the harmony notes.</li>
-  <li><b>Harmony guide tone</b> – the same notes as a plain tone. It starts muted; press its M to hear it.</li>
-</ol>
-<p>All of this runs in your browser without the AI model. For more, see <a href="../harmony/">practicing harmonies</a> and <a href="../chords-and-key/">chords and key change</a>.</p>
+<h2 id="key">Changing the key</h2>
+<p><b>Key (all but drums)</b>, above the parts: − and + move the vocals, bass, and other by a semitone, up to an octave either way. The tempo and the drums stay the same. It takes a few seconds; the song keeps playing in the old key until the new one is ready. See <a href="../key-change/">changing the key</a>.</p>
+<div class="note"><p>To find the chords of a song or add a harmony part to its vocals, use our separate app <a href="/vocalharmonymaker/">Vocal Harmony Maker</a>.</p></div>
 
 <h2 id="save">Saving MP3 files</h2>
 <ul>
   <li><b>Each part</b> – The ↓ button on each row saves that part, as it was separated (the fader and M do not change it).</li>
   <li><b>Your mix</b> – “Save this mix (MP3)” saves what you hear now: the faders, M, S, and the master volume.</li>
-  <li><b>Harmony</b> – The two harmony parts have ↓ buttons too.</li>
   <li>The files are ${KBPS} kbps MP3 (44.1 kHz stereo), named after the song, for example <code>practice-song - Bass.mp3</code>. When the key is changed, the name says so: <code>practice-song - Bass (key +2).mp3</code>.</li>
-  <li>The separated parts, the chords, and the harmony are not kept in the app. When you reload the page or choose another song, they are gone: save the files you want to keep, or separate the song again.</li>
+  <li>The separated parts are not kept in the app. When you reload the page or choose another song, they are gone: save the files you want to keep, or separate the song again.</li>
 </ul>
 <p>Saved MP3 files play on any device. You can separate a song on a computer and practice with the files on your phone.</p>
 
 <h2 id="phone">On a phone or tablet</h2>
 <figure class="shot phone">
-  ${img("en", "phone", "Band Stem Mixer on a phone: the mixer with the play button and the position, the key control, the Remake the harmony button, BPM 120 and the chords and notes, and the parts, each with M, S, save, and a fader below the name.", { half: true })}
+  ${img("en", "phone", "Band Stem Mixer on a phone: the mixer with the play button and the position, the key control, and the parts, each with M, S, save, and a fader below the name.", { half: true })}
   <figcaption>On a narrow screen, each part's fader is under its name.</figcaption>
 </figure>
 <p>The mixer works the same on a phone. Separation needs a lot of memory, though: phones and tablets take longer, take songs up to ${MAX_MIN_LOW_MEM} minutes, and some cannot finish at all.</p>
@@ -122,7 +108,7 @@ export default {
     <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
     <tbody>
       <tr><th scope="row"><code>Space</code></th><td>Play / stop</td></tr>
-      <tr><th scope="row"><code>1</code>–<code>6</code></th><td>Mute or unmute vocals, bass, drums, other (and 5, 6: the harmony voice and guide tone, once made)</td></tr>
+      <tr><th scope="row"><code>1</code>–<code>4</code></th><td>Mute or unmute vocals, bass, drums, other</td></tr>
       <tr><th scope="row"><code>←</code> <code>→</code></th><td>5 seconds back / forward</td></tr>
     </tbody>
   </table>
@@ -134,7 +120,7 @@ export default {
   <li>The mixer settings: each part's fader and mute, and the master volume.</li>
   <li>The app itself, so it opens without a connection. You can add it to your home screen.</li>
 </ul>
-<p>Your song, the separated parts, the chords, and the harmony are not saved and are never uploaded. See the <a href="../privacy/">privacy policy</a>.</p>
+<p>Your song and the separated parts are not saved and are never uploaded. See the <a href="../privacy/">privacy policy</a>.</p>
 `,
   },
   ja: {
@@ -142,7 +128,7 @@ export default {
     heading: "Band Stem Mixer の使い方",
     nav: "使い方ガイド",
     description:
-      "Band Stem Mixer の使い方を画面写真つきで解説。曲を選んで AI でボーカル・ドラム・ベース・その他に分離し、パートごとにミュート・ソロ・音量を変え、キーの変更・コード表示・ハモリ作りをして、MP3 で保存するまで。",
+      "Band Stem Mixer の使い方を画面写真つきで解説。曲を選んで AI でボーカル・ドラム・ベース・その他に分離し、パートごとにミュート・ソロ・音量を変え、キーを変えて、MP3 で保存するまで。",
     body: () => `
 <p class="lead">Band Stem Mixer は、曲を AI でボーカル・ドラム・ベース・その他の 4 つのパートに分け、パートごとに音量を変えて練習できるアプリです。このガイドでは、画面の各部分を順に説明します。</p>
 
@@ -151,7 +137,7 @@ export default {
   <li><a href="#song">曲を選んで分離する</a></li>
   <li><a href="#first">初回は AI モデルをダウンロード</a></li>
   <li><a href="#mixer">ミキサー</a></li>
-  <li><a href="#harmony">キー・コード・ハモリ</a></li>
+  <li><a href="#key">キーを変える</a></li>
   <li><a href="#save">MP3 で保存する</a></li>
   <li><a href="#phone">スマホ・タブレットで使う</a></li>
   <li><a href="#keys">キーボード操作</a></li>
@@ -194,7 +180,7 @@ export default {
 
 <h2 id="mixer">ミキサー</h2>
 <figure class="shot">
-  ${img("ja", "mixer", "再生中のミキサー。停止ボタンと再生位置（1:00 のうち 0:21）、キーの − ＋、「ハモリを再生成」ボタンとコード・音の表示、ボーカル（80%）・ベース（ミュート）・ドラム・その他（ギター・鍵盤など）・ハモリ（声）・ハモリのガイド音（ミュート）の 6 行に、それぞれレベルメーター、M と S のボタン、フェーダー、保存ボタン。下に全体の音量、「ミキサーを元に戻す」「このミックスを保存（MP3）」。1〜10 の番号付き。")}
+  ${img("ja", "mixer", "再生中のミキサー。停止ボタンと再生位置（1:00 のうち 0:21）、キーの − ＋、ボーカル（80%）・ベース（ミュート）・ドラム・その他（ギター・鍵盤など）の 4 行に、それぞれレベルメーター、M と S のボタン、フェーダー、保存ボタン。下に全体の音量、「ミキサーを元に戻す」「このミックスを保存（MP3）」。1〜10 の番号付き。")}
   <figcaption>ベーシストの練習のように、ベースをミュート（M）し、ボーカルを 80% に下げたところ。</figcaption>
 </figure>
 <ol>
@@ -206,42 +192,28 @@ export default {
   <li><b>フェーダー</b> – パートの音量（0〜${FADER_MAX}%）。</li>
   <li><b>↓（パートを保存）</b> – そのパートだけを MP3 ファイルで保存します。</li>
   <li><b>全体</b> – ミックス全体の音量。</li>
-  <li><b>ミキサーを元に戻す</b> – すべてのパートを 100%・ミュートなしに戻します（ハモリのガイド音はミュートに戻します）。</li>
+  <li><b>ミキサーを元に戻す</b> – すべてのパートを 100%・ミュートなしに戻します。</li>
   <li><b>このミックスを保存（MP3）</b> – いま聞こえている音を 1 つの MP3 ファイルで保存します。</li>
 </ol>
 <p>フェーダー・M・全体の音量は次回も残ります。S は残らないので、うっかりソロのまま始まることはありません。</p>
-<p>分離が終わると続けて、コードの推定とハモリの生成も自動で行い、4 つのパートの下にハモリの 2 行が増えます。これと「キー」は、次の節で説明します。</p>
 <p>練習のしかたは、<a href="../minus-one/">自分のパートを消して練習する</a>と<a href="../learn-by-ear/">ベースとドラムを聞き取る</a>を見てください。</p>
 
-<h2 id="harmony">キー・コード・ハモリ</h2>
-<figure class="shot">
-  ${img("ja", "harmony", "ハモリを作ったあとのミキサー。キーの − と ＋、「ハモリを再生成」ボタンとパート、BPM 120、コード・ボーカルの音程・ハモリの音が流れる表示、増えた 2 行「ハモリ（声）」「ハモリのガイド音」。1〜7 の番号付き。")}
-  <figcaption>分離のあと自動で作ったコードとハモリ。番号は下の説明と対応しています。</figcaption>
-</figure>
-<ol>
-  <li><b>キー（ドラム以外）</b> – − と ＋ で、ボーカル・ベース・その他を半音ずつ、上下 1 オクターブまで動かします。テンポとドラムは変わりません。</li>
-  <li><b>ハモリを再生成</b> – 分離が終わると続けて、テンポ、拍ごとのコード、ボーカルの旋律を推定し、ハモリのパート（3 で選んだもの。最初は 3 度上）を作ります。パートやコードを変えたら押してください。ハモリを作れなかったときは「コード推定＆ハモリ生成」になるので、押してやり直してください。</li>
-  <li><b>ハモリのパート</b> – 旋律の 3 度か 5 度の、上か下か。</li>
-  <li><b>BPM</b> – 曲から推定したテンポ。</li>
-  <li><b>表示</b> – 上の段にコード名（拍をタップするとコードを変えられます）、灰色の線がボーカルの音程、黒い帯がハモリの音。横にドラッグすると先を見られ、タップするとその位置に移ります。</li>
-  <li><b>ハモリ（声）</b> – ボーカルをハモリの音程に変えたもの。</li>
-  <li><b>ハモリのガイド音</b> – 同じ音を単純な音で鳴らしたもの。最初はミュートなので、聞くときは M を押します。</li>
-</ol>
-<p>これらはすべて、AI モデルを使わずにブラウザの中で処理します。詳しくは<a href="../harmony/">ハモリの練習</a>と<a href="../chords-and-key/">コード表示とキー変更</a>をご覧ください。</p>
+<h2 id="key">キーを変える</h2>
+<p>パートの上の<b>キー（ドラム以外）</b>の − と ＋ で、ボーカル・ベース・その他を半音ずつ、上下 1 オクターブまで動かします。テンポとドラムは変わりません。数秒かかり、準備ができるまでは元のキーのまま再生が続きます。<a href="../key-change/">曲のキーを変える</a>をご覧ください。</p>
+<div class="note"><p>曲のコードを調べたり、ボーカルにハモリを付けたりするには、別のアプリ <a href="/vocalharmonymaker/ja/">Vocal Harmony Maker</a> をお使いください。</p></div>
 
 <h2 id="save">MP3 で保存する</h2>
 <ul>
   <li><b>パートごと</b> – 各行の ↓ ボタンで、そのパートを分離したままの音で保存します（フェーダーや M は反映しません）。</li>
   <li><b>自分のミックス</b> – 「このミックスを保存（MP3）」で、いま聞こえている音（フェーダー・M・S・全体の音量）を保存します。</li>
-  <li><b>ハモリ</b> – ハモリの 2 つのパートにも ↓ ボタンがあります。</li>
   <li>ファイルは ${KBPS} kbps の MP3（44.1 kHz ステレオ）で、名前は曲名から付けます（例：<code>練習曲 - ベース.mp3</code>）。キーを変えたときは名前に入ります（例：<code>練習曲 - ベース（キー +2）.mp3</code>）。</li>
-  <li>分離したパート・コード・ハモリはアプリに残りません。ページを読み込み直したり別の曲を選んだりすると消えるので、残したいものは保存するか、もう一度分離してください。</li>
+  <li>分離したパートはアプリに残りません。ページを読み込み直したり別の曲を選んだりすると消えるので、残したいものは保存するか、もう一度分離してください。</li>
 </ul>
 <p>保存した MP3 はどの端末でも再生できます。パソコンで分離して、スマホでそのファイルを使って練習することもできます。</p>
 
 <h2 id="phone">スマホ・タブレットで使う</h2>
 <figure class="shot phone">
-  ${img("ja", "phone", "スマホでの Band Stem Mixer。再生ボタンと再生位置、キー、「ハモリを再生成」ボタン、BPM 120 とコード・音の表示、パートの行に M・S・保存ボタン、名前の下にフェーダー。", { half: true })}
+  ${img("ja", "phone", "スマホでの Band Stem Mixer。再生ボタンと再生位置、キー、パートの行に M・S・保存ボタン、名前の下にフェーダー。", { half: true })}
   <figcaption>幅の狭い画面では、各パートのフェーダーが名前の下に並びます。</figcaption>
 </figure>
 <p>ミキサーはスマホでも同じように使えます。ただし分離にはメモリをたくさん使うので、スマホ・タブレットでは時間がかかり、曲の長さは ${MAX_MIN_LOW_MEM} 分までで、端末によっては最後まで分離できません。</p>
@@ -253,7 +225,7 @@ export default {
     <thead><tr><th scope="col">キー</th><th scope="col">操作</th></tr></thead>
     <tbody>
       <tr><th scope="row"><code>Space</code></th><td>再生・停止</td></tr>
-      <tr><th scope="row"><code>1</code>〜<code>6</code></th><td>ボーカル・ベース・ドラム・その他のミュートの切り替え（ハモリを作ったあとは 5・6 でハモリ（声）・ガイド音）</td></tr>
+      <tr><th scope="row"><code>1</code>〜<code>4</code></th><td>ボーカル・ベース・ドラム・その他のミュートの切り替え</td></tr>
       <tr><th scope="row"><code>←</code> <code>→</code></th><td>5 秒戻る・進む</td></tr>
     </tbody>
   </table>
@@ -265,7 +237,7 @@ export default {
   <li>ミキサーの設定（各パートの音量とミュート、全体の音量）。</li>
   <li>アプリ本体（通信がなくても開けるように）。ホーム画面に追加できます。</li>
 </ul>
-<p>曲・分離したパート・コード・ハモリは保存せず、アップロードもしません。<a href="../privacy/">プライバシーポリシー</a>もご覧ください。</p>
+<p>曲・分離したパートは保存せず、アップロードもしません。<a href="../privacy/">プライバシーポリシー</a>もご覧ください。</p>
 `,
   },
 };

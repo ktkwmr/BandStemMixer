@@ -12,7 +12,7 @@ export default {
     heading: "How AI music separation works, and why it is not perfect",
     nav: "How AI separation works",
     description:
-      "How an AI model like Demucs splits a mixed song into vocals, drums, bass, and other: what it learns, why sounds leak between parts, why guitar and keys stay together, how Band Stem Mixer runs it in your browser, and how it finds chords, makes harmonies, and changes the key.",
+      "How an AI model like Demucs splits a mixed song into vocals, drums, bass, and other: what it learns, why sounds leak between parts, why guitar and keys stay together, how Band Stem Mixer runs it in your browser, and how it changes the key.",
     body: () => `
 <p class="lead">Once a song is mixed, the instruments are added together into one waveform (two, in stereo). There is no switch that takes them apart again. AI separation works by <b>estimating</b> what each instrument must have sounded like — very well, but not perfectly. Knowing how helps you get the most out of it.</p>
 
@@ -23,7 +23,7 @@ export default {
   <li><a href="#parts">Why four parts, and why guitar and keys stay together</a></li>
   <li><a href="#leak">Why sounds leak between parts</a></li>
   <li><a href="#browser">How it runs in your browser</a></li>
-  <li><a href="#chords">Chords, harmony, and key change (without AI)</a></li>
+  <li><a href="#chords">Key change (without AI)</a></li>
 </ol></nav>
 
 <h2 id="problem">Why separating a mix is hard</h2>
@@ -67,16 +67,9 @@ export default {
 </ul>
 <p>Once separated, the four parts are played together in sync, and the mixer only changes their volumes, so moving a fader is instant.</p>
 
-<h2 id="chords">Chords, harmony, and key change (without AI)</h2>
-<p>The chords, the harmony, and the key change do not use an AI model. They are classic signal-processing methods, written in JavaScript and run in the browser, that work much better on the separated parts than on the full mix:</p>
-<ul>
-  <li><b>Beats and tempo</b> – the moments where new sounds start, the interval between them that repeats most (autocorrelation), and the chain of beats that fits both best (dynamic programming, after D. Ellis, 2007).</li>
-  <li><b>Chords</b> – for each beat, the strength of each of the 12 notes (a “chroma”) in the bass and “Other” parts, compared with the 24 major and minor chords; a hidden Markov model keeps the chords from changing on every beat without reason. Without guitar and vocals mixed in, the bass part makes the root of each chord much clearer.</li>
-  <li><b>Melody</b> – the pitch of the separated vocals, found with the YIN method and cut into notes.</li>
-  <li><b>Harmony voice</b> – the vocals moved to the harmony notes with TD-PSOLA, which repeats or skips single cycles of the voice, so the voice keeps its character. Pitch correction (like Auto-Tune) then pulls it onto the exact harmony notes.</li>
-  <li><b>Key change</b> – a phase vocoder that stretches each part in time by the pitch ratio and plays it back at the original length.</li>
-</ul>
-<p>Like the separation, these are estimates. See <a href="../chords-and-key/#limits">what to expect from the chords</a> and <a href="../harmony/#limits">from the harmony</a>.</p>
+<h2 id="chords">Key change (without AI)</h2>
+<p>The key change does not use an AI model. A <b>phase vocoder</b>, a classic signal-processing method written in JavaScript and run in the browser, stretches each part in time by the pitch ratio and plays it back at the original length. It works on the separated parts one by one, which is why the drums can stay as they are.</p>
+<p>Finding the chords and making a harmony part from the vocals moved to our separate app <a href="/vocalharmonymaker/">Vocal Harmony Maker</a>.</p>
 `,
   },
   ja: {
@@ -84,7 +77,7 @@ export default {
     heading: "AI 音源分離の仕組みと、完璧に分かれない理由",
     nav: "AI 音源分離の仕組み",
     description:
-      "Demucs などの AI がミックスされた曲をボーカル・ドラム・ベース・その他に分ける仕組み。何を学習しているか、なぜパートの間で音が混ざるか、なぜギターと鍵盤が分かれないか、ブラウザでどう動かしているか。コード推定・ハモリ・キー変更の仕組みも。",
+      "Demucs などの AI がミックスされた曲をボーカル・ドラム・ベース・その他に分ける仕組み。何を学習しているか、なぜパートの間で音が混ざるか、なぜギターと鍵盤が分かれないか、ブラウザでどう動かしているか。キー変更の仕組みも。",
     body: () => `
 <p class="lead">ミックスされた曲では、楽器の音が足し合わされて 1 つ（ステレオなら 2 つ）の波形になっています。元に戻すスイッチはありません。AI による音源分離は、各楽器がどんな音だったはずかを<b>推定</b>する方法です。とてもよく推定できますが、完璧ではありません。仕組みを知っておくと、上手に使えます。</p>
 
@@ -95,7 +88,7 @@ export default {
   <li><a href="#parts">4 パートである理由と、ギターと鍵盤が分かれない理由</a></li>
   <li><a href="#leak">パートの間で音が混ざる理由</a></li>
   <li><a href="#browser">ブラウザの中で動かす仕組み</a></li>
-  <li><a href="#chords">コード・ハモリ・キー変更の仕組み（AI なし）</a></li>
+  <li><a href="#chords">キー変更の仕組み（AI なし）</a></li>
 </ol></nav>
 
 <h2 id="problem">ミックスを分けるのが難しい理由</h2>
@@ -139,16 +132,9 @@ export default {
 </ul>
 <p>分離が終わると 4 つのパートをそろえて再生し、ミキサーは音量だけを変えるので、フェーダーを動かすとすぐに反映されます。</p>
 
-<h2 id="chords">コード・ハモリ・キー変更の仕組み（AI なし）</h2>
-<p>コードの推定・ハモリ・キーの変更には AI モデルを使っていません。昔からある信号処理の方法を JavaScript で書いて、ブラウザで動かしています。ミックス全体より、分離したパートに使うほうがずっとうまくいきます。</p>
-<ul>
-  <li><b>拍とテンポ</b> – 新しい音が鳴り始める位置と、その間隔でいちばん繰り返されるもの（自己相関）を調べ、両方にいちばん合う拍の並びを決めます（動的計画法。D. Ellis、2007 年の方法）。</li>
-  <li><b>コード</b> – 拍ごとに、ベースと「その他」のパートで 12 の音それぞれがどれだけ鳴っているか（クロマ）を調べ、24 のメジャー・マイナーのコードと比べます。隠れマルコフモデルで、理由なく 1 拍ごとにコードが変わらないようにします。ギターや歌が混ざっていないベースのパートは、コードのルートを見つける大きな手がかりになります。</li>
-  <li><b>旋律</b> – 分離したボーカルの音程を YIN という方法で調べ、音符に区切ります。</li>
-  <li><b>ハモリ（声）</b> – TD-PSOLA という方法で、ボーカルの波の 1 周期ずつを重ねたり間引いたりして音程を変えるので、声の感じが残ります。さらに音程補正（Auto-Tune のような処理）で、正しいハモリの音に寄せます。</li>
-  <li><b>キーの変更</b> – フェーズボコーダーで、各パートを音程の比率だけ時間方向に伸ばし、元の長さで再生し直します。</li>
-</ul>
-<p>分離と同じく、これらも推定です。<a href="../chords-and-key/#limits">コードの仕上がり</a>と<a href="../harmony/#limits">ハモリの仕上がり</a>もご覧ください。</p>
+<h2 id="chords">キー変更の仕組み（AI なし）</h2>
+<p>キーの変更には AI モデルを使っていません。昔からある信号処理の方法の<b>フェーズボコーダー</b>を JavaScript で書いてブラウザで動かし、各パートを音程の比率だけ時間方向に伸ばして、元の長さで再生し直します。分離したパートを 1 つずつ処理するので、ドラムだけはそのままにできます。</p>
+<p>コードの推定と、ボーカルからハモリを作る機能は、別のアプリ <a href="/vocalharmonymaker/ja/">Vocal Harmony Maker</a> に移りました。</p>
 `,
   },
 };
