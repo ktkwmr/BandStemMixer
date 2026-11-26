@@ -59,7 +59,7 @@ export default {
 <ol>
   <li><b>Close other tabs and apps</b> before you separate, and keep the screen on.</li>
   <li>If an error appears, the app <b>tries again automatically</b> with settings that use less memory.</li>
-  <li>If the page reloads by itself, the browser closed it for lack of memory. The app remembers the setting that stopped and uses a lighter one next time: choose the song again and press “Separate into 4 parts”.</li>
+  <li>If the page reloads by itself, the browser closed it for lack of memory. The app remembers the setting that stopped and uses a lighter one next time: choose the song again.</li>
   <li>If it still stops — which can happen on iPhone and iPad — <b>separate on a computer</b> and use the saved MP3 files on that device.</li>
 </ol>
 
@@ -124,7 +124,7 @@ export default {
 <ol>
   <li>分離の前に<b>ほかのタブやアプリを閉じ</b>、画面を付けたままにします。</li>
   <li>エラーが出たときは、メモリを節約する設定で<b>自動的にやり直します</b>。</li>
-  <li>ページが勝手に読み込み直されたときは、メモリ不足でブラウザがページを閉じています。アプリは止まった設定を覚えて、次はより軽い設定を使うので、曲を選び直して「4 つのパートに分離する」を押してください。</li>
+  <li>ページが勝手に読み込み直されたときは、メモリ不足でブラウザがページを閉じています。アプリは止まった設定を覚えて、次はより軽い設定を使うので、曲を選び直してください。</li>
   <li>それでも止まるとき（iPhone・iPad で起こることがあります）は、<b>パソコンで分離</b>して、保存した MP3 をその端末で使ってください。</li>
 </ol>
 

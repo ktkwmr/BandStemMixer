@@ -29,27 +29,23 @@ export default {
 
 <h2 id="quick">Start in three steps</h2>
 <ol>
-  <li><b>Choose a song.</b> Tap “Choose an audio file” and pick an MP3, WAV, M4A, or FLAC file, or drop it on the box.</li>
-  <li><b>Press “Separate into 4 parts”.</b> Wait until the bar is full. Keep the screen open.</li>
+  <li><b>Choose a song.</b> Tap “Choose a song file” and pick an audio file (MP3, WAV, M4A, FLAC…) or a video (MP4, MOV…), or drop it on the box.</li>
+  <li><b>Wait.</b> Separation starts by itself. Wait until the bar is full, and keep the screen open.</li>
   <li><b>Press play and mix.</b> Mute your own part with <b>M</b> and play along with the rest of the band.</li>
 </ol>
 
 <h2 id="song">Choosing a song and separating it</h2>
 <figure class="shot">
-  ${img("en", "song", "The song panel: a box to choose an audio file, the chosen file practice-song.wav (1:00, stereo), the Separate into 4 parts button, and a note that the AI model of about 172 MB is downloaded the first time. Numbers 1 to 4 mark them.")}
+  ${img("en", "song", `The song panel while separating: the box to choose a file, the chosen file practice-song.wav (1:00, stereo), the progress bar with about how long is left and a Cancel button, a note that the AI model of about ${MODEL_MB} MB is downloaded the first time, and the line Separating with: GPU (WebGPU). Numbers 1 to 4 mark them.`)}
   <figcaption>The numbers match the list below. Tap the image to enlarge it.</figcaption>
 </figure>
 <ol>
-  <li><b>Choose an audio file</b> – Any format your browser can play: MP3, WAV, M4A (AAC), FLAC, Ogg, and others. Songs up to ${MAX_MIN} minutes (${MAX_MIN_LOW_MEM} minutes on phones and tablets, which have less memory). The file is read in your browser and never uploaded.</li>
+  <li><b>Choose a song file</b> – Any format your browser can play: MP3, WAV, M4A (AAC), FLAC, Ogg, and others, and videos such as MP4 and MOV (their sound is used). Songs up to ${MAX_MIN} minutes (${MAX_MIN_LOW_MEM} minutes on phones and tablets, which have less memory). The file is read in your browser and never uploaded. <b>Separation starts as soon as you choose the file</b>; there is no button to press. To separate another song, choose another file.</li>
   <li><b>The song</b> – The file name, the length, and whether it is stereo or mono.</li>
-  <li><b>Separate into 4 parts</b> – Starts the separation. After it finishes, the button becomes “Separate again”.</li>
-  <li><b>The AI model</b> – Whether the AI model is already saved on this device. If not, it is downloaded when you press the button.</li>
+  <li><b>Progress</b> – How far the separation is (in %) and about how long is left, with Cancel.</li>
+  <li><b>The AI model</b> – Whether the AI model is already saved on this device; if not, it is downloaded first.</li>
 </ol>
-<figure class="shot">
-  ${img("en", "progress", "Separation in progress: the bar shows 36% done, about 40 seconds left, with a Cancel button, a note to keep the screen open, and the line Separating with: GPU (WebGPU).")}
-  <figcaption>While it separates.</figcaption>
-</figure>
-<p>The bar shows how far it is (in %) and about how long is left. How long it takes depends on the device: on a recent computer, about the length of the song or a few times longer; on a phone, longer. The line under the bar shows how the separation runs: on the <b>GPU (WebGPU)</b> when the browser supports it, otherwise on the CPU.</p>
+<p>How long it takes depends on the device: on a recent computer, about the length of the song or a few times longer; on a phone, longer. The line under the bar shows how the separation runs: on the <b>GPU (WebGPU)</b> when the browser supports it, otherwise on the CPU.</p>
 <div class="note"><p>Keep the screen open until it finishes. On a phone, separation stops when the screen turns off or you switch to another app. If it stops with a memory error, the app tries again with settings that use less memory.</p></div>
 
 <h2 id="first">The first time: downloading the AI model</h2>
@@ -58,7 +54,7 @@ export default {
   ${img("en", "network", "On a phone, a dialog asks: Are you on Wi-Fi? This browser does not tell the app whether you are on Wi-Fi or mobile data. Download: about 186 MB, only the first time. Buttons: Not now, and Download and separate.", { half: true })}
   <figcaption>On a phone or tablet, the app asks before the first download.</figcaption>
 </figure>
-<p>Because the download is large (about ${FIRST_MB} MB in all), the app asks first when you seem to be on mobile data or have Data Saver on, and on phones and tablets whose browser does not say what kind of connection it has (such as iPhone and iPad). Choose “Not now” and connect to Wi-Fi if you are not on Wi-Fi.</p>
+<p>Because the download is large (about ${FIRST_MB} MB in all), the app asks first when you seem to be on mobile data or have Data Saver on, and on phones and tablets whose browser does not say what kind of connection it has (such as iPhone and iPad). Choose “Not now” and connect to Wi-Fi if you are not on Wi-Fi, then choose the song again.</p>
 <p>To free the space, open ⚙ → “Delete the AI model”. It is downloaded again the next time you separate a song.</p>
 
 <h2 id="mixer">The mixer</h2>
@@ -147,27 +143,23 @@ export default {
 
 <h2 id="quick">3 ステップで始める</h2>
 <ol>
-  <li><b>曲を選ぶ。</b>「音声ファイルを選ぶ」を押して MP3・WAV・M4A・FLAC などのファイルを選ぶか、枠にドロップします。</li>
-  <li><b>「4 つのパートに分離する」を押す。</b>バーがいっぱいになるまで待ちます。画面は開いたままにしてください。</li>
+  <li><b>曲を選ぶ。</b>「曲のファイルを選ぶ」を押して音声ファイル（MP3・WAV・M4A・FLAC など）か動画（MP4・MOV など）を選ぶか、枠にドロップします。</li>
+  <li><b>待つ。</b>分離が自動で始まります。バーがいっぱいになるまで、画面は開いたままにしてください。</li>
   <li><b>再生してミックスする。</b>自分のパートを <b>M</b> でミュートして、ほかのパートに合わせて演奏します。</li>
 </ol>
 
 <h2 id="song">曲を選んで分離する</h2>
 <figure class="shot">
-  ${img("ja", "song", "曲のパネル。音声ファイルを選ぶ枠、選んだファイル（練習曲.wav、1:00、ステレオ）、「4 つのパートに分離する」ボタン、AI モデル（約 172 MB）は最初に分離するときにダウンロードするという案内。1〜4 の番号付き。")}
+  ${img("ja", "song", `分離中の曲のパネル。ファイルを選ぶ枠、選んだファイル（練習曲.wav、1:00、ステレオ）、残り時間の目安が出た進み具合のバーとキャンセルボタン、AI モデル（約 ${MODEL_MB} MB）は最初に分離するときにダウンロードするという案内、「分離に使っている設定：GPU（WebGPU）」。1〜4 の番号付き。`)}
   <figcaption>番号は下の説明と対応しています。画像を押すと拡大します。</figcaption>
 </figure>
 <ol>
-  <li><b>音声ファイルを選ぶ</b> – ブラウザで再生できる形式なら使えます（MP3・WAV・M4A（AAC）・FLAC・Ogg など）。長さは ${MAX_MIN} 分まで（メモリの少ないスマホ・タブレットでは ${MAX_MIN_LOW_MEM} 分まで）。ファイルはブラウザの中で読み込み、アップロードしません。</li>
+  <li><b>曲のファイルを選ぶ</b> – ブラウザで再生できる形式なら使えます（MP3・WAV・M4A（AAC）・FLAC・Ogg など）。MP4・MOV などの動画も選べます（音声を使います）。長さは ${MAX_MIN} 分まで（メモリの少ないスマホ・タブレットでは ${MAX_MIN_LOW_MEM} 分まで）。ファイルはブラウザの中で読み込み、アップロードしません。<b>ファイルを選ぶとすぐに分離が始まります</b>（押すボタンはありません）。別の曲にするときは、別のファイルを選びます。</li>
   <li><b>曲</b> – ファイル名と長さ、ステレオかモノラルか。</li>
-  <li><b>4 つのパートに分離する</b> – 分離を始めます。終わると「もう一度分離する」に変わります。</li>
-  <li><b>AI モデル</b> – AI モデルがこの端末に保存済みかどうか。まだなら、ボタンを押したときにダウンロードします。</li>
+  <li><b>進み具合</b> – 分離の進み具合（%）と残り時間の目安、キャンセル。</li>
+  <li><b>AI モデル</b> – AI モデルがこの端末に保存済みかどうか。まだなら、先にダウンロードします。</li>
 </ol>
-<figure class="shot">
-  ${img("ja", "progress", "分離中の画面。バーは 36% まで完了、残り約 40 秒、キャンセルボタン、画面を開いたままにする案内、「分離に使っている設定：GPU（WebGPU）」の表示。")}
-  <figcaption>分離中の画面。</figcaption>
-</figure>
-<p>バーには、進み具合（%）と残り時間の目安が出ます。かかる時間は端末によって違い、最近のパソコンで曲の長さと同じくらいから数倍、スマホではさらにかかります。バーの下には分離の方法が出ます。ブラウザが対応していれば <b>GPU（WebGPU）</b>、そうでなければ CPU で処理します。</p>
+<p>かかる時間は端末によって違い、最近のパソコンで曲の長さと同じくらいから数倍、スマホではさらにかかります。バーの下には分離の方法が出ます。ブラウザが対応していれば <b>GPU（WebGPU）</b>、そうでなければ CPU で処理します。</p>
 <div class="note"><p>終わるまで画面を開いたままにしてください。スマホでは、画面が消えたりほかのアプリに切り替えたりすると分離が止まります。メモリ不足で止まったときは、メモリを節約する設定で自動的にやり直します。</p></div>
 
 <h2 id="first">初回は AI モデルをダウンロード</h2>
@@ -176,7 +168,7 @@ export default {
   ${img("ja", "network", "スマホで最初の分離の前に出るダイアログ。「Wi-Fi に接続していますか？」の見出しと、ダウンロード量（約 186 MB、初回のみ）、「やめておく」と「ダウンロードして分離する」のボタン。", { half: true })}
   <figcaption>スマホ・タブレットでは、最初のダウンロードの前に確認が出ます。</figcaption>
 </figure>
-<p>ダウンロード量が大きい（合わせて約 ${FIRST_MB} MB）ので、モバイルデータ通信やデータセーバーのとき、また接続の種類が分からないスマホ・タブレット（iPhone・iPad など）では、ダウンロードの前に確認します。Wi-Fi でなければ「やめておく」を選び、Wi-Fi につないでから分離してください。</p>
+<p>ダウンロード量が大きい（合わせて約 ${FIRST_MB} MB）ので、モバイルデータ通信やデータセーバーのとき、また接続の種類が分からないスマホ・タブレット（iPhone・iPad など）では、ダウンロードの前に確認します。Wi-Fi でなければ「やめておく」を選び、Wi-Fi につないでから曲を選び直してください。</p>
 <p>容量を空けたいときは、⚙ →「AI モデルを削除」で消せます。次に分離するときにもう一度ダウンロードします。</p>
 
 <h2 id="mixer">ミキサー</h2>

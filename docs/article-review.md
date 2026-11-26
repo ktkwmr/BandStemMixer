@@ -26,6 +26,7 @@ PR を出すと Cloudflare のプレビュー URL ができるので、そこで
 | C | faq | 新しい質問「コードを調べたり、ハモリを作ったりできますか？」 |
 | D | 旧 URL | `/bandstemmixer/harmony/` → Vocal Harmony Maker の `harmony` 記事、`/bandstemmixer/chords-and-key/` → `key-change` に 301（`public/_redirects`）。プレビュー URL で転送されるか（Vocal Harmony Maker は公開後でないと 404） |
 | E | privacy | 「2026 年 11 月 25 日改定」の書き方 |
+| F | guide・faq・better-results | 2026-11-26 の変更：分離ボタンをなくし、ファイルを選ぶとすぐ分離が始まる。動画（MP4・MOV・WebM）も開ける。再生は ▶／❚❚ と ■（最初に戻る）。曲の欄の画面写真は分離の途中のものに替え、進み具合の画面写真は外した |
 
 ## 今回（2026-10-29、最初の記事 6 本）特に見てほしいところ
 

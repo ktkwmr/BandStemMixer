@@ -12,6 +12,10 @@ Split a band song into 4 parts with AI — vocals, drums, bass, and other (guita
   4 パート分離（Demucs htdemucs を ONNX Runtime Web でブラウザ内実行。STFT は demucs-web の JavaScript）
 - **Mixer**: fader, mute (M), and solo (S) per part, master volume, level meters, seek, keyboard shortcuts; the parts play in sample-accurate sync (AudioWorklet)
   パートごとのフェーダー・ミュート・ソロ、全体の音量、レベルメーター、シーク、キーボード操作。AudioWorklet でぴったりそろえて再生
+- **Choose a file and it starts**: no separate button. Audio files and videos (MP4, MOV, WebM…: the sound is used)
+  ファイルを選ぶとすぐに分離が始まる（分離ボタンなし）。音声ファイルと動画（MP4・MOV・WebM など。音声を使う）
+- **Transport**: ▶ / ❚❚ in one button, ■ stops and goes back to the start; Space / Home
+  再生ボタンは ▶ と ❚❚ の切り替え、■ で止めて最初に戻る
 - **Chords and harmony** moved to the separate app [Vocal Harmony Maker](https://ktkwmr.com/vocalharmonymaker/) ([ktkwmr/VocalHarmonyMaker](https://github.com/ktkwmr/VocalHarmonyMaker)) in 2026-11
   コードの推定とハモリは、別のアプリ Vocal Harmony Maker に移しました（2026-11）
 - **Key change**: ±12 semitones for every part except the drums; same tempo. A phase vocoder in workers (`keyshift.js`, one per part, in parallel). Saved MP3 files of moved parts say the key in the name

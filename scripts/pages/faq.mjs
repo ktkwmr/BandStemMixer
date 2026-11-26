@@ -18,7 +18,7 @@ const EN = [
   },
   {
     q: "Which files can I open?",
-    a: `Any audio format your browser can play: MP3, WAV, M4A (AAC), FLAC, Ogg, and others. Songs up to ${MAX_MIN} minutes (${MAX_MIN_LOW_MEM} minutes on phones and tablets).`,
+    a: `Any audio format your browser can play: MP3, WAV, M4A (AAC), FLAC, Ogg, and others, and videos such as MP4, MOV, and WebM (the app uses their sound). Songs up to ${MAX_MIN} minutes (${MAX_MIN_LOW_MEM} minutes on phones and tablets).`,
   },
   {
     q: "Can I use songs from Apple Music, Spotify, or YouTube?",
@@ -82,7 +82,7 @@ const JA = [
   },
   {
     q: "どんなファイルを開けますか？",
-    a: `ブラウザで再生できる形式（MP3・WAV・M4A（AAC）・FLAC・Ogg など）です。長さは ${MAX_MIN} 分まで（スマホ・タブレットでは ${MAX_MIN_LOW_MEM} 分まで）。`,
+    a: `ブラウザで再生できる形式（MP3・WAV・M4A（AAC）・FLAC・Ogg など）と、MP4・MOV・WebM などの動画（音声を使います）です。長さは ${MAX_MIN} 分まで（スマホ・タブレットでは ${MAX_MIN_LOW_MEM} 分まで）。`,
   },
   {
     q: "Apple Music・Spotify・YouTube の曲は使えますか？",

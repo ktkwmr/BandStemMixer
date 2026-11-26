@@ -23,7 +23,7 @@ export default {
   <li><a href="#parts">Why four parts, and why guitar and keys stay together</a></li>
   <li><a href="#leak">Why sounds leak between parts</a></li>
   <li><a href="#browser">How it runs in your browser</a></li>
-  <li><a href="#chords">Key change (without AI)</a></li>
+  <li><a href="#key">Key change (without AI)</a></li>
 </ol></nav>
 
 <h2 id="problem">Why separating a mix is hard</h2>
@@ -67,7 +67,7 @@ export default {
 </ul>
 <p>Once separated, the four parts are played together in sync, and the mixer only changes their volumes, so moving a fader is instant.</p>
 
-<h2 id="chords">Key change (without AI)</h2>
+<h2 id="key">Key change (without AI)</h2>
 <p>The key change does not use an AI model. A <b>phase vocoder</b>, a classic signal-processing method written in JavaScript and run in the browser, stretches each part in time by the pitch ratio and plays it back at the original length. It works on the separated parts one by one, which is why the drums can stay as they are.</p>
 <p>Finding the chords and making a harmony part from the vocals moved to our separate app <a href="/vocalharmonymaker/">Vocal Harmony Maker</a>.</p>
 `,
@@ -88,7 +88,7 @@ export default {
   <li><a href="#parts">4 パートである理由と、ギターと鍵盤が分かれない理由</a></li>
   <li><a href="#leak">パートの間で音が混ざる理由</a></li>
   <li><a href="#browser">ブラウザの中で動かす仕組み</a></li>
-  <li><a href="#chords">キー変更の仕組み（AI なし）</a></li>
+  <li><a href="#key">キー変更の仕組み（AI なし）</a></li>
 </ol></nav>
 
 <h2 id="problem">ミックスを分けるのが難しい理由</h2>
@@ -132,7 +132,7 @@ export default {
 </ul>
 <p>分離が終わると 4 つのパートをそろえて再生し、ミキサーは音量だけを変えるので、フェーダーを動かすとすぐに反映されます。</p>
 
-<h2 id="chords">キー変更の仕組み（AI なし）</h2>
+<h2 id="key">キー変更の仕組み（AI なし）</h2>
 <p>キーの変更には AI モデルを使っていません。昔からある信号処理の方法の<b>フェーズボコーダー</b>を JavaScript で書いてブラウザで動かし、各パートを音程の比率だけ時間方向に伸ばして、元の長さで再生し直します。分離したパートを 1 つずつ処理するので、ドラムだけはそのままにできます。</p>
 <p>コードの推定と、ボーカルからハモリを作る機能は、別のアプリ <a href="/vocalharmonymaker/ja/">Vocal Harmony Maker</a> に移りました。</p>
 `,

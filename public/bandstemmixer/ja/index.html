@@ -262,16 +262,15 @@
         <div class="panel-body">
           <label class="drop" id="drop">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-            <b data-i18n="file.choose">音声ファイルを選ぶ</b>
-            <span data-i18n="file.hint">またはここにドロップ · MP3・WAV・M4A・FLAC など、12 分まで</span>
-            <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg,.opus,.webm" />
+            <b data-i18n="file.choose">曲のファイルを選ぶ</b>
+            <span data-i18n="file.hint">またはここにドロップ · MP3・WAV・M4A・FLAC・MP4 動画など、12 分まで</span>
+            <input type="file" id="fileInput" accept="audio/*,video/*,.mp3,.wav,.m4a,.aac,.flac,.ogg,.opus,.webm,.mp4,.m4v,.mov,.mkv" />
           </label>
           <div class="song" id="songInfo" hidden>
             <span class="name" id="songName"></span>
             <span class="meta" id="songMeta"></span>
           </div>
           <p class="note" id="iosNote" hidden data-i18n="ios.note">iPhone・iPad では、メモリが足りずに分離できない（ページが読み込み直される）可能性があります。分離はパソコンでのご利用をおすすめします。保存した MP3 は、どの端末でも再生できます。</p>
-          <button class="primary big" id="runBtn" type="button" disabled data-i18n="run">4 つのパートに分離する</button>
           <div class="progress" id="progress" hidden>
             <span class="stage" id="stage"></span>
             <div class="bar" id="bar"><div></div></div>
@@ -333,7 +332,7 @@
 
     <section class="intro" aria-labelledby="introTitle">
       <h1 id="introTitle" data-i18n="intro.title">バンドの曲をボーカル・ドラム・ベース・その他に分離</h1>
-      <div data-i18n-html="intro.body"><p>Band Stem Mixer は、AI で曲を <b>4 つのパート</b>（ボーカル・ドラム・ベース・その他（ギター・鍵盤など））に分離する無料の Web アプリです。MP3・WAV・M4A などの音声ファイルを選んで「4 つのパートに分離する」を押すだけ。パートごとに音量のフェーダーとミュート（M）・ソロ（S）があり、ぴったりそろって再生されます。</p>
+      <div data-i18n-html="intro.body"><p>Band Stem Mixer は、AI で曲を <b>4 つのパート</b>（ボーカル・ドラム・ベース・その他（ギター・鍵盤など））に分離する無料の Web アプリです。MP3・WAV・M4A・MP4 などの音声・動画ファイルを選ぶと、すぐに分離が始まります。パートごとに音量のフェーダーとミュート（M）・ソロ（S）があり、ぴったりそろって再生されます。</p>
         <p>バンド練習に使えます。自分のパートだけミュートして残りの演奏に合わせて弾く（マイナスワン音源・カラオケ音源）、ベースやドラムだけをソロにしてフレーズを耳コピする、ボーカルを消してカラオケにする、など。各パートと、自分で作ったミックスは MP3 ファイルで保存できます。</p>
         <p>分離は<b>ブラウザの中</b>で行い、曲はどこにもアップロードしません。初回だけ AI モデル（約 170 MB、次回のために端末に保存）をダウンロードするので、Wi-Fi でお使いください。モバイルデータ通信のときは、ダウンロードの前に確認を表示します。分離には時間がかかります。最近のパソコンで曲の長さと同じか数倍、スマホではさらにかかります。</p>
         <p>「キー」では、テンポはそのままで、ドラム以外のパートを 1 オクターブまで上げ下げできます。曲のコードを調べたり、ボーカルにハモリを付けたりするには、別のアプリ <a href="https://ktkwmr.com/vocalharmonymaker/ja/" target="_blank" rel="noopener">Vocal Harmony Maker</a> をお使いください。</p>
@@ -377,8 +376,8 @@
   <dialog class="msg help" id="helpDlg" tabindex="-1" aria-labelledby="helpTitle">
     <h2 id="helpTitle" data-i18n="menu.help">使い方</h2>
     <div class="help-body">
-      <ol class="help-list" data-i18n-html="help.body"><li><b>曲を選ぶ</b> – 枠をタップして音声ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC など、ブラウザで再生できる形式なら使えます。12 分までです。</li>
-        <li><b>分離する</b> – 「4 つのパートに分離する」を押します。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>
+      <ol class="help-list" data-i18n-html="help.body"><li><b>曲を選ぶ</b> – 枠をタップして音声・動画ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC、MP4・MOV などの動画（音声を使います）など、ブラウザで再生できる形式なら使えます。12 分までです。</li>
+        <li><b>分離する</b> – ファイルを読み込むと、すぐに分離が始まります。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>
         <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>
         <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>
         <li><b>キー</b> – − / + で、ドラム以外のパートを半音ずつ上げ下げします（1 オクターブまで）。</li>
@@ -444,14 +443,12 @@
         en: {
           "settings": "Settings",
           "song": "Song",
-          "file.choose": "Choose an audio file",
-          "file.hint": "or drop it here · MP3, WAV, M4A, FLAC… up to 12 min",
+          "file.choose": "Choose a song file",
+          "file.hint": "or drop it here · MP3, WAV, M4A, FLAC, MP4 video… up to 12 min",
           "file.reading": "Reading the file…",
           "file.meta": "{time} · {ch}",
           "file.mono": "mono",
           "file.stereo": "stereo",
-          "run": "Separate into 4 parts",
-          "run.again": "Separate again",
           "cancel": "Cancel",
           "close": "Close",
           "keepOpen": "Keep this screen open until it finishes. On a phone, separation stops while the screen is off or another app is open.",
@@ -467,7 +464,7 @@
           "crash": "The last separation stopped partway ({where}{progress}) and the page was reloaded. The device most likely ran out of memory. Close other apps and tabs and try again, try a shorter song, or use a computer.",
           "crash.progress": ", {pct}% done",
           "crash.song": " · song: {time}",
-          "crash.next": " Next time, this device separates with different settings: choose the song again and press “Separate into 4 parts”.",
+          "crash.next": " Next time, this device separates with different settings: choose the song again.",
           "ios.note": "On iPhone and iPad, separating may not work: the device can run out of memory and the page reloads. We recommend separating on a computer. Saved MP3 files can be played on any device.",
           "crash.none": " Every setting has stopped on this device, so it probably cannot separate songs. Separate the song on a computer and use the saved MP3 files here.",
           "where.download": "while downloading the AI model",
@@ -527,7 +524,8 @@
           "net.size": "Download: about {mb} MB (the AI model and the separation engine). Only the first time; it is kept on this device.",
           "net.later": "Not now",
           "net.ok": "Download and separate",
-          "err.decode": "This file could not be read. Try another format such as MP3, WAV, or M4A.",
+          "net.later.note": "Not downloaded. To separate, choose the song again (on Wi-Fi if you can).",
+          "err.decode": "This file could not be read. Try another format such as MP3, WAV, M4A, or MP4.",
           "err.tooLong": "Songs up to {max} minutes can be separated on this device. This one is {time}. Cut it shorter and try again.",
           "err.offline": "You are offline. The AI model needs to be downloaded the first time; connect to the internet and try again.",
           "err.download": "The AI model could not be downloaded. Check your connection and try again.",
@@ -537,7 +535,7 @@
           "err.audio": "Sound could not be played in this browser.",
           "err.save": "The file could not be saved.",
           "intro.title": "Split a band song into vocals, drums, bass, and other",
-          "intro.body": "<p>Band Stem Mixer separates a song into <b>4 parts</b> with AI: vocals, drums, bass, and other (guitar, keys, and everything else). Choose an audio file such as MP3, WAV, or M4A and press “Separate into 4 parts”. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>\n        <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the drums to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as an MP3 file.</p>\n        <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 170 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>\n        <p>“Key” moves every part except the drums up or down by up to an octave, without changing the tempo. To find the chords of a song or add a harmony part to its vocals, use our separate app <a href=\"https://ktkwmr.com/vocalharmonymaker/\" target=\"_blank\" rel=\"noopener\">Vocal Harmony Maker</a>.</p>\n        <p>The model is Demucs (htdemucs), a music separation model by Meta. Like all such models it is not perfect: sounds can leak between parts. Guitar and keys are not split from each other; they come out together in “Other”. Free, with no sign-up and no ads.</p>\n        <h2>Guides</h2>\n        <ul>\n          <li><a href=\"/bandstemmixer/guide/\" target=\"_blank\" rel=\"noopener\">How to use Band Stem Mixer</a></li>\n          <li><a href=\"/bandstemmixer/minus-one/\" target=\"_blank\" rel=\"noopener\">Practicing with your part removed: making a minus-one track</a></li>\n          <li><a href=\"/bandstemmixer/learn-by-ear/\" target=\"_blank\" rel=\"noopener\">Hearing the bass and drums clearly: learning parts by ear with solo</a></li>\n          <li><a href=\"/bandstemmixer/key-change/\" target=\"_blank\" rel=\"noopener\">Changing the key of a song</a></li>\n          <li><a href=\"/bandstemmixer/how-it-works/\" target=\"_blank\" rel=\"noopener\">How AI music separation works, and why it is not perfect</a></li>\n          <li><a href=\"/bandstemmixer/better-results/\" target=\"_blank\" rel=\"noopener\">How to get better separation</a></li>\n          <li><a href=\"/bandstemmixer/faq/\" target=\"_blank\" rel=\"noopener\">Frequently asked questions</a></li>\n        </ul>",
+          "intro.body": "<p>Band Stem Mixer separates a song into <b>4 parts</b> with AI: vocals, drums, bass, and other (guitar, keys, and everything else). Choose an audio or video file such as MP3, WAV, M4A, or MP4: separation starts right away. Each part gets its own fader with mute (M) and solo (S), and they play back in perfect sync.</p>\n        <p>Use it to practice in a band: mute your own part and play along with the rest (a “minus one” backing track), solo the bass or the drums to copy a phrase by ear, or turn the vocals off for karaoke. Each part, and the mix you made, can be saved as an MP3 file.</p>\n        <p>The separation runs <b>in your browser</b>. Your song is not uploaded anywhere. The first time, the app downloads the AI model (about 170 MB; it is kept on your device for next time), so use Wi-Fi. If you are on mobile data, the app asks before downloading. Separation takes a while: about the length of the song or a few times longer on a recent computer, and longer on a phone.</p>\n        <p>“Key” moves every part except the drums up or down by up to an octave, without changing the tempo. To find the chords of a song or add a harmony part to its vocals, use our separate app <a href=\"https://ktkwmr.com/vocalharmonymaker/\" target=\"_blank\" rel=\"noopener\">Vocal Harmony Maker</a>.</p>\n        <p>The model is Demucs (htdemucs), a music separation model by Meta. Like all such models it is not perfect: sounds can leak between parts. Guitar and keys are not split from each other; they come out together in “Other”. Free, with no sign-up and no ads.</p>\n        <h2>Guides</h2>\n        <ul>\n          <li><a href=\"/bandstemmixer/guide/\" target=\"_blank\" rel=\"noopener\">How to use Band Stem Mixer</a></li>\n          <li><a href=\"/bandstemmixer/minus-one/\" target=\"_blank\" rel=\"noopener\">Practicing with your part removed: making a minus-one track</a></li>\n          <li><a href=\"/bandstemmixer/learn-by-ear/\" target=\"_blank\" rel=\"noopener\">Hearing the bass and drums clearly: learning parts by ear with solo</a></li>\n          <li><a href=\"/bandstemmixer/key-change/\" target=\"_blank\" rel=\"noopener\">Changing the key of a song</a></li>\n          <li><a href=\"/bandstemmixer/how-it-works/\" target=\"_blank\" rel=\"noopener\">How AI music separation works, and why it is not perfect</a></li>\n          <li><a href=\"/bandstemmixer/better-results/\" target=\"_blank\" rel=\"noopener\">How to get better separation</a></li>\n          <li><a href=\"/bandstemmixer/faq/\" target=\"_blank\" rel=\"noopener\">Frequently asked questions</a></li>\n        </ul>",
           "menu.help": "How to use",
           "menu.guide": "Guides & articles",
           "guide.url": "/bandstemmixer/guide/",
@@ -548,7 +546,7 @@
           "home.url": "https://ktkwmr.com/",
           "foot.meta": "<span>Band Stem Mixer · © 2026 ktkwmr</span>\n<a href=\"/bandstemmixer/privacy/\" target=\"_blank\" rel=\"noopener\">Privacy policy</a>\n<a href=\"/bandstemmixer/about/\" target=\"_blank\" rel=\"noopener\">About this site</a>\n<a href=\"https://github.com/ktkwmr/BandStemMixer\" target=\"_blank\" rel=\"noopener\">Source code on GitHub</a>\n<a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">Feedback</a>\n<a href=\"https://ktkwmr.com/\" target=\"_blank\" rel=\"noopener\">More apps by ktkwmr</a>",
           "menu.model": "Delete the AI model",
-          "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Press “Separate into 4 parts”. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Key</b> – − / + moves every part except the drums up or down a semitone (up to an octave).</li>\n        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
+          "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio or video file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, MP4 and MOV videos (their sound is used), and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Separation starts as soon as the file is read. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Key</b> – − / + moves every part except the drums up or down a semitone (up to an octave).</li>\n        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
           "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read, separated, and analyzed (key change) only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Reset the mixer with “Reset mixer”, delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\" target=\"_blank\" rel=\"noopener\">privacy policy</a> and <a href=\"/bandstemmixer/about/\" target=\"_blank\" rel=\"noopener\">about this site</a>.</li>",
           "model.del.title": "Delete the AI model?",
           "model.del.body": "This deletes the AI model (about 170 MB) saved in this browser, to free up space. It is downloaded again the next time you separate a song.",
@@ -561,14 +559,12 @@
         ja: {
           "settings": "設定",
           "song": "曲",
-          "file.choose": "音声ファイルを選ぶ",
-          "file.hint": "またはここにドロップ · MP3・WAV・M4A・FLAC など、12 分まで",
+          "file.choose": "曲のファイルを選ぶ",
+          "file.hint": "またはここにドロップ · MP3・WAV・M4A・FLAC・MP4 動画など、12 分まで",
           "file.reading": "ファイルを読み込んでいます…",
           "file.meta": "{time} · {ch}",
           "file.mono": "モノラル",
           "file.stereo": "ステレオ",
-          "run": "4 つのパートに分離する",
-          "run.again": "もう一度分離する",
           "cancel": "キャンセル",
           "close": "閉じる",
           "keepOpen": "終わるまでこの画面を開いたままにしてください。スマホでは、画面が消えたりほかのアプリに切り替えたりすると分離が止まります。",
@@ -584,7 +580,7 @@
           "crash": "前回の分離は途中で止まり、ページが読み込み直されました（{where}{progress}）。端末のメモリが足りなくなった可能性が高いです。ほかのアプリやタブを閉じてもう一度試すか、短い曲にするか、パソコンでお試しください。",
           "crash.progress": "、{pct}% まで完了",
           "crash.song": " · 曲の長さ {time}",
-          "crash.next": "次からは、この端末では別の設定で分離します。曲を選び直して、もう一度「4 つのパートに分離する」を押してください。",
+          "crash.next": "次からは、この端末では別の設定で分離します。曲を選び直してください。",
           "ios.note": "iPhone・iPad では、メモリが足りずに分離できない（ページが読み込み直される）可能性があります。分離はパソコンでのご利用をおすすめします。保存した MP3 は、どの端末でも再生できます。",
           "crash.none": "この端末では、どの設定でも途中で止まりました。分離できない可能性が高いので、パソコンで分離して、保存した MP3 をこの端末で使ってください。",
           "where.download": "AI モデルのダウンロード中",
@@ -644,7 +640,8 @@
           "net.size": "ダウンロード：約 {mb} MB（AI モデルと分離のプログラム）。初回だけで、この端末に保存します。",
           "net.later": "やめておく",
           "net.ok": "ダウンロードして分離する",
-          "err.decode": "このファイルは読み込めませんでした。MP3・WAV・M4A など、ほかの形式でお試しください。",
+          "net.later.note": "ダウンロードしませんでした。分離するときは、曲を選び直してください（できれば Wi-Fi で）。",
+          "err.decode": "このファイルは読み込めませんでした。MP3・WAV・M4A・MP4 など、ほかの形式でお試しください。",
           "err.tooLong": "この端末で分離できるのは {max} 分までの曲です。この曲は {time} あります。短く切ってからお試しください。",
           "err.offline": "オフラインです。初回は AI モデルのダウンロードが必要です。インターネットに接続してからもう一度お試しください。",
           "err.download": "AI モデルをダウンロードできませんでした。接続を確認して、もう一度お試しください。",
@@ -654,7 +651,7 @@
           "err.audio": "このブラウザでは音を再生できませんでした。",
           "err.save": "ファイルを保存できませんでした。",
           "intro.title": "バンドの曲をボーカル・ドラム・ベース・その他に分離",
-          "intro.body": "<p>Band Stem Mixer は、AI で曲を <b>4 つのパート</b>（ボーカル・ドラム・ベース・その他（ギター・鍵盤など））に分離する無料の Web アプリです。MP3・WAV・M4A などの音声ファイルを選んで「4 つのパートに分離する」を押すだけ。パートごとに音量のフェーダーとミュート（M）・ソロ（S）があり、ぴったりそろって再生されます。</p>\n        <p>バンド練習に使えます。自分のパートだけミュートして残りの演奏に合わせて弾く（マイナスワン音源・カラオケ音源）、ベースやドラムだけをソロにしてフレーズを耳コピする、ボーカルを消してカラオケにする、など。各パートと、自分で作ったミックスは MP3 ファイルで保存できます。</p>\n        <p>分離は<b>ブラウザの中</b>で行い、曲はどこにもアップロードしません。初回だけ AI モデル（約 170 MB、次回のために端末に保存）をダウンロードするので、Wi-Fi でお使いください。モバイルデータ通信のときは、ダウンロードの前に確認を表示します。分離には時間がかかります。最近のパソコンで曲の長さと同じか数倍、スマホではさらにかかります。</p>\n        <p>「キー」では、テンポはそのままで、ドラム以外のパートを 1 オクターブまで上げ下げできます。曲のコードを調べたり、ボーカルにハモリを付けたりするには、別のアプリ <a href=\"https://ktkwmr.com/vocalharmonymaker/ja/\" target=\"_blank\" rel=\"noopener\">Vocal Harmony Maker</a> をお使いください。</p>\n        <p>AI モデルには、Meta の音源分離モデル Demucs（htdemucs）を使っています。ほかの分離ツールと同じく完璧ではなく、パートの間で音が混ざることがあります。ギターと鍵盤は分かれず、「その他」にまとめて入ります。無料・登録不要・広告なし。</p>\n        <h2>ガイド</h2>\n        <ul>\n          <li><a href=\"/bandstemmixer/ja/guide/\" target=\"_blank\" rel=\"noopener\">Band Stem Mixer の使い方</a></li>\n          <li><a href=\"/bandstemmixer/ja/minus-one/\" target=\"_blank\" rel=\"noopener\">自分のパートを消して練習する（マイナスワン音源の作り方）</a></li>\n          <li><a href=\"/bandstemmixer/ja/learn-by-ear/\" target=\"_blank\" rel=\"noopener\">ベースとドラムを聞き取る：ソロにして耳コピする</a></li>\n          <li><a href=\"/bandstemmixer/ja/key-change/\" target=\"_blank\" rel=\"noopener\">曲のキーを変える</a></li>\n          <li><a href=\"/bandstemmixer/ja/how-it-works/\" target=\"_blank\" rel=\"noopener\">AI 音源分離の仕組みと、完璧に分かれない理由</a></li>\n          <li><a href=\"/bandstemmixer/ja/better-results/\" target=\"_blank\" rel=\"noopener\">うまく分離するコツ</a></li>\n          <li><a href=\"/bandstemmixer/ja/faq/\" target=\"_blank\" rel=\"noopener\">よくある質問</a></li>\n        </ul>",
+          "intro.body": "<p>Band Stem Mixer は、AI で曲を <b>4 つのパート</b>（ボーカル・ドラム・ベース・その他（ギター・鍵盤など））に分離する無料の Web アプリです。MP3・WAV・M4A・MP4 などの音声・動画ファイルを選ぶと、すぐに分離が始まります。パートごとに音量のフェーダーとミュート（M）・ソロ（S）があり、ぴったりそろって再生されます。</p>\n        <p>バンド練習に使えます。自分のパートだけミュートして残りの演奏に合わせて弾く（マイナスワン音源・カラオケ音源）、ベースやドラムだけをソロにしてフレーズを耳コピする、ボーカルを消してカラオケにする、など。各パートと、自分で作ったミックスは MP3 ファイルで保存できます。</p>\n        <p>分離は<b>ブラウザの中</b>で行い、曲はどこにもアップロードしません。初回だけ AI モデル（約 170 MB、次回のために端末に保存）をダウンロードするので、Wi-Fi でお使いください。モバイルデータ通信のときは、ダウンロードの前に確認を表示します。分離には時間がかかります。最近のパソコンで曲の長さと同じか数倍、スマホではさらにかかります。</p>\n        <p>「キー」では、テンポはそのままで、ドラム以外のパートを 1 オクターブまで上げ下げできます。曲のコードを調べたり、ボーカルにハモリを付けたりするには、別のアプリ <a href=\"https://ktkwmr.com/vocalharmonymaker/ja/\" target=\"_blank\" rel=\"noopener\">Vocal Harmony Maker</a> をお使いください。</p>\n        <p>AI モデルには、Meta の音源分離モデル Demucs（htdemucs）を使っています。ほかの分離ツールと同じく完璧ではなく、パートの間で音が混ざることがあります。ギターと鍵盤は分かれず、「その他」にまとめて入ります。無料・登録不要・広告なし。</p>\n        <h2>ガイド</h2>\n        <ul>\n          <li><a href=\"/bandstemmixer/ja/guide/\" target=\"_blank\" rel=\"noopener\">Band Stem Mixer の使い方</a></li>\n          <li><a href=\"/bandstemmixer/ja/minus-one/\" target=\"_blank\" rel=\"noopener\">自分のパートを消して練習する（マイナスワン音源の作り方）</a></li>\n          <li><a href=\"/bandstemmixer/ja/learn-by-ear/\" target=\"_blank\" rel=\"noopener\">ベースとドラムを聞き取る：ソロにして耳コピする</a></li>\n          <li><a href=\"/bandstemmixer/ja/key-change/\" target=\"_blank\" rel=\"noopener\">曲のキーを変える</a></li>\n          <li><a href=\"/bandstemmixer/ja/how-it-works/\" target=\"_blank\" rel=\"noopener\">AI 音源分離の仕組みと、完璧に分かれない理由</a></li>\n          <li><a href=\"/bandstemmixer/ja/better-results/\" target=\"_blank\" rel=\"noopener\">うまく分離するコツ</a></li>\n          <li><a href=\"/bandstemmixer/ja/faq/\" target=\"_blank\" rel=\"noopener\">よくある質問</a></li>\n        </ul>",
           "menu.help": "使い方",
           "menu.guide": "ガイド・記事",
           "guide.url": "/bandstemmixer/ja/guide/",
@@ -665,7 +662,7 @@
           "home.url": "https://ktkwmr.com/ja/",
           "foot.meta": "<span>Band Stem Mixer · © 2026 ktkwmr</span>\n<a href=\"/bandstemmixer/ja/privacy/\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a>\n<a href=\"/bandstemmixer/ja/about/\" target=\"_blank\" rel=\"noopener\">運営者情報</a>\n<a href=\"https://github.com/ktkwmr/BandStemMixer\" target=\"_blank\" rel=\"noopener\">GitHub のソースコード</a>\n<a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">ご意見・ご質問</a>\n<a href=\"https://ktkwmr.com/ja/\" target=\"_blank\" rel=\"noopener\">ktkwmr のほかのアプリ</a>",
           "menu.model": "AI モデルを削除",
-          "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – 「4 つのパートに分離する」を押します。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>キー</b> – − / + で、ドラム以外のパートを半音ずつ上げ下げします（1 オクターブまで）。</li>\n        <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した MP3 ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
+          "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声・動画ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC、MP4・MOV などの動画（音声を使います）など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – ファイルを読み込むと、すぐに分離が始まります。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>キー</b> – − / + で、ドラム以外のパートを半音ずつ上げ下げします（1 オクターブまで）。</li>\n        <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した MP3 ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
           "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込み・分離・解析（キーの変更）は、ブラウザの中だけで行います。サーバーに送られることはありません。MP3 ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。ミキサーの設定は「ミキサーを元に戻す」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\" target=\"_blank\" rel=\"noopener\">運営者情報</a>をご覧ください。</li>",
           "model.del.title": "AI モデルを削除しますか？",
           "model.del.body": "このブラウザに保存した AI モデル（約 170 MB）を削除して、容量を空けます。次に分離するときに、もう一度ダウンロードします。",
@@ -877,8 +874,6 @@
         $("songInfo").hidden = false;
         $("songName").textContent = f.name;
         $("songMeta").textContent = t("file.reading");
-        $("runBtn").disabled = true;
-        $("runBtn").textContent = t("run");
         try {
           const d = await decode(f);
           if (file !== f) return;
@@ -890,7 +885,8 @@
           mix = d;
           fileOk = true;
           songSec = d.duration;
-          $("runBtn").disabled = false;
+          // No separate button: separation starts as soon as the file is read
+          run();
         } catch (e) {
           if (file !== f) return;
           $("songMeta").textContent = "";
@@ -965,7 +961,6 @@
       function setBusy(on) {
         busy = on;
         recordRun(on ? { stage: "download" } : null);
-        $("runBtn").disabled = on || !fileOk;
         $("drop").style.pointerEvents = on ? "none" : "";
         $("drop").style.opacity = on ? ".5" : "";
         if (!on) $("progress").hidden = true;
@@ -1016,7 +1011,7 @@
         showError("");
         await checkModel();
         if (!modelCached && navigator.onLine === false) { showError(t("err.offline")); return; }
-        if (!(await askNetwork())) return;
+        if (!(await askNetwork())) { showError(t("net.later.note")); return; }
         stopPlayback();
         releaseStems();
         setBusy(true);
@@ -1079,7 +1074,6 @@
           } else if (m.type === "done") {
             stopWorker();
             setBusy(false);
-            $("runBtn").textContent = t("run.again");
             toast(t("done", { time: fmtTime((Date.now() - startedAt) / 1000) }));
             loadStems(m.stems);
           } else if (m.type === "error") {
@@ -1124,7 +1118,6 @@
         }
         return decode(file);
       }
-      $("runBtn").addEventListener("click", run);
       $("cancelBtn").addEventListener("click", function () {
         stopWorker();
         setBusy(false);
@@ -1692,7 +1685,7 @@
           if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
         });
       });
-      $("netDlg").addEventListener("close", function () { $("runBtn").focus(); });
+      $("netDlg").addEventListener("close", function () { $("fileInput").focus(); });
 
       applyI18n();
       buildStrips();

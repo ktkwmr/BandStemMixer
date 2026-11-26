@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Takes the app screenshots used in the guide:
-//   public/bandstemmixer/images/guide/{en,ja}-{song,progress,mixer,network,phone}.png
+//   public/bandstemmixer/images/guide/{en,ja}-{song,mixer,network,phone}.png
 // The song is made up (scripts/guide-song.mjs), so there is no copyright issue. The AI model is not
 // used: a stand-in for separator.js returns the song's four parts, which are known exactly, after a
 // short fake progress. Everything else is the real app.
@@ -113,14 +113,13 @@ async function open(page, lang) {
   page.on("pageerror", (e) => console.error("Page error:", String(e)));
   await page.route("https://static.cloudflareinsights.com/**", (r) => r.fulfill({ status: 200, contentType: "text/javascript", body: "" }));
   await page.goto(origin + PATH[lang]);
+  // Choosing the file starts the separation (on a phone, after the question about the download)
   await page.setInputFiles("#fileInput", SONG[lang]);
-  await page.waitForFunction(() => !document.getElementById("runBtn").disabled);
 }
 // Separate, then set up the mixer like a bass player's practice: the bass muted, the vocals a little lower
 async function separate(page, { progressShot, started } = {}) {
-  if (!started) await page.click("#runBtn");
   if (progressShot) {
-    await page.waitForFunction(() => /^36%/.test(document.getElementById("detail").textContent));
+    await page.waitForFunction(() => /^([1-9]|[1-9][0-9])%/.test(document.getElementById("detail").textContent));
     await progressShot();
   }
   // Before separating, the mixer is shown greyed out (.ghost)
@@ -153,10 +152,12 @@ for (const lang of ["en", "ja"]) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1100, height: 900 }, deviceScaleFactor: 2, locale });
   const page = await ctx.newPage();
   await open(page, lang);
-  await addMarkers(page, [["#drop", 1, "inside"], ["#songInfo", 2, "inside"], ["#runBtn", 3, "inside"], [".model", 4, "below"]]);
-  await shot(page, ".panel:not(.out)", `${lang}-song.png`, 12);
-  await page.evaluate(() => document.querySelectorAll(".guide-marker").forEach((m) => m.remove()));
-  await separate(page, { progressShot: () => shot(page, ".panel:not(.out)", `${lang}-progress.png`, 12) });
+  // The song panel while it separates (the file was just chosen)
+  await separate(page, { progressShot: async () => {
+    await addMarkers(page, [["#drop", 1, "inside"], ["#songInfo", 2, "inside"], ["#progress", 3, "inside"], [".model", 4, "corner"]]);
+    await shot(page, ".panel:not(.out)", `${lang}-song.png`, 12);
+    await page.evaluate(() => document.querySelectorAll(".guide-marker").forEach((m) => m.remove()));
+  } });
   await addMarkers(page, [
     ["#playBtn", 1, "left"], ["#timeNow", 2, "right"], [".strip .sname", 3, "left"], [".strip:nth-child(2) .ms .chip", 4, "left"],
     [".strip .ms .chip + .chip", 5, "corner"], [".strip .vol input", 6, "below"], [".strip .save-btn", 7, "corner"],
@@ -169,7 +170,6 @@ for (const lang of ["en", "ja"]) {
   const phone = await browser.newContext({ ...devices["Pixel 7"], serviceWorkers: "block", locale });
   const pp = await phone.newPage();
   await open(pp, lang);
-  await pp.click("#runBtn");
   await pp.waitForSelector("#netDlg[open]");
   await pp.waitForTimeout(300);
   await pp.screenshot({ path: join(OUT, `${lang}-network.png`) });

@@ -190,7 +190,7 @@
   <li><a href="#parts">Why four parts, and why guitar and keys stay together</a></li>
   <li><a href="#leak">Why sounds leak between parts</a></li>
   <li><a href="#browser">How it runs in your browser</a></li>
-  <li><a href="#chords">Key change (without AI)</a></li>
+  <li><a href="#key">Key change (without AI)</a></li>
 </ol></nav>
 
 <h2 id="problem">Why separating a mix is hard</h2>
@@ -234,7 +234,7 @@
 </ul>
 <p>Once separated, the four parts are played together in sync, and the mixer only changes their volumes, so moving a fader is instant.</p>
 
-<h2 id="chords">Key change (without AI)</h2>
+<h2 id="key">Key change (without AI)</h2>
 <p>The key change does not use an AI model. A <b>phase vocoder</b>, a classic signal-processing method written in JavaScript and run in the browser, stretches each part in time by the pitch ratio and plays it back at the original length. It works on the separated parts one by one, which is why the drums can stay as they are.</p>
 <p>Finding the chords and making a harmony part from the vocals moved to our separate app <a href="/vocalharmonymaker/">Vocal Harmony Maker</a>.</p>
     </article>
