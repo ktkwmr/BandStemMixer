@@ -297,10 +297,11 @@
         </div>
         <div id="mixer" class="ghost" inert>
           <div class="transport">
-            <button class="play" id="playBtn" type="button" aria-label="再生" data-i18n-attr="aria-label:play">
+            <button class="play" id="playBtn" type="button" aria-label="再生" title="再生" data-i18n-attr="aria-label:play;title:play">
               <svg id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"></path></svg>
-              <svg id="pauseIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><rect x="6" y="6" width="12" height="12" rx="1.5"></rect></svg>
+              <svg id="pauseIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>
             </button>
+            <button class="chip sq" id="stopBtn" type="button" aria-label="停止（最初に戻る）" title="停止（最初に戻る）" data-i18n-attr="aria-label:stop;title:stop"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="1.5"></rect></svg></button>
             <div class="seek">
               <input type="range" id="seek" min="0" max="1" step="0.1" value="0" aria-label="再生位置" data-i18n-attr="aria-label:position" />
               <div class="time"><span id="timeNow">0:00</span><span id="timeEnd">0:00</span></div>
@@ -324,7 +325,7 @@
               <button class="chip save-btn" id="saveMix" type="button" data-i18n="mix.save">このミックスを保存（MP3）</button>
             </div>
           </div>
-          <p class="keys" data-i18n-html="keys"><kbd>Space</kbd> 再生・一時停止 · <kbd>1</kbd>〜<kbd>6</kbd> パートのミュート · <kbd>←</kbd> <kbd>→</kbd> 5 秒戻る・進む</p>
+          <p class="keys" data-i18n-html="keys"><kbd>Space</kbd> 再生・一時停止 · <kbd>Home</kbd> 停止 · <kbd>1</kbd>〜<kbd>4</kbd> パートのミュート · <kbd>←</kbd> <kbd>→</kbd> 5 秒戻る・進む</p>
         </div>
       </section>
     </div>
@@ -489,7 +490,8 @@
           "empty.title": "After separating, you can use this mixer",
           "empty": "Mute (M), solo (S), and set the volume of each part to play along with the band or learn a part by ear. Change the key and save MP3 files too.",
           "play": "Play",
-          "pause": "Stop",
+          "pause": "Pause",
+          "stop": "Stop (back to the start)",
           "position": "Position",
           "master": "Master",
           "mix.reset": "Reset mixer",
@@ -514,7 +516,7 @@
           "key.done": "Key changed ({n}).",
           "key.err": "The key could not be changed ({msg}).",
           "save.key": " (key {n})",
-          "keys": "<kbd>Space</kbd> play / pause · <kbd>1</kbd>–<kbd>4</kbd> mute a part · <kbd>←</kbd> <kbd>→</kbd> 5 seconds back / forward",
+          "keys": "<kbd>Space</kbd> play / pause · <kbd>Home</kbd> stop · <kbd>1</kbd>–<kbd>4</kbd> mute a part · <kbd>←</kbd> <kbd>→</kbd> 5 seconds back / forward",
           "foot": "Your song is separated on this device and never uploaded. No account needed.",
           "net.title.cellular": "You seem to be on mobile data",
           "net.title.saveData": "Data Saver is on",
@@ -605,7 +607,8 @@
           "empty.title": "分離すると、このミキサーが使えます",
           "empty": "パートごとのミュート（M）・ソロ（S）・音量で、自分のパートを消してバンドに合わせたり、耳コピしたりできます。キーの変更、MP3 での保存も。",
           "play": "再生",
-          "pause": "停止",
+          "pause": "一時停止",
+          "stop": "停止（最初に戻る）",
           "position": "再生位置",
           "master": "全体",
           "mix.reset": "ミキサーを元に戻す",
@@ -630,7 +633,7 @@
           "key.done": "キーを変えました（{n}）。",
           "key.err": "キーを変えられませんでした（{msg}）。",
           "save.key": "（キー {n}）",
-          "keys": "<kbd>Space</kbd> 再生・一時停止 · <kbd>1</kbd>〜<kbd>6</kbd> パートのミュート · <kbd>←</kbd> <kbd>→</kbd> 5 秒戻る・進む",
+          "keys": "<kbd>Space</kbd> 再生・一時停止 · <kbd>Home</kbd> 停止 · <kbd>1</kbd>〜<kbd>4</kbd> パートのミュート · <kbd>←</kbd> <kbd>→</kbd> 5 秒戻る・進む",
           "foot": "曲はこの端末の中で分離し、どこにもアップロードしません。登録も不要です。",
           "net.title.cellular": "モバイルデータ通信に接続しているようです",
           "net.title.saveData": "データセーバーがオンになっています",
@@ -1229,6 +1232,7 @@
         $("playIcon").toggleAttribute("hidden", on);
         $("pauseIcon").toggleAttribute("hidden", !on);
         $("playBtn").setAttribute("aria-label", t(on ? "pause" : "play"));
+        $("playBtn").title = t(on ? "pause" : "play");
         if (!on) meters.forEach(function (m) { m.style.width = "0"; });
       }
       function togglePlay() {
@@ -1257,7 +1261,14 @@
         $("seek").value = (pos / SR).toFixed(1);
         $("timeNow").textContent = fmtTime(pos / SR);
       }
+      // ■: stop and go back to the start (WEBAPP_BASELINE §9-15); ❚❚ keeps the position
+      function stopToStart() {
+        if (!stems) return;
+        stopPlayback();
+        seekTo(0);
+      }
       $("playBtn").addEventListener("click", togglePlay);
+      $("stopBtn").addEventListener("click", stopToStart);
       const seek = $("seek");
       seek.addEventListener("input", function () {
         seeking = true;
@@ -1565,6 +1576,9 @@
         if (e.key === " " && tag !== "BUTTON") {
           e.preventDefault();
           togglePlay();
+        } else if (e.key === "Home" && tag !== "INPUT") {
+          e.preventDefault();
+          stopToStart();
         } else if (/^[1-9]$/.test(e.key) && tracks[Number(e.key) - 1]) {
           const p = tracks[Number(e.key) - 1];
           store.parts[p.key].mute = !store.parts[p.key].mute;

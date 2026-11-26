@@ -63,11 +63,11 @@ export default {
 
 <h2 id="mixer">The mixer</h2>
 <figure class="shot">
-  ${img("en", "mixer", "The mixer while playing: the stop button and the position bar at 0:21 of 1:00, the key control, four rows for Vocals (at 80%), Bass (muted), Drums, and Other (guitar, keys…), each with a level meter, M and S buttons, a fader, and a save button, and under them the Master fader, Reset mixer, and Save this mix (MP3). Numbers 1 to 10 mark the controls.")}
+  ${img("en", "mixer", "The mixer while playing: the pause and stop buttons and the position bar at 0:21 of 1:00, the key control, four rows for Vocals (at 80%), Bass (muted), Drums, and Other (guitar, keys…), each with a level meter, M and S buttons, a fader, and a save button, and under them the Master fader, Reset mixer, and Save this mix (MP3). Numbers 1 to 10 mark the controls.")}
   <figcaption>Here the bass is muted (M), as a bass player would for practice, and the vocals are turned down to 80%.</figcaption>
 </figure>
 <ol>
-  <li><b>Play / Stop</b> – The button shows ■ while it plays. Press it again to stop; the next play starts from where it stopped.</li>
+  <li><b>▶ Play / ❚❚ Pause</b> – Shows ❚❚ while it plays. Press it to pause; the next play starts from where it paused. Next to it, <b>■</b> stops and goes back to the start.</li>
   <li><b>Position</b> – Drag to move through the song.</li>
   <li><b>The part and its level</b> – The bar under the name moves with the sound of that part.</li>
   <li><b>M (mute)</b> – Silences that part. Here the bass is muted.</li>
@@ -107,7 +107,8 @@ export default {
   <table class="text stack">
     <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
     <tbody>
-      <tr><th scope="row"><code>Space</code></th><td>Play / stop</td></tr>
+      <tr><th scope="row"><code>Space</code></th><td>Play / pause</td></tr>
+      <tr><th scope="row"><code>Home</code></th><td>Stop and go back to the start</td></tr>
       <tr><th scope="row"><code>1</code>–<code>4</code></th><td>Mute or unmute vocals, bass, drums, other</td></tr>
       <tr><th scope="row"><code>←</code> <code>→</code></th><td>5 seconds back / forward</td></tr>
     </tbody>
@@ -180,11 +181,11 @@ export default {
 
 <h2 id="mixer">ミキサー</h2>
 <figure class="shot">
-  ${img("ja", "mixer", "再生中のミキサー。停止ボタンと再生位置（1:00 のうち 0:21）、キーの − ＋、ボーカル（80%）・ベース（ミュート）・ドラム・その他（ギター・鍵盤など）の 4 行に、それぞれレベルメーター、M と S のボタン、フェーダー、保存ボタン。下に全体の音量、「ミキサーを元に戻す」「このミックスを保存（MP3）」。1〜10 の番号付き。")}
+  ${img("ja", "mixer", "再生中のミキサー。一時停止と停止のボタンと再生位置（1:00 のうち 0:21）、キーの − ＋、ボーカル（80%）・ベース（ミュート）・ドラム・その他（ギター・鍵盤など）の 4 行に、それぞれレベルメーター、M と S のボタン、フェーダー、保存ボタン。下に全体の音量、「ミキサーを元に戻す」「このミックスを保存（MP3）」。1〜10 の番号付き。")}
   <figcaption>ベーシストの練習のように、ベースをミュート（M）し、ボーカルを 80% に下げたところ。</figcaption>
 </figure>
 <ol>
-  <li><b>再生・停止</b> – 再生中は ■ になります。もう一度押すと止まり、次の再生は止めた位置から始まります。</li>
+  <li><b>▶ 再生・❚❚ 一時停止</b> – 再生中は ❚❚ になります。押すと一時停止し、次の再生は止めた位置から始まります。隣の <b>■</b> は、止めて曲の最初に戻ります。</li>
   <li><b>再生位置</b> – ドラッグして曲の中を移動します。</li>
   <li><b>パートとレベル</b> – 名前の下のバーが、そのパートの音に合わせて動きます。</li>
   <li><b>M（ミュート）</b> – そのパートを消します。ここではベースをミュートしています。</li>
@@ -224,7 +225,8 @@ export default {
   <table class="text stack">
     <thead><tr><th scope="col">キー</th><th scope="col">操作</th></tr></thead>
     <tbody>
-      <tr><th scope="row"><code>Space</code></th><td>再生・停止</td></tr>
+      <tr><th scope="row"><code>Space</code></th><td>再生・一時停止</td></tr>
+      <tr><th scope="row"><code>Home</code></th><td>停止して最初に戻る</td></tr>
       <tr><th scope="row"><code>1</code>〜<code>4</code></th><td>ボーカル・ベース・ドラム・その他のミュートの切り替え</td></tr>
       <tr><th scope="row"><code>←</code> <code>→</code></th><td>5 秒戻る・進む</td></tr>
     </tbody>
