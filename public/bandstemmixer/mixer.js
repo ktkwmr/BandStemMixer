@@ -1,5 +1,5 @@
-// AudioWorklet that plays the separated stems (4: drums, bass, other, vocals; then the harmony voice and
-// guide tone when they are made) in sync and mixes them with the faders.
+// AudioWorklet that plays the separated stems (4: drums, bass, other, vocals) in sync and mixes them with
+// the faders.
 // The stems are 16-bit PCM at 44.1 kHz. On a cross-origin isolated page they are SharedArrayBuffers
 // shared with the page (no copy); otherwise this worklet gets its own copy. If the device runs at
 // another sample rate, they are resampled on the fly with linear interpolation.

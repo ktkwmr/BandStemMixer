@@ -53,7 +53,7 @@ export default {
 <h2 id="guide">Keep a little of your part as a guide</h2>
 <p>Muting your part completely is the goal, but not always the best start. While you are still learning the song, turn your part down to about 20–30% instead of muting it. You can still hear where it goes, but your own playing is louder. Lower it each time you practice, and mute it when you no longer need it.</p>
 <p>When you need to hear a passage clearly first, solo it: see <a href="../learn-by-ear/">hearing the bass and drums clearly</a>.</p>
-<p>Singers who sing the harmony in the band can make one from the vocals and practice it the same way: see <a href="../harmony/">practicing harmonies</a>. To play in your band's key or with a song tuned down, see <a href="../chords-and-key/#key">changing the key</a>.</p>
+<p>Singers who sing the harmony in the band can make one from the vocals with our separate app <a href="/vocalharmonymaker/">Vocal Harmony Maker</a> and practice it the same way. To play in your band's key or with a song tuned down, see <a href="../key-change/">changing the key</a>.</p>
 
 <h2 id="limits">What to expect from the separation</h2>
 <ul>
@@ -117,7 +117,7 @@ export default {
 <h2 id="guide">自分のパートを少し残す</h2>
 <p>最終的には完全にミュートするのが目標ですが、最初からそうする必要はありません。曲を覚えている途中なら、ミュートせずに 20〜30% くらいに下げておくと、どこで何を弾くかが分かりつつ、自分の音のほうが大きく聞こえます。練習のたびに少しずつ下げ、要らなくなったらミュートします。</p>
 <p>聞き取りにくいフレーズは、先にソロで確かめましょう。<a href="../learn-by-ear/">ベースとドラムを聞き取る</a>で説明しています。</p>
-<p>バンドでハモリを歌う人は、ボーカルからハモリを作って同じように練習できます。<a href="../harmony/">ハモリの練習</a>をご覧ください。バンドのキーや、半音下げチューニングの曲に合わせたいときは、<a href="../chords-and-key/#key">キーを変える</a>を見てください。</p>
+<p>バンドでハモリを歌う人は、別のアプリ <a href="/vocalharmonymaker/ja/">Vocal Harmony Maker</a> でボーカルからハモリを作って、同じように練習できます。バンドのキーや、半音下げチューニングの曲に合わせたいときは、<a href="../key-change/">曲のキーを変える</a>を見てください。</p>
 
 <h2 id="limits">分離の仕上がりについて</h2>
 <ul>

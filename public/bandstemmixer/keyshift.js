@@ -12,7 +12,37 @@
 //   { type: "done", left: Int16Array, right: Int16Array }  (shared memory when the page is cross-origin isolated)
 //   { type: "error", message }
 
-import { makeFft } from "./harmony.js";
+
+// In-place complex FFT (radix 2, forward)
+function makeFft(n) {
+  const bits = Math.round(Math.log2(n));
+  const rev = new Uint32Array(n);
+  for (let i = 0; i < n; i++) {
+    let r = 0;
+    for (let b = 0, x = i; b < bits; b++, x >>= 1) r = (r << 1) | (x & 1);
+    rev[i] = r;
+  }
+  const cos = new Float64Array(n / 2), sin = new Float64Array(n / 2);
+  for (let i = 0; i < n / 2; i++) { cos[i] = Math.cos((2 * Math.PI * i) / n); sin[i] = Math.sin((2 * Math.PI * i) / n); }
+  return function (re, im) {
+    for (let i = 0; i < n; i++) {
+      const j = rev[i];
+      if (j > i) { let t = re[i]; re[i] = re[j]; re[j] = t; t = im[i]; im[i] = im[j]; im[j] = t; }
+    }
+    for (let size = 2; size <= n; size <<= 1) {
+      const half = size >> 1, step = n / size;
+      for (let i = 0; i < n; i += size) {
+        for (let j = i, k = 0; j < i + half; j++, k += step) {
+          const l = j + half;
+          const tr = re[l] * cos[k] + im[l] * sin[k];
+          const ti = im[l] * cos[k] - re[l] * sin[k];
+          re[l] = re[j] - tr; im[l] = im[j] - ti;
+          re[j] += tr; im[j] += ti;
+        }
+      }
+    }
+  };
+}
 
 function makeArray(n) {
   const shared = self.crossOriginIsolated && typeof SharedArrayBuffer === "function";
