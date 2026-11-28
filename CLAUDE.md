@@ -27,6 +27,7 @@
 - 保存は MP3 だけ（192 kbps）。`encoder.js`（ワーカー）が lamejs（`@breezystack/lamejs`、LGPL-3.0）で作る。lamejs は改変せず CDN から別ファイルとして読む（LGPL の条件。改変するなら変更を公開する必要がある）。バージョンは `encoder.js` の `LAME_URL` と `sw.js` の `CDN`。
 - 大きなダウンロードの前の確認（Wi-Fi でないときのダイアログ）は `index.html` の `connectionRisk()`・`askNetwork()`。モデルがキャッシュ済みなら出さない。ダウンロード量の表示は `MODEL_MB`・`ENGINE_MB`。
 - ページはクロスオリジン分離（`public/_headers` の COOP / COEP require-corp）。ONNX Runtime の複数スレッドと、分離結果を `SharedArrayBuffer` でプレーヤーと共有するのに必要。外部から読むファイルは CORS で読む（`<script type="module">`・`fetch`・`import()`）。CORS でない読み込み（`<img>` の外部画像など）を足すと COEP でブロックされる。
+- 利用状況の計測（Cloudflare Zaraz → GA4、同意バナーで同意した人だけ。ベースライン §17）: `usage-events.js`（ベースラインの雛形のコピー。タップ `bsm_tap`・設定の変更 `bsm_change`・滞在時間 `bsm_engaged`）と、主な機能の `track()`（`index.html` の `chooseFile()`・`run()`・`attempt()`（Vocal Harmony Maker の `vhm_open`・`vhm_separate` と同じ）・`rebuild()`（キー）・`saveMp3()`）。ファイル名・曲の音は送らない（種類・長さ・数・結果だけ）。イベントを足したら `docs/analytics.md` の表と GA4 のカスタム定義、送る内容を変えたらプライバシーの説明も直す。
 - 外部ホストを足したら `public/_headers` の CSP と、プライバシーの説明（`scripts/pages/privacy.mjs`、アプリ内の `privacy.body`、README）を同じ PR で直す。
 - **分離ボタンはない**（2026-11-26、ユーザーの希望。Vocal Harmony Maker と同じ）。ファイルを選ぶと `chooseFile()` が読み込んで、そのまま `run()` で分離を始める（Wi-Fi の確認で「やめておく」なら `net.later.note` で選び直しを案内）。音声ファイルと動画（`accept` に `video/*`・`.mp4`・`.mov`・`.mkv` など。`decodeAudioData` で音声を読む）を開ける。
 - 再生は ▶／❚❚ の 1 つのボタン（アイコンだけ、`aria-label`・`title` を切り替え）と ■（`stopBtn`、`stopToStart()` で止めて最初に戻る）。Space で再生／一時停止、Home で停止（ベースライン §9-15）。

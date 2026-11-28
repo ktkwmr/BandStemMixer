@@ -156,6 +156,9 @@
       .site-head, .site-foot, .cta { display: none; }
     }
   </style>
+  <!-- Usage analytics: Cloudflare Zaraz → Google Analytics 4, only after consent (see usage-events.js) -->
+  <script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+  <script src="/bandstemmixer/usage-events.js"></script>
 </head>
 <body>
   <header class="site-head">
@@ -230,6 +233,7 @@
         <span>Band Stem Mixer · © 2026 ktkwmr</span>
         <a href="/bandstemmixer/ja/about/" aria-current="page">運営者情報</a>
         <a href="/bandstemmixer/ja/privacy/">プライバシーポリシー</a>
+        <a href="#" class="cookie-settings">Cookie の設定</a>
         <a href="https://github.com/ktkwmr/BandStemMixer" rel="noopener">GitHub のソースコード</a>
         <a href="https://github.com/ktkwmr/BandStemMixer/issues" rel="noopener">ご意見・ご質問</a>
         <a href="https://ktkwmr.com/ja/">ktkwmr のほかのアプリ</a>

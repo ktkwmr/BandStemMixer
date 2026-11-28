@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="/bandstemmixer/icons/icon.svg" />
   <link rel="apple-touch-icon" href="/bandstemmixer/icons/apple-touch-icon.png" />
   <title>プライバシーポリシー | Band Stem Mixer</title>
-  <meta name="description" content="Band Stem Mixer のプライバシーポリシー。曲は端末の中で分離してアップロードしないこと、AI モデルとライブラリのダウンロード（Hugging Face・jsDelivr）、ブラウザに保存するデータ、Cookie を使わないアクセス解析、広告がないことについて。" />
+  <meta name="description" content="Band Stem Mixer のプライバシーポリシー。曲は端末の中で分離してアップロードしないこと、AI モデルとライブラリのダウンロード（Hugging Face・jsDelivr）、ブラウザに保存するデータ、アクセス解析（同意した場合のみ Google アナリティクス）、Cookie、広告がないことについて。" />
   <link rel="canonical" href="https://ktkwmr.com/bandstemmixer/ja/privacy/" />
   <link rel="alternate" hreflang="en" href="https://ktkwmr.com/bandstemmixer/privacy/" />
   <link rel="alternate" hreflang="ja" href="https://ktkwmr.com/bandstemmixer/ja/privacy/" />
@@ -16,7 +16,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Band Stem Mixer" />
   <meta property="og:title" content="プライバシーポリシー" />
-  <meta property="og:description" content="Band Stem Mixer のプライバシーポリシー。曲は端末の中で分離してアップロードしないこと、AI モデルとライブラリのダウンロード（Hugging Face・jsDelivr）、ブラウザに保存するデータ、Cookie を使わないアクセス解析、広告がないことについて。" />
+  <meta property="og:description" content="Band Stem Mixer のプライバシーポリシー。曲は端末の中で分離してアップロードしないこと、AI モデルとライブラリのダウンロード（Hugging Face・jsDelivr）、ブラウザに保存するデータ、アクセス解析（同意した場合のみ Google アナリティクス）、Cookie、広告がないことについて。" />
   <meta property="og:locale" content="ja_JP" />
   <meta property="og:locale:alternate" content="en_US" />
   <meta property="og:url" content="https://ktkwmr.com/bandstemmixer/ja/privacy/" />
@@ -29,10 +29,10 @@
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "プライバシーポリシー",
-    "description": "Band Stem Mixer のプライバシーポリシー。曲は端末の中で分離してアップロードしないこと、AI モデルとライブラリのダウンロード（Hugging Face・jsDelivr）、ブラウザに保存するデータ、Cookie を使わないアクセス解析、広告がないことについて。",
+    "description": "Band Stem Mixer のプライバシーポリシー。曲は端末の中で分離してアップロードしないこと、AI モデルとライブラリのダウンロード（Hugging Face・jsDelivr）、ブラウザに保存するデータ、アクセス解析（同意した場合のみ Google アナリティクス）、Cookie、広告がないことについて。",
     "url": "https://ktkwmr.com/bandstemmixer/ja/privacy/",
     "inLanguage": "ja",
-    "dateModified": "2026-11-25",
+    "dateModified": "2026-11-28",
     "isPartOf": {
       "@type": "WebSite",
       "name": "Band Stem Mixer",
@@ -156,6 +156,9 @@
       .site-head, .site-foot, .cta { display: none; }
     }
   </style>
+  <!-- Usage analytics: Cloudflare Zaraz → Google Analytics 4, only after consent (see usage-events.js) -->
+  <script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+  <script src="/bandstemmixer/usage-events.js"></script>
 </head>
 <body>
   <header class="site-head">
@@ -203,6 +206,8 @@
     <tbody>
       <tr><th scope="row"><a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare</a>（Cloudflare, Inc.）</th><td data-label="タイミング：">すべてのページ・ファイルの読み込み時</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、アクセスした URL、日時</td><td data-label="利用目的：">本サイトの配信、セキュリティの確保、運用のためのアクセスログ</td></tr>
       <tr><th scope="row"><a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare Web Analytics</a>（Cloudflare, Inc.）</th><td data-label="タイミング：">ページを開いたとき</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、閲覧したページの URL、参照元、ページの表示速度。Cookie は使いません。</td><td data-label="利用目的：">ページの閲覧数の集計（「アクセス解析」の項目を参照）</td></tr>
+      <tr><th scope="row"><a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare Zaraz</a>（Cloudflare, Inc.）</th><td data-label="タイミング：">ページを開いたとき、アプリを操作したとき（ボタンを押したときなど）</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、閲覧したページの URL、参照元、「アクセス解析」の項目に書いた操作の情報</td><td data-label="利用目的：">Cookie のバナーの表示と、同意した場合に限り Google アナリティクスへ操作の情報を渡すこと</td></tr>
+      <tr><th scope="row"><a href="https://policies.google.com/privacy" rel="noopener">Google アナリティクス</a>（Google LLC）</th><td data-label="タイミング：">Cookie のバナーで「すべて同意」を選んだ場合のみ。ページを開いたとき、アプリを操作したとき。お使いのブラウザからではなく Cloudflare のサーバーから送信</td><td data-label="送信される情報：">ブラウザごとのランダムな ID、閲覧したページの URL、参照元、ブラウザの情報、末尾を削った IP アドレスから推定するおおよその地域、「アクセス解析」の項目に書いた操作の情報</td><td data-label="利用目的：">サイトの使われ方を知り、改善すること（「アクセス解析」の項目を参照）</td></tr>
       <tr><th scope="row"><a href="https://huggingface.co/privacy" rel="noopener">Hugging Face</a>（Hugging Face, Inc.）</th><td data-label="タイミング：">初めて曲を分離するとき（モデルがブラウザに保存されるまで）</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、モデルのファイルの URL、日時。曲の情報は送りません。</td><td data-label="利用目的：">AI モデル（Demucs htdemucs）のダウンロード</td></tr>
       <tr><th scope="row"><a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net" rel="noopener">jsDelivr</a>（Prospect One とそのパートナーが運営する CDN）</th><td data-label="タイミング：">曲を分離するとき（ライブラリがブラウザに保存されるまで）</td><td data-label="送信される情報：">IP アドレス、ブラウザの情報（ユーザーエージェント）、ライブラリのファイルの URL、読み込んだページ（参照元）、日時</td><td data-label="利用目的：">AI モデルを動かすライブラリ ONNX Runtime Web、音声をモデル用に変換する demucs-web、（ファイルを保存するときは）MP3 を作る lamejs のダウンロード</td></tr>
     </tbody>
@@ -210,10 +215,25 @@
 </div>
 
 <h2 id="cookies">4. Cookie と広告</h2>
-<p>本サイトは Cookie を設定せず、広告も表示しません。今後広告を表示する場合は、表示を始める前に本ポリシーを改定します。</p>
+<p>本サイトは、アクセス解析のためだけに Cookie を使います。</p>
+<ul>
+  <li><b>Cookie のバナーでの選択：</b>選んだときに Cloudflare Zaraz が保存し、バナーを再び出さないようにします。選択は ktkwmr.com のすべてのアプリに共通です。</li>
+  <li><b>Google アナリティクス用のランダムな ID：</b>「すべて同意」を選んだ場合のみ。再訪を数えるためのもので、氏名などの個人の情報は含みません。</li>
+</ul>
+<p>選択は、各ページの下にある「Cookie の設定」からいつでも変えられます。本サイトは広告を表示しません。今後広告を表示する場合は、表示を始める前に本ポリシーを改定します。</p>
 
 <h2 id="analytics">5. アクセス解析</h2>
-<p>本サイトの利用状況を知るため、<b>Cloudflare Web Analytics</b> を使用しています。Cookie を使わずにページの閲覧数を集計するもので、個人を特定したり、ほかのサイトをまたいで追跡したりはしません。Google アナリティクスは使用していません。</p>
+<p>本サイトの利用状況を知るため、<b>Cloudflare Web Analytics</b> を使用しています。Cookie を使わずにページの閲覧数を集計するもので、個人を特定したり、ほかのサイトをまたいで追跡したりはしません。</p>
+<p>また、アプリと記事の使われ方を知って改善するため、Cookie のバナーで<b>同意した場合に限り</b>、<b>Cloudflare Zaraz</b> を通じて <b>Google アナリティクス</b>を使用します。記録するのは次の情報です。</p>
+<ul>
+  <li>見たページ、開いていた時間、どこから来たか（参照元）</li>
+  <li>押したボタンやリンク、変えた設定（名前と、設定はその値。「ベース：ミュート」「キー：+2」など）</li>
+  <li>再生した時間</li>
+  <li>開いた曲のファイルの種類と長さ（「MP3・4.2 分」など）、分離の結果（かかった時間、使った処理、エラーの種類）</li>
+  <li>キーの変更とうまくいったかどうか、MP3 で保存したパート</li>
+</ul>
+<p>ファイル名と曲そのものは送りません。データは Cloudflare のサーバーから IP アドレスの末尾を削って Google に送り、お使いのブラウザが Google に直接つながることはありません。Google シグナルと広告の機能は使わず、データの保持期間は 14 か月です。Google によるデータの使われ方は<a href="https://policies.google.com/technologies/partner-sites" rel="noopener">Google のサービスを使用するサイトやアプリから収集した情報の Google による使用</a>をご覧ください。</p>
+<p>「すべて拒否」を選んだ場合や、選ばなかった場合は、Google アナリティクスには何も送られません。</p>
 
 <h2 id="third-party">6. 第三者への提供</h2>
 <p>本サイトは、個人を特定できる情報を収集していません。法令に基づく場合を除き、個人情報を第三者に販売・提供することはありません。</p>
@@ -223,7 +243,7 @@
 
 <h2 id="changes">8. 改定</h2>
 <p>サービスの追加・終了など本サイトの変更に合わせて、本ポリシーを改定することがあります。改定後のポリシーは、このページに掲載した時点から適用されます。</p>
-<p>制定日：2026 年 10 月 28 日（2026 年 10 月 31 日改定：1. にコードの推定・ハモリ・キーの変更を追加。いずれもブラウザの中で行います。2026 年 11 月 25 日改定：コードの推定とハモリを別のアプリに移したため削除）</p>
+<p>制定日：2026 年 10 月 28 日（2026 年 10 月 31 日改定：1. にコードの推定・ハモリ・キーの変更を追加。いずれもブラウザの中で行います。2026 年 11 月 25 日改定：コードの推定とハモリを別のアプリに移したため削除。2026 年 11 月 28 日改定：同意した場合に限り Cloudflare Zaraz を通じて Google アナリティクスを使用）</p>
     </article>
     <aside class="cta">
       <h2>曲をパートに分離してバンド練習に</h2>
@@ -249,6 +269,7 @@
         <span>Band Stem Mixer · © 2026 ktkwmr</span>
         <a href="/bandstemmixer/ja/about/">運営者情報</a>
         <a href="/bandstemmixer/ja/privacy/" aria-current="page">プライバシーポリシー</a>
+        <a href="#" class="cookie-settings">Cookie の設定</a>
         <a href="https://github.com/ktkwmr/BandStemMixer" rel="noopener">GitHub のソースコード</a>
         <a href="https://github.com/ktkwmr/BandStemMixer/issues" rel="noopener">ご意見・ご質問</a>
         <a href="https://ktkwmr.com/ja/">ktkwmr のほかのアプリ</a>
