@@ -252,6 +252,9 @@
     @media (hover: hover) { .related a:hover { border-color: var(--ink); background: var(--hover-fill); } }
     @media (prefers-reduced-motion: reduce) { .related a { transition: none; } .related a:active { transform: none; } }
 </style>
+  <!-- Usage analytics: Cloudflare Zaraz → Google Analytics 4, only after consent (see usage-events.js) -->
+  <script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+  <script src="/bandstemmixer/usage-events.js"></script>
 </head>
 <body>
   <header class="topbar">
@@ -373,6 +376,7 @@
       <p class="meta" data-i18n-html="foot.meta"><span>Band Stem Mixer · © 2026 ktkwmr</span>
 <a href="/bandstemmixer/ja/privacy/" target="_blank" rel="noopener">プライバシーポリシー</a>
 <a href="/bandstemmixer/ja/about/" target="_blank" rel="noopener">運営者情報</a>
+<a href="#" class="cookie-settings">Cookie の設定</a>
 <a href="https://github.com/ktkwmr/BandStemMixer" target="_blank" rel="noopener">GitHub のソースコード</a>
 <a href="https://github.com/ktkwmr/BandStemMixer/issues" target="_blank" rel="noopener">ご意見・ご質問</a>
 <a href="https://ktkwmr.com/ja/" target="_blank" rel="noopener">ktkwmr のほかのアプリ</a></p>
@@ -414,6 +418,7 @@
         <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>
         <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。ミキサーの設定は「ミキサーを元に戻す」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>
         <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>
+        <li><b>同意した場合のみ Google アナリティクス</b> – Cookie のバナーで「すべて同意」を選んだ場合に限り、Google アナリティクス（Cloudflare Zaraz 経由。Cloudflare のサーバーから IP アドレスの末尾を削って送信）でアプリの使われ方（見たページと時間、押したボタンと変えた設定、再生した時間、開いた曲の種類と長さ、分離の結果）を記録します。ファイル名と曲そのものは送りません。選択はページ下の「Cookie の設定」から変えられます。</li>
         <li><b>お問い合わせ</b> – ご質問・ご意見は <a href="https://github.com/ktkwmr/BandStemMixer/issues" target="_blank" rel="noopener">GitHub の Issues</a> へ。</li>
         <li><b>詳しくは</b> – <a href="/bandstemmixer/ja/privacy/" target="_blank" rel="noopener">プライバシーポリシー</a>と<a href="/bandstemmixer/ja/about/" target="_blank" rel="noopener">運営者情報</a>をご覧ください。</li></ul>
     </div>
@@ -565,10 +570,10 @@
           "rel.2.text": "Remove the vocals and practice singing",
           "rel.2.href": "/karaoketrainer/",
           "home.url": "https://ktkwmr.com/",
-          "foot.meta": "<span>Band Stem Mixer · © 2026 ktkwmr</span>\n<a href=\"/bandstemmixer/privacy/\" target=\"_blank\" rel=\"noopener\">Privacy policy</a>\n<a href=\"/bandstemmixer/about/\" target=\"_blank\" rel=\"noopener\">About this site</a>\n<a href=\"https://github.com/ktkwmr/BandStemMixer\" target=\"_blank\" rel=\"noopener\">Source code on GitHub</a>\n<a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">Feedback</a>\n<a href=\"https://ktkwmr.com/\" target=\"_blank\" rel=\"noopener\">More apps by ktkwmr</a>",
+          "foot.meta": "<span>Band Stem Mixer · © 2026 ktkwmr</span>\n<a href=\"/bandstemmixer/privacy/\" target=\"_blank\" rel=\"noopener\">Privacy policy</a>\n<a href=\"/bandstemmixer/about/\" target=\"_blank\" rel=\"noopener\">About this site</a>\n<a href=\"#\" class=\"cookie-settings\">Cookie settings</a>\n<a href=\"https://github.com/ktkwmr/BandStemMixer\" target=\"_blank\" rel=\"noopener\">Source code on GitHub</a>\n<a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">Feedback</a>\n<a href=\"https://ktkwmr.com/\" target=\"_blank\" rel=\"noopener\">More apps by ktkwmr</a>",
           "menu.model": "Delete the AI model",
           "help.body": "<li><b>Choose a song</b> – Tap the box and choose an audio or video file, or drop it on the box. MP3, WAV, M4A (AAC), FLAC, MP4 and MOV videos (their sound is used), and most formats your browser can play work, up to 12 minutes.</li>\n        <li><b>Separate</b> – Separation starts as soon as the file is read. The first time, the AI model (about 170 MB) is downloaded and kept on your device. If you are not on Wi-Fi, the app asks first. The bar shows how far it is and about how long is left.</li>\n        <li><b>Mix</b> – Play, then use each part's fader. <b>M</b> mutes a part; <b>S</b> plays only the parts with S on. Mute your own instrument to play along with the band.</li>\n        <li><b>Save</b> – The ↓ button on each part saves that part as an MP3 file. “Save this mix (MP3)” saves what you hear now (faders, mute, and solo).</li>\n        <li><b>Key</b> – − / + moves every part except the drums up or down a semitone (up to an octave).</li>\n        <li><b>Good to know</b> – The parts are not saved in the app: when you reload or choose another song, separate again or use the MP3 files you saved. A computer is much faster than a phone. Keep the screen on while separating.</li>\n        <li><b>Use songs you may use</b> – Separate your own recordings, or songs you have the rights to use. Do not publish separated parts of songs by others without permission.</li>",
-          "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read, separated, and analyzed (key change) only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts, cookies, or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Reset the mixer with “Reset mixer”, delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\" target=\"_blank\" rel=\"noopener\">privacy policy</a> and <a href=\"/bandstemmixer/about/\" target=\"_blank\" rel=\"noopener\">about this site</a>.</li>",
+          "privacy.body": "<li><b>Your song stays on your device</b> – The audio file you choose is read, separated, and analyzed (key change) only in your browser. It is never sent to a server. Saving MP3 files only saves them on your device. This app has no accounts or ads, and does not use the microphone.</li>\n        <li><b>Downloads</b> – To separate, your browser downloads the AI model from Hugging Face and the ONNX Runtime and demucs-web libraries (and, when you save, the lamejs MP3 encoder) from jsDelivr (a CDN). Like any download, they receive your IP address and browser information. Nothing about your song is sent.</li>\n        <li><b>Data saved in your browser</b> – The AI model (so it is downloaded only once), the mixer settings (fader levels, mute, master volume), and the app itself (to work offline) are saved in your browser. Reset the mixer with “Reset mixer”, delete the model with ⚙ → “Delete the AI model”, or clear this site's data in your browser settings.</li>\n        <li><b>Server logs and page views</b> – This site is hosted on Cloudflare. Standard access logs (such as IP address, time, and the requested page) are kept for operation and security. Cloudflare Web Analytics counts page views without cookies (the page URL, referrer, browser information, and page load time).</li>\n        <li><b>Google Analytics, only if you agree</b> – Only if you choose “Accept all” in the cookie banner, Google Analytics (through Cloudflare Zaraz, sent from Cloudflare's servers with a shortened IP address) records how the app is used: pages viewed and for how long, buttons tapped and settings changed, playing time, the kind and length of the songs opened, and how the separation went. File names and the music itself are never sent. Change your choice from “Cookie settings” at the bottom of the page.</li>\n        <li><b>Contact</b> – Questions and feedback: <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub Issues</a>.</li>\n        <li><b>Full policy</b> – See the <a href=\"/bandstemmixer/privacy/\" target=\"_blank\" rel=\"noopener\">privacy policy</a> and <a href=\"/bandstemmixer/about/\" target=\"_blank\" rel=\"noopener\">about this site</a>.</li>",
           "model.del.title": "Delete the AI model?",
           "model.del.body": "This deletes the AI model (about 170 MB) saved in this browser, to free up space. It is downloaded again the next time you separate a song.",
           "model.del.ok": "Delete",
@@ -685,10 +690,10 @@
           "rel.2.text": "ボーカルを消して歌の練習",
           "rel.2.href": "/karaoketrainer/ja/",
           "home.url": "https://ktkwmr.com/ja/",
-          "foot.meta": "<span>Band Stem Mixer · © 2026 ktkwmr</span>\n<a href=\"/bandstemmixer/ja/privacy/\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a>\n<a href=\"/bandstemmixer/ja/about/\" target=\"_blank\" rel=\"noopener\">運営者情報</a>\n<a href=\"https://github.com/ktkwmr/BandStemMixer\" target=\"_blank\" rel=\"noopener\">GitHub のソースコード</a>\n<a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">ご意見・ご質問</a>\n<a href=\"https://ktkwmr.com/ja/\" target=\"_blank\" rel=\"noopener\">ktkwmr のほかのアプリ</a>",
+          "foot.meta": "<span>Band Stem Mixer · © 2026 ktkwmr</span>\n<a href=\"/bandstemmixer/ja/privacy/\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a>\n<a href=\"/bandstemmixer/ja/about/\" target=\"_blank\" rel=\"noopener\">運営者情報</a>\n<a href=\"#\" class=\"cookie-settings\">Cookie の設定</a>\n<a href=\"https://github.com/ktkwmr/BandStemMixer\" target=\"_blank\" rel=\"noopener\">GitHub のソースコード</a>\n<a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">ご意見・ご質問</a>\n<a href=\"https://ktkwmr.com/ja/\" target=\"_blank\" rel=\"noopener\">ktkwmr のほかのアプリ</a>",
           "menu.model": "AI モデルを削除",
           "help.body": "<li><b>曲を選ぶ</b> – 枠をタップして音声・動画ファイルを選ぶか、枠にドロップします。MP3・WAV・M4A（AAC）・FLAC、MP4・MOV などの動画（音声を使います）など、ブラウザで再生できる形式なら使えます。12 分までです。</li>\n        <li><b>分離する</b> – ファイルを読み込むと、すぐに分離が始まります。初回は AI モデル（約 170 MB）をダウンロードして端末に保存します。Wi-Fi でないときは先に確認します。バーに進み具合と残り時間の目安が出ます。</li>\n        <li><b>ミックスする</b> – 再生して、パートごとのフェーダーで音量を変えます。<b>M</b> はそのパートを消し、<b>S</b> は S を押したパートだけを鳴らします。自分の楽器をミュートすれば、バンドに合わせて練習できます。</li>\n        <li><b>保存する</b> – 各パートの ↓ ボタンで、そのパートを MP3 ファイルに保存します。「このミックスを保存（MP3）」は、いま聞こえている状態（フェーダー・ミュート・ソロ）で保存します。</li>\n        <li><b>キー</b> – − / + で、ドラム以外のパートを半音ずつ上げ下げします（1 オクターブまで）。</li>\n        <li><b>注意</b> – 分離したパートはアプリには残りません。再読み込みしたり別の曲を選んだりしたら、もう一度分離するか、保存した MP3 ファイルを使ってください。スマホよりパソコンのほうがずっと速く分離できます。分離中は画面を消さないでください。</li>\n        <li><b>使ってよい曲で</b> – 自分の演奏の録音や、使う権利のある曲を分離してください。ほかの人の曲を分離したパートを、許可なく公開しないでください。</li>",
-          "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込み・分離・解析（キーの変更）は、ブラウザの中だけで行います。サーバーに送られることはありません。MP3 ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。ミキサーの設定は「ミキサーを元に戻す」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\" target=\"_blank\" rel=\"noopener\">運営者情報</a>をご覧ください。</li>",
+          "privacy.body": "<li><b>曲は端末の外に出ません</b> – 選んだ音声ファイルの読み込み・分離・解析（キーの変更）は、ブラウザの中だけで行います。サーバーに送られることはありません。MP3 ファイルの保存も端末に保存するだけです。このアプリにはアカウント・Cookie・広告はなく、マイクも使いません。</li>\n        <li><b>ダウンロード</b> – 分離のために、ブラウザが Hugging Face から AI モデルを、jsDelivr（CDN）から ONNX Runtime と demucs-web のライブラリ（保存するときは MP3 を作る lamejs も）をダウンロードします。通常のダウンロードと同じく、IP アドレスやブラウザの情報が相手に届きます。曲の情報は送りません。</li>\n        <li><b>ブラウザに保存するデータ</b> – AI モデル（ダウンロードを 1 回で済ませるため）、ミキサーの設定（フェーダーの位置・ミュート・全体の音量）、オフラインで使うためのアプリ本体を、ブラウザに保存します。ミキサーの設定は「ミキサーを元に戻す」、AI モデルは ⚙ →「AI モデルを削除」で消せます。ブラウザの設定でこのサイトのデータを削除しても消えます。</li>\n        <li><b>サーバーのログと閲覧数</b> – このサイトは Cloudflare で配信しています。運用とセキュリティのため、通常のアクセスログ（IP アドレス・日時・アクセスしたページなど）が記録されます。Cloudflare Web Analytics で、Cookie を使わずにページの閲覧数（ページの URL・参照元・ブラウザの情報・表示速度）を集計しています。</li>\n        <li><b>同意した場合のみ Google アナリティクス</b> – Cookie のバナーで「すべて同意」を選んだ場合に限り、Google アナリティクス（Cloudflare Zaraz 経由。Cloudflare のサーバーから IP アドレスの末尾を削って送信）でアプリの使われ方（見たページと時間、押したボタンと変えた設定、再生した時間、開いた曲の種類と長さ、分離の結果）を記録します。ファイル名と曲そのものは送りません。選択はページ下の「Cookie の設定」から変えられます。</li>\n        <li><b>お問い合わせ</b> – ご質問・ご意見は <a href=\"https://github.com/ktkwmr/BandStemMixer/issues\" target=\"_blank\" rel=\"noopener\">GitHub の Issues</a> へ。</li>\n        <li><b>詳しくは</b> – <a href=\"/bandstemmixer/ja/privacy/\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a>と<a href=\"/bandstemmixer/ja/about/\" target=\"_blank\" rel=\"noopener\">運営者情報</a>をご覧ください。</li>",
           "model.del.title": "AI モデルを削除しますか？",
           "model.del.body": "このブラウザに保存した AI モデル（約 170 MB）を削除して、容量を空けます。次に分離するときに、もう一度ダウンロードします。",
           "model.del.ok": "削除する",
@@ -891,6 +896,11 @@
         return { left: left, right: right, duration: buf.duration, channels: buf.numberOfChannels, rate: buf.sampleRate };
       }
 
+      // ---------- Usage events (usage-events.js: Cloudflare Zaraz → GA4, only after consent) ----------
+      // Never the file name or the sound: only kinds, lengths, counts, and results
+      function track(name, params) { try { if (window.usage) window.usage.track(name, params); } catch (e) {} }
+      const extOf = (f) => ((/\.([a-z0-9]{1,8})$/i.exec((f && f.name) || "") || [, "other"])[1]).toLowerCase();
+      const minutesOf = (sec) => Math.round(sec / 6) / 10;
       async function chooseFile(f) {
         if (!f) return;
         if (busy) return;
@@ -907,8 +917,10 @@
           $("songMeta").textContent = t("file.meta", { time: fmtTime(d.duration), ch: t(d.channels > 1 ? "file.stereo" : "file.mono") });
           if (d.duration > (LOW_MEM ? MAX_SEC_LOW_MEM : MAX_SEC)) {
             showError(t("err.tooLong", { time: fmtTime(d.duration), max: (LOW_MEM ? MAX_SEC_LOW_MEM : MAX_SEC) / 60 }));
+            track("open", { kind: extOf(f), result: "too-long", minutes: minutesOf(d.duration) });
             return;
           }
+          track("open", { kind: extOf(f), result: "ok", minutes: minutesOf(d.duration) });
           mix = d;
           fileOk = true;
           songSec = d.duration;
@@ -918,6 +930,7 @@
           if (file !== f) return;
           $("songMeta").textContent = "";
           showError(t("err.decode"));
+          track("open", { kind: extOf(f), result: "decode-error" });
         }
       }
 
@@ -1037,8 +1050,9 @@
         if (!fileOk || busy) return;
         showError("");
         await checkModel();
-        if (!modelCached && navigator.onLine === false) { showError(t("err.offline")); return; }
-        if (!(await askNetwork())) { showError(t("net.later.note")); return; }
+        if (!modelCached && navigator.onLine === false) { showError(t("err.offline")); track("separate", { result: "offline" }); return; }
+        if (!(await askNetwork())) { showError(t("net.later.note")); track("separate", { result: "later" }); return; }
+        sepInfo = { cached: modelCached ? "yes" : "no", tries: 0, backend: "" };
         stopPlayback();
         releaseStems();
         setBusy(true);
@@ -1079,10 +1093,13 @@
         return left.length ? left : [LADDER[LADDER.length - 1]];
       }
       let runMode = "";
+      let sepInfo = { cached: "", tries: 0, backend: "" };
+      const sepDone = (result, extra) => track("separate", Object.assign({ result: result, mode: runMode, backend: sepInfo.backend, tries: sepInfo.tries, model_cached: sepInfo.cached, seconds: Math.round((Date.now() - startedAt) / 1000), minutes: minutesOf(songSec || 0) }, extra || {}));
 
       function attempt(mode, rest) {
         const opts = MODES[mode];
         runMode = mode;
+        sepInfo.tries++;
         recordRun({ stage: "download" });
         try {
           worker = new Worker("separator.js", { type: "module" });
@@ -1095,12 +1112,14 @@
           const m = e.data;
           if (m.type === "progress") onProgress(m);
           else if (m.type === "backend") {
+            sepInfo.backend = m.name === "webgpu" ? "webgpu" : "wasm" + (m.threads || 1) + (m.safe ? "-safe" : "");
             $("backend").textContent = t("backend.used", { name: m.name === "webgpu" ? t("backend.webgpu") : m.safe ? t("backend.safe", { n: m.threads }) : m.threads > 1 ? t("backend.wasm", { n: m.threads }) : t("backend.wasm1") });
             $("backend").hidden = false;
             checkModel();
           } else if (m.type === "done") {
             stopWorker();
             setBusy(false);
+            sepDone("ok");
             toast(t("done", { time: fmtTime((Date.now() - startedAt) / 1000) }));
             loadStems(m.stems);
           } else if (m.type === "error") {
@@ -1112,6 +1131,7 @@
               return;
             }
             setBusy(false);
+            sepDone(m.code || "error", { stage: m.stage || "separate" });
             const where = t("where." + (m.stage || "separate"));
             const key = "err." + m.code;
             showError(I18N.en[key] ? t(key, { msg: m.message, where: where }) : t("err.run", { msg: m.message, where: where }));
@@ -1122,6 +1142,7 @@
           stopWorker();
           setBusy(false);
           showError(t("err.worker"));
+          sepDone("worker");
           console.error("Separation worker error", e);
           if (e && e.preventDefault) e.preventDefault();
         };
@@ -1146,6 +1167,7 @@
         return decode(file);
       }
       $("cancelBtn").addEventListener("click", function () {
+        if (busy) sepDone("cancel");
         stopWorker();
         setBusy(false);
         toast(t("canceled"));
@@ -1247,6 +1269,7 @@
       }
 
       function setPlaying(on) {
+        if (on !== playing) { try { if (window.usage) window.usage.playing(on); } catch (e) {} }
         playing = on;
         // toggleAttribute: SVG elements have no .hidden property (setting it does nothing)
         $("playIcon").toggleAttribute("hidden", on);
@@ -1471,7 +1494,9 @@
           }
           const blob = await encodeMp3(pcm.left, pcm.right, key === "mix");
           await saveBlob((baseName() + " - " + label + keyNote).replace(/[\\/:*?"<>|]+/g, "_") + ".mp3", blob);
+          track("mp3", { part: key, result: "ok", semis: semis, minutes: minutesOf(pcm.left.length / SR) });
         } catch (e) {
+          track("mp3", { part: key, result: "error" });
           console.error("MP3 export failed", e);
           toast(t("err.save"));
         } finally {
@@ -1541,11 +1566,13 @@
           shifted = { semis: target, parts: parts };
           applyStems();
           toast(t("key.done", { n: signed(target) }));
+          track("key", { result: "ok", semis: target });
         }).catch(function (e) {
           if (id !== jobId) return;
           cancelJobs();
           console.error("Key change failed", e);
           toast(t("key.err", { msg: e.message }));
+          track("key", { result: "error", semis: target });
         });
       }
 

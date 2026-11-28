@@ -2,7 +2,7 @@
 // Older caches of this app (e.g. "bandstemmixer-<build>") are removed on activate.
 const PREFIX = "bandstemmixer-";
 const CACHE = PREFIX + "cache";
-const CORE = ["./", "index.html", "separator.js", "dsp.js", "mixer.js", "encoder.js", "keyshift.js", "ja/", "manifest.json", "THIRD_PARTY_LICENSES.md", "icons/icon.svg"];
+const CORE = ["./", "index.html", "separator.js", "dsp.js", "mixer.js", "encoder.js", "keyshift.js", "ja/", "manifest.json", "THIRD_PARTY_LICENSES.md", "icons/icon.svg", "usage-events.js"];
 // The AI model is kept by separator.js in its own cache (bandstemmixer-model-v2), which activate below leaves alone.
 // Older model caches (-v1: the 6-part model used at first) are removed on activate.
 const KEEP = ["bandstemmixer-model-v2"];
@@ -69,6 +69,9 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   if (new URL(req.url).origin !== self.location.origin) return;
+  // Cloudflare Zaraz (/cdn-cgi/zaraz/…, analytics): always from the network, never cached. Its script is made
+  // for each request, and it is not needed offline
+  if (new URL(req.url).pathname.startsWith("/cdn-cgi/")) return;
   event.respondWith(
     fetch(new Request(req.url, { cache: "no-cache" }))
       .then((res) => {
