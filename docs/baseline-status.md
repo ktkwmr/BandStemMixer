@@ -57,7 +57,7 @@
 | 9-9 | 自動テスト | ⚠️ | 偽モデルを使った Playwright の E2E をセッション内で実施（リポジトリには未収録） |
 | 9-10・9-11 | ボタンの反応・ダイアログのフォーカス | ✅ | |
 | 9-12 | iOS 26 のステータスバーのにじみ | ⚠️ | `.topbar`・`.site-head` を sticky・不透明に。iPhone 実機では未確認 |
-| 9-13 | 大きなダウンロードの前の通信の確認 | ✅ | `connectionRisk()`・`askNetwork()` |
+| 9-13 | 大きなダウンロードの前の通信の確認 | ✅ | `connectionRisk()`・`askNetwork()`。モデルが保存済みなら案内の行（`modelBox`）を隠す |
 | 9-18 | 関連アプリへのリンク | ✅ | メイン機能の下の `<nav class="related">` に 2 つ（定義は webapp-baseline の `related-apps.json`、文言は `I18N` の `rel.*`） |
 | 10-1〜10-5 | 記事（生成・最初の記事・計算した値・画面写真・導線） | ✅ | 6 本（`guide`・`minus-one`・`learn-by-ear`・`how-it-works`・`better-results`・`faq`）。値は `scripts/pages/app.mjs`、画面写真は `scripts/render-guide-images.mjs`。アプリの説明の下と ⚙ と使い方から記事へ |
 | 10-6 | 公開前の UX レビュー | ✅ | 390px で全 12 ページ（横スクロールなし・画像の欠けなし・リンク切れなし・エラー 0 件） |
