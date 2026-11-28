@@ -293,7 +293,7 @@
             <p class="hint" id="keepOpen" data-i18n="keepOpen">終わるまでこの画面を開いたままにしてください。スマホでは、画面が消えたりほかのアプリに切り替えたりすると分離が止まります。</p>
           </div>
           <p class="err" id="err" role="alert" hidden></p>
-          <div class="model">
+          <div class="model" id="modelBox">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
             <span id="modelState" data-i18n="model.checking">AI モデルを確認しています…</span>
           </div>
@@ -471,7 +471,6 @@
           "keepOpen": "Keep this screen open until it finishes. On a phone, separation stops while the screen is off or another app is open.",
           "model.checking": "Checking the AI model…",
           "model.missing": "The AI model (about {mb} MB) is downloaded the first time you separate, and kept on this device.",
-          "model.ready": "The AI model is saved on this device. No download needed.",
           "model.nocache": "This browser cannot keep the AI model, so it is downloaded (about {mb} MB) each time.",
           "stage.download": "Downloading the AI model…",
           "stage.lib": "Loading the separation engine…",
@@ -592,7 +591,6 @@
           "keepOpen": "終わるまでこの画面を開いたままにしてください。スマホでは、画面が消えたりほかのアプリに切り替えたりすると分離が止まります。",
           "model.checking": "AI モデルを確認しています…",
           "model.missing": "AI モデル（約 {mb} MB）は、最初に分離するときにダウンロードして、この端末に保存します。",
-          "model.ready": "AI モデルはこの端末に保存済みです。ダウンロードは不要です。",
           "model.nocache": "このブラウザでは AI モデルを保存できないため、毎回ダウンロードします（約 {mb} MB）。",
           "stage.download": "AI モデルをダウンロードしています…",
           "stage.lib": "分離のプログラムを読み込んでいます…",
@@ -848,7 +846,9 @@
           cacheUsable = false;
           modelCached = false;
         }
-        $("modelState").textContent = modelCached ? t("model.ready") : t(cacheUsable ? "model.missing" : "model.nocache", { mb: MODEL_MB });
+        // Only worth saying while there is something to download.
+        $("modelBox").hidden = modelCached;
+        if (!modelCached) $("modelState").textContent = t(cacheUsable ? "model.missing" : "model.nocache", { mb: MODEL_MB });
       }
 
       function askNetwork() {

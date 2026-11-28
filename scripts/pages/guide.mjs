@@ -43,13 +43,13 @@ export default {
   <li><b>Choose a song file</b> – Any format your browser can play: MP3, WAV, M4A (AAC), FLAC, Ogg, and others, and videos such as MP4 and MOV (their sound is used). Songs up to ${MAX_MIN} minutes (${MAX_MIN_LOW_MEM} minutes on phones and tablets, which have less memory). The file is read in your browser and never uploaded. <b>Separation starts as soon as you choose the file</b>; there is no button to press. To separate another song, choose another file.</li>
   <li><b>The song</b> – The file name, the length, and whether it is stereo or mono.</li>
   <li><b>Progress</b> – How far the separation is (in %) and about how long is left, with Cancel.</li>
-  <li><b>The AI model</b> – Whether the AI model is already saved on this device; if not, it is downloaded first.</li>
+  <li><b>The AI model</b> – Before the first separation, the size of the AI model that will be downloaded. Once the model is saved on this device, this line no longer appears.</li>
 </ol>
 <p>How long it takes depends on the device: on a recent computer, about the length of the song or a few times longer; on a phone, longer. The line under the bar shows how the separation runs: on the <b>GPU (WebGPU)</b> when the browser supports it, otherwise on the CPU.</p>
 <div class="note"><p>Keep the screen open until it finishes. On a phone, separation stops when the screen turns off or you switch to another app. If it stops with a memory error, the app tries again with settings that use less memory.</p></div>
 
 <h2 id="first">The first time: downloading the AI model</h2>
-<p>The first time you separate a song, the browser downloads the AI model (about ${MODEL_MB} MB) and the separation engine (about ${ENGINE_MB.cpu} MB, or ${ENGINE_MB.gpu} MB with the GPU). They are kept on your device, so the next time there is no download and the song panel says “The AI model is saved on this device”.</p>
+<p>The first time you separate a song, the browser downloads the AI model (about ${MODEL_MB} MB) and the separation engine (about ${ENGINE_MB.cpu} MB, or ${ENGINE_MB.gpu} MB with the GPU). They are kept on your device, so the next time there is no download.</p>
 <figure class="shot phone">
   ${img("en", "network", "On a phone, a dialog asks: Are you on Wi-Fi? This browser does not tell the app whether you are on Wi-Fi or mobile data. Download: about 186 MB, only the first time. Buttons: Not now, and Download and separate.", { half: true })}
   <figcaption>On a phone or tablet, the app asks before the first download.</figcaption>
@@ -157,13 +157,13 @@ export default {
   <li><b>曲のファイルを選ぶ</b> – ブラウザで再生できる形式なら使えます（MP3・WAV・M4A（AAC）・FLAC・Ogg など）。MP4・MOV などの動画も選べます（音声を使います）。長さは ${MAX_MIN} 分まで（メモリの少ないスマホ・タブレットでは ${MAX_MIN_LOW_MEM} 分まで）。ファイルはブラウザの中で読み込み、アップロードしません。<b>ファイルを選ぶとすぐに分離が始まります</b>（押すボタンはありません）。別の曲にするときは、別のファイルを選びます。</li>
   <li><b>曲</b> – ファイル名と長さ、ステレオかモノラルか。</li>
   <li><b>進み具合</b> – 分離の進み具合（%）と残り時間の目安、キャンセル。</li>
-  <li><b>AI モデル</b> – AI モデルがこの端末に保存済みかどうか。まだなら、先にダウンロードします。</li>
+  <li><b>AI モデル</b> – 最初の分離の前に、ダウンロードする AI モデルの大きさが出ます。この端末に保存したあとは出ません。</li>
 </ol>
 <p>かかる時間は端末によって違い、最近のパソコンで曲の長さと同じくらいから数倍、スマホではさらにかかります。バーの下には分離の方法が出ます。ブラウザが対応していれば <b>GPU（WebGPU）</b>、そうでなければ CPU で処理します。</p>
 <div class="note"><p>終わるまで画面を開いたままにしてください。スマホでは、画面が消えたりほかのアプリに切り替えたりすると分離が止まります。メモリ不足で止まったときは、メモリを節約する設定で自動的にやり直します。</p></div>
 
 <h2 id="first">初回は AI モデルをダウンロード</h2>
-<p>最初に分離するときに、AI モデル（約 ${MODEL_MB} MB）と分離のプログラム（約 ${ENGINE_MB.cpu} MB、GPU を使う場合は約 ${ENGINE_MB.gpu} MB）をダウンロードします。端末に保存するので、2 回目からはダウンロードせず、曲のパネルに「AI モデルはこの端末に保存済みです」と出ます。</p>
+<p>最初に分離するときに、AI モデル（約 ${MODEL_MB} MB）と分離のプログラム（約 ${ENGINE_MB.cpu} MB、GPU を使う場合は約 ${ENGINE_MB.gpu} MB）をダウンロードします。端末に保存するので、2 回目からはダウンロードしません。</p>
 <figure class="shot phone">
   ${img("ja", "network", "スマホで最初の分離の前に出るダイアログ。「Wi-Fi に接続していますか？」の見出しと、ダウンロード量（約 186 MB、初回のみ）、「やめておく」と「ダウンロードして分離する」のボタン。", { half: true })}
   <figcaption>スマホ・タブレットでは、最初のダウンロードの前に確認が出ます。</figcaption>

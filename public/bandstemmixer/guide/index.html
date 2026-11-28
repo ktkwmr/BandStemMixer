@@ -211,13 +211,13 @@
   <li><b>Choose a song file</b> – Any format your browser can play: MP3, WAV, M4A (AAC), FLAC, Ogg, and others, and videos such as MP4 and MOV (their sound is used). Songs up to 12 minutes (8 minutes on phones and tablets, which have less memory). The file is read in your browser and never uploaded. <b>Separation starts as soon as you choose the file</b>; there is no button to press. To separate another song, choose another file.</li>
   <li><b>The song</b> – The file name, the length, and whether it is stereo or mono.</li>
   <li><b>Progress</b> – How far the separation is (in %) and about how long is left, with Cancel.</li>
-  <li><b>The AI model</b> – Whether the AI model is already saved on this device; if not, it is downloaded first.</li>
+  <li><b>The AI model</b> – Before the first separation, the size of the AI model that will be downloaded. Once the model is saved on this device, this line no longer appears.</li>
 </ol>
 <p>How long it takes depends on the device: on a recent computer, about the length of the song or a few times longer; on a phone, longer. The line under the bar shows how the separation runs: on the <b>GPU (WebGPU)</b> when the browser supports it, otherwise on the CPU.</p>
 <div class="note"><p>Keep the screen open until it finishes. On a phone, separation stops when the screen turns off or you switch to another app. If it stops with a memory error, the app tries again with settings that use less memory.</p></div>
 
 <h2 id="first">The first time: downloading the AI model</h2>
-<p>The first time you separate a song, the browser downloads the AI model (about 172 MB) and the separation engine (about 14 MB, or 27 MB with the GPU). They are kept on your device, so the next time there is no download and the song panel says “The AI model is saved on this device”.</p>
+<p>The first time you separate a song, the browser downloads the AI model (about 172 MB) and the separation engine (about 14 MB, or 27 MB with the GPU). They are kept on your device, so the next time there is no download.</p>
 <figure class="shot phone">
   <a href="/bandstemmixer/images/guide/en-network.png"><img src="/bandstemmixer/images/guide/en-network.png" alt="On a phone, a dialog asks: Are you on Wi-Fi? This browser does not tell the app whether you are on Wi-Fi or mobile data. Download: about 186 MB, only the first time. Buttons: Not now, and Download and separate." width="1082" height="2202" loading="lazy" decoding="async" style="max-width:541px"></a>
   <figcaption>On a phone or tablet, the app asks before the first download.</figcaption>
